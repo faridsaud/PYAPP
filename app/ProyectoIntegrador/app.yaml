@@ -1,0 +1,4 @@
+runtime: nodejs
+vm: true
+beta_settings:
+      cloud_sql_instances: "testtesispi2:us-central1:databasepi"
