@@ -41,8 +41,8 @@ module.exports.connections = {
   *                                                                          *
   ***************************************************************************/
 
-  /*
-  someMysqlServer: {
+
+  localServer: {
   adapter: 'sails-mysql',
   host: '192.168.216.131',
   user: 'bases',
@@ -51,9 +51,7 @@ module.exports.connections = {
 },
 
 
-*/
-
-someMysqlServer: {
+gcloudServer: {
   module: 'sails-mysql',
   user: 'root',
   password: 'AmdR9295x!',
