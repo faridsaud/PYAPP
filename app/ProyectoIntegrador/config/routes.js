@@ -35,7 +35,7 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
-  'post /login':'TestController.registrar'
+  'post /login':'TestController.registrarUsuPru'
 
 
   /***************************************************************************
