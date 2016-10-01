@@ -6,21 +6,37 @@
 */
 
 module.exports = {
-identity:'prueba',
-  tableName:'PRUEBA',
+
+  tableName:'TEST',
   attributes: {
 
     id:{
       type:'integer',
       primaryKey: true,
       unique: true,
-      columnName: 'IDPRUEBA'
+      columnName: 'IDTEST'
     },
-    creadoPor:{
-      type:'integer',
-      required:true,
-      columnName: 'CREADORPOR'
+    title:{
+      type:'text',
+      size:100,
+      columnName: 'TITLE'
     },
+    description:{
+      type:'text',
+      size:300,
+      columnName: 'DESCRIPTIONTEST'
+    },
+    createdBy:{
+      type:'string',
+      size:40,
+      columnName: 'CREATEDBYTEST'
+    },
+    status:{
+      type:'string',
+      size:,
+      columnName: 'TITLE'
+    },
+
     /*
     usuarios:{
       collection:'usuario',
@@ -30,7 +46,8 @@ identity:'prueba',
     */
     usuarios:{
       collection:'usuario',
-      via:'pruebas',
+      via:'IDPRUEBA',
+      through:'usrpru'
     }
   }
 };

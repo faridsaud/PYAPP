@@ -6,21 +6,51 @@
 */
 
 module.exports = {
-  identity:'usuario',
-  tableName:'USUARIO',
-  attributes: {
+  /*
 
-    id:{
+
+
+  */
+  tableName:'USER',
+  attributes: {
+    //cambiar id por email
+    email:{
       type:'string',
       primaryKey: true,
       unique: true,
       columnName: 'EMAIL'
     },
-    clave:{
+    //cambiar clave por password
+    password:{
       type:'string',
       //required:true,
       columnName: 'PASSWORD'
     },
+    firstName:{
+      type:'string',
+      size:30,
+      columnName:'FIRSTNAME'
+    },
+    lastNames:{
+      type:'string',
+      size:30,
+      columnName:'LASTNAMES'
+    },
+    idPassport:{
+      type:'string',
+      size:15,
+      columnName:'IDPASSPORT'
+    },
+    country:{
+      type:'string',
+      size:30,
+      columnName:'COUNTRY'
+    },
+    username:{
+      type:'string',
+      size:40,
+      columnName:'USERNAME'
+    }
     /*
     pruebas:{
       collection:'prueba',
@@ -29,7 +59,8 @@ module.exports = {
     }*/
     pruebas:{
       collection:'prueba',
-      via:'usuarios'
+      via:'EMAIL',
+      through:'usrpru'
     }
   }
 };

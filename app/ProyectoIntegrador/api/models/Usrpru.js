@@ -6,17 +6,16 @@
 */
 
 module.exports = {
-identity:'usrpru',
   tableName:'USR_PRU',
   autoPK: false,
 
 
   attributes: {
-    usuario:{
-      columnName:'EMAIL'
+    EMAIL:{
+      model:'usuario'
     },
-    prueba:{
-      columnName:'IDPRUEBA'
+    IDPRUEBA: {
+      model: 'prueba'
     }
   }
 };

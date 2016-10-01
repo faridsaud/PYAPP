@@ -29,7 +29,7 @@ module.exports = {
 		});
 	},
 
-	registrarUsuPru2: function (req, res) {
+	registrarUsuPru: function (req, res) {
 		var email=req.body.email;
 		var password=req.body.password;
 		var idPrueba=req.body.idprueba;
@@ -37,36 +37,29 @@ module.exports = {
 
 		console.log(email);
 		console.log(password);
-		sails.models.prueba.findOne(idPrueba).exec(function(error, pruebaEncontrada){
-			if(error){
-				console.log("error aqui");
-				console.log(error);
-			}else{
-				sails.models.usuario.findOne(email).populate('pruebas').exec(function(error, usuarioEncontrado){
-					if(error){
-						console.log(error);
-					}else{
+		Usuario.findOne(email).exec(function(err, user) {
+			if(err){
+				res.serverError(err);
+			} // handle error
 
-						console.log("LLegamos hasta aca")
-						usuarioEncontrado.pruebas.add(idPrueba);
-						console.log("Llegamos al fin")
-						usuarioEncontrado.save(function(err){});
-					}
-				})
-			}
-		})
+			// Queue up a record to be inserted into the join table
+			user.pruebas.add(idPrueba);
+
+			// Save the user, creating the new associations in the join table
+			user.save(function(err) {});
+		});
 	},
-	registrarUsuPru: function (req, res) {
+	registrarUsuPru2: function (req, res) {
 		var email=req.body.email;
 		var password=req.body.password;
 		var idPrueba=req.body.idprueba;
 		var creadoPor=req.body.creador;
 		sails.models.usrpru.query(
-		'INSERT INTO USR_PRU (IDPRUEBA, EMAIL) VALUES (?,?)',
+			'INSERT INTO USR_PRU (IDPRUEBA, EMAIL) VALUES (?,?)',
 			[ idPrueba, email ]
-		, function(err, results) {
-			if (err) return res.serverError(err);
-			return res.json(results);
-		});
-	}
-};
+			, function(err, results) {
+				if (err) return res.serverError(err);
+				return res.json(results);
+			});
+		}
+	};
