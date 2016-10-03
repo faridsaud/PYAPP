@@ -1,24 +1,49 @@
 /**
-* Test.js
+* Prueba.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
 module.exports = {
-  tableName:'USUARIO',
+
+  tableName:'TEST',
   attributes: {
 
     id:{
-      type:'string',
+      type:'integer',
       primaryKey: true,
       unique: true,
-      columnName: 'EMAIL'
+      columnName: 'IDTEST'
     },
-    clave:{
+    title:{
+      type:'text',
+      size:100,
+      columnName: 'TITLE'
+    },
+    description:{
+      type:'text',
+      size:300,
+      columnName: 'DESCRIPTIONTEST'
+    },
+    createdBy:{
       type:'string',
-      required:true,
-      columnName: 'PASSWORD'
+      size:40,
+      columnName: 'CREATEDBYTEST'
+    },
+    status:{
+      type:'string',
+      size:10,
+      columnName: 'TITLE'
     }
+
+    /*
+    usuarios:{
+      collection:'usuario',
+      via:'prueba',
+       through:'usrpru'
+    }
+    */
+
   }
 };

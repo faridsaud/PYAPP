@@ -1,23 +1,24 @@
 /**
-* Usrpru.js
+* Course.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
 module.exports = {
-  tableName:'USR_PRU',
-  autoPK: false,
-
+  tableName:'COURSE',
 
   attributes: {
-    email:{
-      type:'string',
-      columnName:'EMAIL'
+    id:{
+      type:'integer',
+      primaryKey: true,
+      unique: true,
+      columnName: 'IDCOURSE'
     },
-    idTest: {
-        type:'string',
-        columnName:'IDTEST'
+    description:{
+      type:'text',
+      size:300,
+      columnName: 'DESCRIPTIONCOURSE'
     }
   }
 };

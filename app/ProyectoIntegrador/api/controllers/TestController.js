@@ -29,6 +29,7 @@ module.exports = {
 		});
 	},
 
+/*
 	registrarUsuPru: function (req, res) {
 		var email=req.body.email;
 		var password=req.body.password;
@@ -48,6 +49,22 @@ module.exports = {
 			// Save the user, creating the new associations in the join table
 			user.save(function(err) {});
 		});
+	},*/
+	registrarUsuPru:function(req,res){
+		User.findOne('1').exec(function(err, user) {
+			if(err){
+				res.serverError(err);
+			} // handle error
+
+			console.log(user.pruebas);
+			var tests;
+			console.log(user.testToDo(function (tests){
+				console.log(tests);
+				user.tests=tests;
+				res.json(user);
+			}));
+		});
+
 	},
 	registrarUsuPru2: function (req, res) {
 		var email=req.body.email;

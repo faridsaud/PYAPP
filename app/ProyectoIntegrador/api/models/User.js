@@ -4,7 +4,7 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
-
+var sync = require('synchronize');
 module.exports = {
   /*
 
@@ -34,7 +34,7 @@ module.exports = {
     lastNames:{
       type:'string',
       size:30,
-      columnName:'LASTNAMES'
+      columnName:'LASTNAME'
     },
     idPassport:{
       type:'string',
@@ -50,17 +50,28 @@ module.exports = {
       type:'string',
       size:40,
       columnName:'USERNAME'
-    }
+    },
     /*
     pruebas:{
       collection:'prueba',
       via:'usuario',
       through:'usrpru'
     }*/
-    pruebas:{
-      collection:'prueba',
-      via:'EMAIL',
-      through:'usrpru'
-    }
+
+
+    testToDo: function(cb){
+      console.log(this.email);
+      sails.models.usrpru.query(
+        'SELECT * FROM USR_PRU WHERE EMAIL=?',
+        [ this.email ]
+        , function(err, results) {
+          if (err){
+            return res.serverError(err);
+          }else{
+            cb(results);
+          }
+        });
+    },
+
   }
 };
