@@ -6,7 +6,6 @@
     <!-- Viewport mobile tag for sensible mobile support -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 
     <!--
@@ -32,14 +31,13 @@
 
     <!--STYLES-->
     <link rel="stylesheet" href="/styles/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/styles/css/font-awesome.min.css">
     <link rel="stylesheet" href="/styles/importer.css">
     <!--STYLES END-->
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
   </head>
 
-  <body>
+  <body ng-app="PYI">
     <%- body %>
 
 
@@ -94,9 +92,14 @@
     -->
 
     <!--SCRIPTS-->
+    <script src="/js/dependencies/jquery.min.js"></script>
+    <script src="/js/dependencies/bootstrap.min.js"></script>
     <script src="/js/dependencies/angular.min.js"></script>
-    <script src="/js/dependencies/angular-ui-router.js"></script>
+    <script src="/js/dependencies/angular-ui-router.min.js"></script>
     <script src="/js/dependencies/ui-bootstrap-tpls-1.0.0.min.js"></script>
+    <script src="/js/angular/modules/app.js"></script>
+    <script src="/js/angular/router/router.js"></script>
+    <script src="/js/angular/controllers/homeController.js"></script>
     <!--SCRIPTS END-->
   </body>
 </html>
