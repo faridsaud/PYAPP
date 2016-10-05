@@ -12,6 +12,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/home.html',
     controller: 'homeController'
   })
+  .state('registerUser', {
+    url: '/user/register',
+    templateUrl: 'html/angular/views/User/register.html',
+    controller: 'registerUserController'
+  })
   /*
   .state('categoriaHome', {
     url: '/categoria/home/{idCategoria:int}',
