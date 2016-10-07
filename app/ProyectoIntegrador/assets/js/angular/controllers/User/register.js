@@ -1,4 +1,4 @@
-app.controller('registerUserController',['$scope','$http','toastr','$location', function($scope,$http, toastr,$location){
+app.controller('registerUserController',['$scope','$http','toastr','$location','globalVariables', function($scope,$http, toastr,$location,globalVariables){
   console.log("Register user controller");
   $scope.user={};
   $scope.error=false;
@@ -12,7 +12,7 @@ app.controller('registerUserController',['$scope','$http','toastr','$location', 
       console.log($scope.user);
       $http({
         method:'POST',
-        url:'http://localhost:1337/user/register',
+        url:globalVariables.url+'/user/register',
         data:{
           user:{
             email:$scope.user.email,

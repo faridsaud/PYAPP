@@ -44,22 +44,67 @@ module.exports = {
       var country=null;
     }
     sails.models.user.create({
-        email:email,
-        password:password,
-        firstName:name,
-        lastNames:lastName,
-        idPassport:passport,
-        country:country,
-        username:username
-      }).exec(function (error, newRecord){
-        if(error){
-          console.log(error);
-          return res.json(400, {msg:error})
-        }else{
-          return res.json(201,{
-            msg: 'todo bien'
-          });
-        }
+      email:email,
+      password:password,
+      firstName:name,
+      lastNames:lastName,
+      idPassport:passport,
+      country:country,
+      username:username
+    }).exec(function (error, newRecord){
+      if(error){
+        console.log(error);
+        return res.json(512, {msg:error})
+      }else{
+        return res.json(201,{
+          msg: 'todo bien'
+        });
+      }
+    });
+  },
+
+  login:function(req,res){
+    /*Email could be an email or username*/
+    if(req.body.user.email){
+      var email=req.body.user.email;
+    }else{
+      var email=null;
+    }
+    if(req.body.user.password){
+      var password=req.body.user.password;
+    }else{
+      var password=null;
+    }
+    if(email==null){
+      return res.json(400,{
+        msg: 'Non email or username send'
       });
+    }else{
+      sails.models.user.findOne(
+        {
+          or:[
+            {email:email,password:password},
+            {username:email,password:password}
+          ]
+        }).exec(function (error, userFinded){
+          if(error){
+            console.log(error);
+            return res.json(512, {msg:error})
+          }else{
+            if(userFinded){
+              return res.json(200,{
+                msg: 'Login successfull'
+              });
+            }else{
+              return res.json(400,{
+                msg: 'Invalid credentials'
+              });
+            }
+          }
+        });
+      }
+
+
+
     },
   };
