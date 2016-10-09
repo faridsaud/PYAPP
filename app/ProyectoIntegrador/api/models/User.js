@@ -49,6 +49,7 @@ module.exports = {
     username:{
       type:'string',
       size:40,
+      unique: true,
       columnName:'USERNAME'
     },
     /*

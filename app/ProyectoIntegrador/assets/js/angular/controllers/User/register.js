@@ -21,7 +21,8 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
             lastName:$scope.user.lastName,
             passport:$scope.user.passportId,
             username:$scope.user.username,
-            country:$scope.user.country
+            country:$scope.user.country,
+            role:$scope.user.role
           }
         }
       }).then(function success(response){
@@ -29,7 +30,7 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
         console.log(response);
         $location.path('/home');
       }, function error(response){
-        toastr.error("Error al creaar el usuario","Error");
+        toastr.error("Error al crear el usuario","Error");
         console.log(response);
       })
     }

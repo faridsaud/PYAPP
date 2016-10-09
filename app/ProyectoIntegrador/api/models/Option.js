@@ -7,7 +7,7 @@
 
 module.exports = {
 
-  tableName:'OPTION',
+  tableName:'OPTION_A',
 
   attributes: {
     id:{

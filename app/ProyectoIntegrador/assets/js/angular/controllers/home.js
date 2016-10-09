@@ -7,15 +7,17 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       data:{
         user:{
           email:$scope.user.email,
-          password:$scope.user.password
+          password:$scope.user.password,
+          role:$scope.user.role
         }
       }
     }).then(function success(response){
       toastr.success("Login con éxito","Success");
       console.log(response);
-      $location.path('/home');
+
+      $location.path('/home/'+response.data.role);
     }, function error(response){
-      toastr.error("Error al iniciar sesión","Error");
+      toastr.error(response.data.msg,"Error");
       console.log(response);
     })
   }

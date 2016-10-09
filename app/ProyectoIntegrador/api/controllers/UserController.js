@@ -43,6 +43,12 @@ module.exports = {
     }else{
       var country=null;
     }
+    if(req.body.user.role){
+      var role=req.body.user.role;
+    }else{
+      var role="student";
+    }
+    console.log(role);
     sails.models.user.create({
       email:email,
       password:password,
@@ -56,55 +62,90 @@ module.exports = {
         console.log(error);
         return res.json(512, {msg:error})
       }else{
-        return res.json(201,{
-          msg: 'todo bien'
-        });
-      }
-    });
-  },
-
-  login:function(req,res){
-    /*Email could be an email or username*/
-    if(req.body.user.email){
-      var email=req.body.user.email;
-    }else{
-      var email=null;
-    }
-    if(req.body.user.password){
-      var password=req.body.user.password;
-    }else{
-      var password=null;
-    }
-    if(email==null){
-      return res.json(400,{
-        msg: 'Non email or username send'
-      });
-    }else{
-      sails.models.user.findOne(
-        {
-          or:[
-            {email:email,password:password},
-            {username:email,password:password}
-          ]
-        }).exec(function (error, userFinded){
-          if(error){
-            console.log(error);
-            return res.json(512, {msg:error})
-          }else{
-            if(userFinded){
-              return res.json(200,{
-                msg: 'Login successfull'
+        if(role==null){
+          return res.json(400,{
+            msg: 'Invalid role'
+          });
+        }else{
+          sails.models.usrrol.query(
+            'INSERT INTO USR_ROL (NAME, EMAIL) VALUES (?,?)',
+            [role,email ]
+            , function(err, results) {
+              if (err) return res.serverError(err);
+              return res.json(201,{
+                msg: 'User created'
               });
-            }else{
-              return res.json(400,{
-                msg: 'Invalid credentials'
-              });
-            }
+            });
           }
-        });
-      }
-
-
-
+        }
+      });
     },
-  };
+
+    login:function(req,res){
+      /*Email could be an email or username*/
+      if(req.body.user.email){
+        var email=req.body.user.email;
+      }else{
+        var email=null;
+      }
+      if(req.body.user.password){
+        var password=req.body.user.password;
+      }else{
+        var password=null;
+      }
+      if(req.body.user.role){
+        var role=req.body.user.role;
+      }else{
+        var role="student";
+      }
+      if(email==null){
+        return res.json(400,{
+          msg: 'Non email or username send'
+        });
+      }else{
+        console.log(role);
+        sails.models.user.findOne(
+          {
+            or:[
+              {email:email,password:password},
+              {username:email,password:password}
+            ]
+          }).exec(function (error, userFinded){
+            if(error){
+              console.log(error);
+              return res.json(512, {msg:error})
+            }else{
+              if(userFinded){
+                sails.models.usrrol.query(
+                  'SELECT * FROM USR_ROL WHERE NAME=? AND EMAIL=?',
+                  [role,email ]
+                  , function(err, results) {
+                    if (err) return res.serverError(err);
+                    else{
+                      if(results[0]){
+                        return res.json(200,{
+                          msg: 'Login successfull',
+                          role:role
+                        });
+                      }else{
+                        return res.json(400,{
+                          msg: 'Not user finded with those credentials'
+                        });
+                      }
+                    }
+                  });
+
+                }else{
+                  return res.json(400,{
+                    msg: 'Invalid credentials'
+                  });
+                }
+              }
+
+            });
+          }
+
+
+
+        },
+      };

@@ -22,6 +22,14 @@
                   <label for="exampleInputPassword1">Clave</label>
                   <input type="password" class="form-control" id="exampleInputPassword1" ng-model="user.password" required>
                 </div>
+                <div class="form-group">
+                  <label for="">Rol <a href="" title="Estudiante para rendir pruebas. Profesor para crear pruebas y cursos. Admin Institución para administar un conjunto de profesores y pruebas">?</a></label>
+                  <select class="form-control" ng-model="user.role">
+                    <option value="student" selected>Estudiante</option>
+                    <option value="teacher">Profesor</option>
+                    <option value="admInstitution">Administrador de institución</option>
+                  </select>
+                </div>
                 <br>
                 <button type="submit" class="btn btn-primary pull-right">Iniciar sesión</button>
               </form>
