@@ -6,6 +6,63 @@ var url="http://localhost:1337";
 
 // User http services tests
 
+describe('User signup', function() {
+
+  describe('valid credentials', function() {
+    it('respond with status 201 : User created', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({user:{
+        email:"test@test.com",
+        password:"test",
+        name:"test name",
+        lastName:"test last name",
+        passport:"1111111111",
+        country:"ECU",
+        username:"test",
+        role:"student"
+      }})
+      .expect(201,{msg:"User created"}, done);
+    });
+  });
+
+  describe('valid credentials without role', function() {
+    it('respond with status 400 : No role send', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({user:{
+        email:"test4@test.com",
+        password:"test4",
+        name:"test name",
+        lastName:"test last name",
+        passport:"1111111111",
+        country:"ECU",
+        username:"test4"
+      }})
+      .expect(400,{msg:"No role send"}, done);
+    });
+  });
+
+  describe('valid credentials without role', function() {
+    it('respond with status 400 : Invalid role', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({user:{
+        email:"test3@test.com",
+        password:"test3",
+        name:"test name",
+        lastName:"test last name",
+        passport:"1111111111",
+        country:"ECU",
+        username:"test3",
+        role:"studente"
+      }})
+      .expect(400,{msg:"Invalid role"}, done);
+    });
+  });
+});
+
+
 describe('User login', function() {
   describe('valid credentials and role, login with email', function() {
     it('respond with status 200 : Login successfull', function(done) {
@@ -67,62 +124,6 @@ describe('User login', function() {
         role:"teacher"
       }})
       .expect(400,{msg:"Non email or username send"}, done);
-    });
-  });
-});
-
-describe('User signup', function() {
-
-  describe('valid credentials', function() {
-    it('respond with status 201 : User created', function(done) {
-      supertest(url)
-      .post('/user/register')
-      .send({user:{
-        email:"test2@test.com",
-        password:"test2",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test2",
-        role:"student"
-      }})
-      .expect(201,{msg:"User created"}, done);
-    });
-  });
-
-  describe('valid credentials without role', function() {
-    it('respond with status 400 : No role send', function(done) {
-      supertest(url)
-      .post('/user/register')
-      .send({user:{
-        email:"test4@test.com",
-        password:"test4",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test4"
-      }})
-      .expect(400,{msg:"No role send"}, done);
-    });
-  });
-
-  describe('valid credentials without role', function() {
-    it('respond with status 400 : Invalid role', function(done) {
-      supertest(url)
-      .post('/user/register')
-      .send({user:{
-        email:"test3@test.com",
-        password:"test3",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test3",
-        role:"studente"
-      }})
-      .expect(400,{msg:"Invalid role"}, done);
     });
   });
 });
