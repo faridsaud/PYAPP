@@ -36,5 +36,9 @@
     "url": "git://github.com/anonymous node/sails user/ProyectoIntegrador.git"
   },
   "author": "anonymous node/sails user",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "mocha": "^3.1.0",
+    "supertest": "^2.0.0"
+  }
 }

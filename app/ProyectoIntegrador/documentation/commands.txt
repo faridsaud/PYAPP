@@ -1,0 +1,8 @@
+//Test excecution
+node node_modules/mocha/bin/mocha ./tests/restTest.js
+
+//deploy app google cloud
+gcloud app deploy
+
+//Enviroment variables
+set NODE_ENV=production&&node app.js

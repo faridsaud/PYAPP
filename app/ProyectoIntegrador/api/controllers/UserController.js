@@ -46,39 +46,44 @@ module.exports = {
     if(req.body.user.role){
       var role=req.body.user.role;
     }else{
-      var role="student";
+      var role=null;
     }
     console.log(role);
-    sails.models.user.create({
-      email:email,
-      password:password,
-      firstName:name,
-      lastNames:lastName,
-      idPassport:passport,
-      country:country,
-      username:username
-    }).exec(function (error, newRecord){
-      if(error){
-        console.log(error);
-        return res.json(512, {msg:error})
-      }else{
-        if(role==null){
-          return res.json(400,{
-            msg: 'Invalid role'
-          });
+    if(role==null){
+      return res.json(400,{
+        msg: 'No role send'
+      });
+    }else{
+      sails.models.user.create({
+        email:email,
+        password:password,
+        firstName:name,
+        lastNames:lastName,
+        idPassport:passport,
+        country:country,
+        username:username
+      }).exec(function (error, newRecord){
+        if(error){
+          console.log(error);
+          return res.json(512, {msg:error})
         }else{
+
           sails.models.usrrol.query(
             'INSERT INTO USR_ROL (NAME, EMAIL) VALUES (?,?)',
             [role,email ]
             , function(err, results) {
-              if (err) return res.serverError(err);
+              if (err) return res.json(400,{
+                msg: 'Invalid role'
+              });
               return res.json(201,{
                 msg: 'User created'
               });
             });
+
           }
-        }
-      });
+        });
+      }
+
     },
 
     login:function(req,res){
@@ -118,7 +123,7 @@ module.exports = {
               if(userFinded){
                 sails.models.usrrol.query(
                   'SELECT * FROM USR_ROL WHERE NAME=? AND EMAIL=?',
-                  [role,email ]
+                  [role,userFinded.email ]
                   , function(err, results) {
                     if (err) return res.serverError(err);
                     else{
@@ -128,8 +133,8 @@ module.exports = {
                           role:role
                         });
                       }else{
-                        return res.json(400,{
-                          msg: 'Not user finded with those credentials'
+                        return res.json(403,{
+                          msg: 'The role is not associated with the user'
                         });
                       }
                     }
@@ -137,7 +142,7 @@ module.exports = {
 
                 }else{
                   return res.json(400,{
-                    msg: 'Invalid credentials'
+                    msg: 'Not user finded with those credentials'
                   });
                 }
               }
