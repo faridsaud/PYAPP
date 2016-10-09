@@ -4,7 +4,7 @@
 * @description :: Server-side logic for managing usuarios
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
-
+var bcrypt=require('bcrypt-nodejs');
 module.exports = {
 
   register: function (req, res) {
@@ -54,9 +54,12 @@ module.exports = {
         msg: 'No role send'
       });
     }else{
+      console.log("estamos aqui");
+      var hash = bcrypt.hashSync(password, bcrypt.genSaltSync());
+      console.log(hash);
       sails.models.user.create({
         email:email,
-        password:password,
+        password:hash,
         firstName:name,
         lastNames:lastName,
         idPassport:passport,
@@ -87,7 +90,6 @@ module.exports = {
     },
 
     login:function(req,res){
-      /*Email could be an email or username*/
       if(req.body.user.email){
         var email=req.body.user.email;
       }else{
@@ -109,18 +111,21 @@ module.exports = {
         });
       }else{
         console.log(role);
-        sails.models.user.findOne(
-          {
-            or:[
-              {email:email,password:password},
-              {username:email,password:password}
-            ]
-          }).exec(function (error, userFinded){
-            if(error){
-              console.log(error);
-              return res.json(512, {msg:error})
-            }else{
-              if(userFinded){
+        sails.models.user.findOne({
+          or : [
+            { email: email },
+            { username: email }
+          ]
+        }).exec(function (error, userFinded){
+          if(error){
+            console.log(error);
+            console.log("error aqui");
+            return res.json(512, {msg:error})
+          }else{
+            if(userFinded){
+              console.log(userFinded);
+              if(bcrypt.compareSync(password, userFinded.password)==true){
+                console.log("hola");
                 sails.models.usrrol.query(
                   'SELECT * FROM USR_ROL WHERE NAME=? AND EMAIL=?',
                   [role,userFinded.email ]
@@ -146,11 +151,12 @@ module.exports = {
                   });
                 }
               }
+            }
 
-            });
-          }
+          });
+        }
 
 
 
-        },
-      };
+      },
+    };

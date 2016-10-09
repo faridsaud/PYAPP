@@ -1,5 +1,5 @@
 //Test excecution
-node node_modules/mocha/bin/mocha ./tests/restTest.js
+node node_modules/mocha/bin/mocha ./tests/restTest.js --timeout 15000
 
 //deploy app google cloud
 gcloud app deploy
