@@ -1,12 +1,12 @@
 /**
-* Usrpru.js
+* Usrtes.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
 module.exports = {
-  tableName:'USR_PRU',
+  tableName:'USR_TES',
   autoPK: false,
 
 
@@ -16,7 +16,7 @@ module.exports = {
       columnName:'EMAIL'
     },
     idTest: {
-        type:'string',
+        type:'integer',
         columnName:'IDTEST'
     }
   }
