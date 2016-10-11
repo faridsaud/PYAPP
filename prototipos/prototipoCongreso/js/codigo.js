@@ -84,10 +84,11 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
       },
     ]
   }
+
   var pregunta4={
     texto:"La capital de. espacio en blanco. es Quito",
     id:"a4",
-    tipo:"completar",
+    tipo:"completarSeleccionando",
     respuestas:[
       {
         id:"a4o1",
@@ -116,6 +117,40 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
       },
     ]
   }
+
+    var pregunta7={
+      texto:"Las islas. espacio en blanco. se encuentran en al región insular del Ecuador",
+      id:"a7",
+      tipo:"completarSeleccionando",
+      respuestas:[
+        {
+          id:"a7o2",
+          texto:"Filipinas",
+          correcta:false,
+          seleccionada:false
+        },
+        {
+          id:"a7o1",
+          texto:"Galápagos",
+          correcta:true,
+          seleccionada:false
+
+        },
+        {
+          id:"a7o3",
+          texto:"Hawaí",
+          correcta:false,
+          seleccionada:false
+        },
+        {
+          id:"a7o4",
+          texto:"Malvinas",
+          correcta:false,
+          seleccionada:false
+        },
+      ]
+    }
+  /*
   var pregunta5={
     texto:"Cual es su opinion respecto a la aplicación. Para dar su opinión, mantenga presionada la tecla espacio mientras da su opinión",
     id:"a5",
@@ -129,9 +164,28 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
 
       }
     ]
+  }*/
+  var pregunta6={
+    texto:"Encuentra de utilidad a la aplicación",
+    id:"a6",
+    tipo:"verdaderoFalso",
+    respuestas:[
+      {
+        id:"a6o1",
+        texto:"Verdadero",
+        correcta:true,
+        seleccionada:false
+      },
+      {
+        id:"a6o2",
+        texto:"Falso",
+        correcta:true,
+        seleccionada:false
+      },
+    ]
   }
   $scope.preguntas=[
-    pregunta, pregunta2, pregunta3, pregunta4
+    pregunta, pregunta2, pregunta3, pregunta4, pregunta6, pregunta7
   ];
   console.log($scope.preguntas);
 
@@ -269,20 +323,39 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
       }
     }
   }
-
-  //funcion hablarRespuesta
+  /*
+  var hablando=false;
+  //funcion iniciarHablarRespuesta
   $scope.iniciarHablarRespuesta=function(indexPregunta){
-    var idPregunta=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
-    if(idPregunta){
-      for(var i=0;i<$scope.preguntas.length;i++){
-        if($scope.preguntas[i].tipo=="completarHablando"){
-
-          $scope.preguntas[i].respuestas[0].
+    if(hablando==false){
+      var idPregunta=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
+      if(idPregunta){
+        for(var i=0;i<$scope.preguntas.length;i++){
+          if($scope.preguntas[i].tipo=="completarHablando"){
+            console.log(recognition);
+            console.log("Entramos aqui");
+            recognition.start();
+            hablando=true;
+          }
         }
       }
     }
   }
 
+  //funcion paraHablarRespuesta
+  $scope.pararHablarRespuesta=function(indexPregunta){
+    var idPregunta=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
+    if(idPregunta){
+      for(var i=0;i<$scope.preguntas.length;i++){
+        if($scope.preguntas[i].tipo=="completarHablando"){
+          console.log("Entramos a parar")
+          recognition.stop();
+          hablando=false;
+        }
+      }
+    }
+  }
+  */
   //Dar efecto de selección
   $scope.efectoSeleccion=function(index){
     var idRespuesta=$scope.buscarIdOriginalPreguntaByIndex(index);
@@ -336,11 +409,43 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
     msg.lang = 'es-US';
 
   }
+  /*Capturador de voz*/
+/*
+  var recognition=new webkitSpeechRecognition();
+  recognition.lang = "es-US";
+  recognition.continuous = true;
+  recognition.interimResults = true;
+  var final_transcript = '';
 
+  recognition.onresult = function (event) {
+    for(var k=0;k<event.results.length-1;k++){
+      console.log(event.results[k][0].transcript);
+      console.log("Estamos en envento hablar");
+    }
+  };
+  recognition.start();
+  recognition.stop();
+
+  recognition.onstart = function(event) {
+
+    console.log("On start");
+  };
+  recognition.onresult = function(event) {
+    var interim_transcript = '';
+    for (var i = event.resultIndex; i < event.results.length; ++i) {
+      if (event.results[i].isFinal) {
+        final_transcript += event.results[i][0].transcript;
+      } else {
+        interim_transcript += event.results[i][0].transcript;
+      }
+    }
+    console.log(final_transcript);
+  };
+  */
   //Valores de angular
   //Eventos de presionar
   $document.bind("keydown",function(event){
-    console.log(event);
+    //  console.log(event);
     //CTRL
     if(event.which==17){
       synth.cancel();
@@ -416,8 +521,10 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
     //espacio
     if(event.which==32){
       synth.cancel();
+      /*
       console.log("Evento: Espacio");
       console.log(event);
+      */
       var matchings=$scope.elementoFocus.match(/[p,r](\d*)/);
       var numero=Number(matchings[1]);
       if(numero==($scope.lastIndex+1)){
@@ -430,18 +537,27 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
         msg.text="Opción seleccionada con éxito";
         synth.speak(msg);
       }
-      if(document.getElementById("r"+numero)){
-        $scope.seleccionarRespuesta(numero);
-        msg.text="Opción seleccionada con éxito";
-        synth.speak(msg);
-      }
+
       console.log("preguntas a enviar")
       console.log($scope.preguntas);
 
+    }
+  });
+/*
+  $document.bind("keyup",function(event){
+
+    //espacio
+    if(event.which==32){
+      synth.cancel();
+      var matchings=$scope.elementoFocus.match(/[p,r](\d*)/);
+      var numero=Number(matchings[1]);
+      if(document.getElementById("p"+numero)){
+        $scope.pararHablarRespuesta(numero);
+      }
 
     }
   });
-
+  */
   //al hacer focus
   $document.bind("focusin",function(event){
     console.log("se hizo focus");
