@@ -49,14 +49,14 @@ module.exports = {
 				console.log("Estamos aqui en ERRROR");
 				return res.json(512, {msg:error});
 			}else{
-				sails.models.usrrol.query(
+				sails.models.usrcou.query(
 					'INSERT INTO USR_COU (EMAIL, IDCOURSE, STATUSUSRCOU) VALUES (?,?,?)',
 					[email, newRecord.id, status]
 					, function(err, results) {
 						if (err){
 							console.log("Estamos aqui en ERR");
 							return res.json(512,{msg:error});
-					}else{
+						}else{
 							console.log("Estamos en 201");
 							return res.json(201,{msg:"Course created"});
 						}
@@ -65,5 +65,27 @@ module.exports = {
 			})
 
 
-		}
-	};
+		},
+
+
+		getCoursesCreatedByUser:function(req,res){
+			if(req.body.user.email){
+				var email=req.body.user.email;
+				var status="t";
+				sails.models.usrcou.query(
+					'SELECT C.NAMECOURSE FROM USR_COU U, COURSE C WHERE STATUSUSRCOU=? AND EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
+					[status, email]
+					, function(err, results) {
+						if (err){
+							console.log("Estamos aqui en ERR");
+							return res.json(512,{msg:"error en la query"});
+						}else{
+							console.log("Estamos en 201");
+							return res.json(201,results);
+						}
+					});
+				}else{
+					return res.json(400,{msg:"Not email send"});
+				}
+			}
+		};

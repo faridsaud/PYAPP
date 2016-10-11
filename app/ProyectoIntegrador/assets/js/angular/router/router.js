@@ -22,6 +22,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Course/register.html',
     controller: 'registerCourseController'
   })
+  .state('registerTest', {
+    url: '/test/register',
+    templateUrl: 'html/angular/views/Test/register.html',
+    controller: 'registerTestController'
+  })
 
   /*
   .state('categoriaHome', {

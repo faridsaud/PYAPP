@@ -1,0 +1,38 @@
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4 col-md-offset-4">
+        <form role="form">
+          <div class="form-group">
+            <label class="control-label" for="curso">Curso:</label>
+            <select class="form-control" id="curso">
+              <option ng-repeat="course in courses">{{course.NAMECOURSE}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Título:</label>
+            <input type="text" class="form-control" id="pwd">
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <br>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-4">
+        <label for="comment">Agregar pregunta:</label>
+      </div>
+      <div class="col-md-12">
+        <div class="text-center">
+          <a class="btn btn-primary">Opción múltiple</a>
+          <a class="btn btn-primary">Verdadero/Falso</a>
+          <a class="btn btn-primary">Completar</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

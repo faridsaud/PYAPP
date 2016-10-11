@@ -4,80 +4,80 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
   //Datos
   //Pregunta Opcion multiple
   var pregunta={
-    texto:"Cuál de los siguientes colores no es un color primario",
-    id:"akfhj",
+    texto:"Cuál de las siguientes no es una región del Ecuador",
+    id:"a1",
     tipo:"opcionMultiple",
     respuestas:[
       {
-        id:"10ao2",
-        texto:"rojo",
+        id:"a1o1",
+        texto:"costa",
         correcta:false,
         seleccionada:false
       },
       {
-        id:"10ao4",
-        texto:"negro",
+        id:"a1o2",
+        texto:"amazonía",
+        correcta:false,
+        seleccionada:false
+      },
+      {
+        id:"a1o3",
+        texto:"arábica",
         correcta:true,
         seleccionada:false
       },
       {
-        id:"10ao21",
-        texto:"amarillo",
-        correcta:false,
-        seleccionada:false
-      },
-      {
-        id:"10ao211",
-        texto:"azul",
+        id:"a1o4",
+        texto:"sierra",
         correcta:false,
         seleccionada:false
       },
     ]
   }
   var pregunta2={
-    texto:"pregunta dos es la cosa bla bla",
-    id:"akfhjd2",
+    texto:"Cuál de los siguientes animales es usado en el escudo nacional",
+    id:"a2",
     tipo:"opcionMultiple",
     respuestas:[
       {
-        id:"10ao3",
-        texto:"opcion 1",
-        correcta:false,
-        seleccionada:false
-      },
-      {
-        id:"10ao33",
-        texto:"opcion 2",
+        id:"a2o1",
+        texto:"condor",
         correcta:true,
         seleccionada:false
       },
       {
-        id:"10ao2133",
-        texto:"opcion 3",
+        id:"a2o2",
+        texto:"rana",
         correcta:false,
         seleccionada:false
       },
       {
-        id:"10ao211333",
-        texto:"opcion 4",
+        id:"a2o3",
+        texto:"águila",
+        correcta:false,
+        seleccionada:false
+      },
+      {
+        id:"a2o4",
+        texto:"perro",
         correcta:false,
         seleccionada:false
       },
     ]
   }
   var pregunta3={
-    texto:"1 + 1 es igual a 2",
-    id:"akfhjd22",
+    texto:"La mitad del mundo se encuentra en Ecuador",
+    id:"a3",
     tipo:"verdaderoFalso",
     respuestas:[
       {
-        id:"10ao2444",
+        id:"a3o1",
         texto:"Verdadero",
         correcta:true,
         seleccionada:false
       },
       {
-        id:"10ao44444",
+        id:"a3o2",
         texto:"Falso",
         correcta:false,
         seleccionada:false
@@ -85,34 +85,49 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
     ]
   }
   var pregunta4={
-    texto:"Nacemos, ______, morimos",
-    id:"akfhjd222",
+    texto:"La capital de. espacio en blanco. es Quito",
+    id:"a4",
     tipo:"completar",
     respuestas:[
       {
-        id:"10ao2511",
-        texto:"crecemos",
+        id:"a4o1",
+        texto:"Ecuador",
         correcta:true,
         seleccionada:false
+
       },
       {
-        id:"10ao4555",
-        texto:"nada",
+        id:"a4o2",
+        texto:"Colombia",
         correcta:false,
         seleccionada:false
       },
       {
-        id:"10ao45555",
-        texto:"volvemos a nacer",
+        id:"a4o3",
+        texto:"Perú",
         correcta:false,
         seleccionada:false
       },
       {
-        id:"10ao4211",
-        texto:"morimos",
+        id:"a4o4",
+        texto:"Chile ",
         correcta:false,
         seleccionada:false
       },
+    ]
+  }
+  var pregunta5={
+    texto:"Cual es su opinion respecto a la aplicación. Para dar su opinión, mantenga presionada la tecla espacio mientras da su opinión",
+    id:"a5",
+    tipo:"completarHablando",
+    respuestas:[
+      {
+        id:"a5o1",
+        texto:"",
+        correcta:true,
+        seleccionada:false
+
+      }
     ]
   }
   $scope.preguntas=[
@@ -250,6 +265,19 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
             $scope.preguntas[i].respuestas[j].seleccionada=true;
             document.getElementById("r"+$scope.preguntas[i].respuestas[j].index).classList.add("seleccionada");
           }
+        }
+      }
+    }
+  }
+
+  //funcion hablarRespuesta
+  $scope.iniciarHablarRespuesta=function(indexPregunta){
+    var idPregunta=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
+    if(idPregunta){
+      for(var i=0;i<$scope.preguntas.length;i++){
+        if($scope.preguntas[i].tipo=="completarHablando"){
+
+          $scope.preguntas[i].respuestas[0].
         }
       }
     }
@@ -395,6 +423,11 @@ app.controller("Controlador",["$scope","$document","$http",function($scope,$docu
       if(numero==($scope.lastIndex+1)){
         $scope.guardarDatos();
         msg.text="Evaluación enviada con éxito";
+        synth.speak(msg);
+      }
+      if(document.getElementById("r"+numero)){
+        $scope.seleccionarRespuesta(numero);
+        msg.text="Opción seleccionada con éxito";
         synth.speak(msg);
       }
       if(document.getElementById("r"+numero)){
