@@ -1,5 +1,4 @@
-var app=angular.module("myApp",[]);
-app.controller("Controlador",["$scope","$document","$http",function($scope,$document,$http){
+app.controller("testController",["$scope","$document","$http",function($scope,$document,$http){
 
   //Datos
   //Pregunta Opcion multiple

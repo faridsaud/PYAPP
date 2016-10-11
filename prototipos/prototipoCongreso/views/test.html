@@ -1,0 +1,80 @@
+<div class="section">
+  <div ng-repeat="pregunta in preguntas" >
+    <div class="section"  ng-if="pregunta.tipo=='opcionMultiple'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}} {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <li id="r{{respuesta.index}}" ng-repeat="respuesta in pregunta.respuestas" class="list-group-item" tabindex="{{respuesta.index}}">Opcion {{$index+1}}: {{respuesta.texto}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"  ng-if="pregunta.tipo=='verdaderoFalso'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <li id="r{{respuesta.index}}" ng-repeat="respuesta in pregunta.respuestas" class="list-group-item" tabindex="{{respuesta.index}}">Opcion {{$index+1}}: {{respuesta.texto}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"  ng-if="pregunta.tipo=='completarSeleccionando'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <li id="r{{respuesta.index}}" ng-repeat="respuesta in pregunta.respuestas" class="list-group-item" tabindex="{{respuesta.index}}">Opcion {{$index+1}}: {{respuesta.texto}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section"  ng-if="pregunta.tipo=='completarHablando'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <li id="r{{respuesta.index}}" ng-repeat="respuesta in pregunta.respuestas" class="list-group-item" tabindex="{{respuesta.index}}">Opcion {{$index+1}}: {{respuesta.texto}}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section"  >
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <button type="button" class="btn btn-default" id="p{{lastIndex+1}}" tabindex="{{lastIndex+1}}">Enviar</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
