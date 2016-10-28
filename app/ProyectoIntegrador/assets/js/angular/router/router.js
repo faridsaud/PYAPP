@@ -28,6 +28,17 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     controller: 'registerTestController'
   })
 
+  .state('homeStudent', {
+    url: '/student/home',
+    templateUrl: 'html/angular/views/Student/home.html',
+    controller: 'homeStudentController'
+  })
+
+  .state('homeTeacher', {
+    url: '/teacher/home',
+    templateUrl: 'html/angular/views/Teacher/home.html',
+    controller: 'homeTeacherController'
+  })
   /*
   .state('categoriaHome', {
     url: '/categoria/home/{idCategoria:int}',

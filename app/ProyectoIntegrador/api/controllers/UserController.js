@@ -135,7 +135,8 @@ module.exports = {
                       if(results[0]){
                         return res.json(200,{
                           msg: 'Login successfull',
-                          role:role
+                          role:role,
+                          email:results[0].EMAIL
                         });
                       }else{
                         return res.json(403,{
