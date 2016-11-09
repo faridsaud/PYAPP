@@ -1,0 +1,44 @@
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="form-group">
+          <label for="comment">Pregunta:</label>
+          <textarea class="form-control" rows="3" id="comment" ng-model="question.text"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="comment">Opcion correcta:</label>
+          <div class="radio">
+            <label>
+              <input type="radio" name="optradio" ng-value="true" ng-model="question.option.text" checked>Verdadero</label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" name="optradio" ng-value="false" ng-model="question.option.text">Falso</label>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-2">
+        <div class="form-group">
+          <label for="usr" title="">Ponderación: X:1</label>
+          <input type="text" class="form-control" id="usr">
+        </div>
+      </div>
+      <div class="col-md-8">
+        <div class="form-group">
+          <label for="comment">Justificación:</label>
+          <textarea class="form-control" rows="3" id="comment" ng-model="question.option.justification"></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 text-center">
+        <a class="btn btn-primary" ng-click="save()">Guardar</a>
+        <a class="btn btn-primary">Regresar</a>
+      </div>
+    </div></div>
+  </div>

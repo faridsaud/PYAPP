@@ -39,6 +39,21 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Teacher/home.html',
     controller: 'homeTeacherController'
   })
+  .state('newMultipleChoice', {
+    url: '/question/multipleChoice',
+    templateUrl: 'html/angular/views/Question/multipleChoice.html',
+    controller: 'newQuestionMultipleChoiceController'
+  })
+  .state('newTrueFalse', {
+    url: '/question/trueFalse',
+    templateUrl: 'html/angular/views/Question/trueFalse.html',
+    controller: 'newQuestionTrueFalseController'
+  })
+  .state('newFill', {
+    url: '/question/fill',
+    templateUrl: 'html/angular/views/Question/fill.html',
+    controller: 'newQuestionFillController'
+  })
   /*
   .state('categoriaHome', {
     url: '/categoria/home/{idCategoria:int}',
