@@ -42,7 +42,8 @@ module.exports = {
 
 		sails.models.course.create({
 			name:name,
-			description:description
+			description:description,
+			createdBy:email
 		}).exec(function(error, newRecord){
 			if(error){
 				console.log(error);

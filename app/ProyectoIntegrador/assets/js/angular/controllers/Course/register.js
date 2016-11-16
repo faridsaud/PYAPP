@@ -1,8 +1,9 @@
-app.controller('registerCourseController',['$scope','$http','toastr','$location','globalVariables', function($scope,$http, toastr,$location,globalVariables){
+app.controller('registerCourseController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
   $scope.user={
-    email:"test@test.com",
-    role:"teacher"
+    email:$rootScope.loggedUser.email,
+    role:$rootScope.loggedUser.role
   }
+
   $scope.register=function(){
     $scope.course.name=$scope.course.name.toUpperCase();
     if($scope.course.name){

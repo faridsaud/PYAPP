@@ -25,6 +25,11 @@ module.exports = {
       type:'string',
       size:40,
       columnName: 'NAMECOURSE'
+    },
+    createdBy:{
+      type:'string',
+      size:254,
+      columnName: 'CREATEDBYCOURSE'
     }
   }
 };
