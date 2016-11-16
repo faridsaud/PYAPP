@@ -25,7 +25,11 @@ module.exports.policies = {
   * access)                                                                  *
   *                                                                          *
   ***************************************************************************/
-
+  /*Comment to pass tests*/
+  CourseController:{
+    register:['isLoggedIn'],
+    getCoursesCreatedByUser:['isLoggedIn']
+  }
   // '*': true,
 
   /***************************************************************************

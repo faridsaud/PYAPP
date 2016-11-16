@@ -133,6 +133,7 @@ module.exports = {
                     if (err) return res.serverError(err);
                     else{
                       if(results[0]){
+                        req.session.userLogged=results[0].EMAIL;
                         return res.json(200,{
                           msg: 'Login successfull',
                           role:role,
