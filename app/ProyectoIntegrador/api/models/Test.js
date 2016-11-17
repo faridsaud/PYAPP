@@ -12,9 +12,14 @@ module.exports = {
 
     id:{
       type:'integer',
+      autoIncrement:true,
       primaryKey: true,
       unique: true,
       columnName: 'IDTEST'
+    },
+    idCourse:{
+      type:'integer',
+      columnName: 'IDCOURSE'
     },
     title:{
       type:'text',
@@ -34,16 +39,28 @@ module.exports = {
     status:{
       type:'string',
       size:10,
-      columnName: 'TITLE'
+      columnName: 'STATUS'
+    },
+    startDateTime:{
+      type:'datetime',
+      columnName: 'STARTDATETIME'
+    },
+    finishDateTime:{
+      type:'datetime',
+      columnName:'FINISHDATETIME'
+    },
+    averageScore:{
+      type:'float',
+      columnName: 'AVERAGESCORE'
     }
 
     /*
     usuarios:{
-      collection:'usuario',
-      via:'prueba',
-       through:'usrpru'
-    }
-    */
-
+    collection:'usuario',
+    via:'prueba',
+    through:'usrpru'
   }
+  */
+
+}
 };

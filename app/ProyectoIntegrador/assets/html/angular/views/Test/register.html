@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-        <form role="form">
+        <form role="form" ng-submit="register()">
           <div class="form-group">
             <label class="control-label" for="curso">Curso:</label>
             <select class="form-control" id="curso" ng-model="test.course">
@@ -21,22 +21,29 @@
             <div class="col-md-6">
               <div class="form-group">
                 <label >Fecha de inicio:</label>
-                <input type="datetime-local" class="form-control"  ng-model="test.initialDate" ng-change="imprimir()">
+                <input type="datetime-local" class="form-control"  ng-model="test.startDateTime" ng-change="imprimir()">
               </div>
             </div>
               <div class="col-md-6">
                 <div class="form-group">
                   <label >Fecha de finalizacion:</label>
-                  <input type="datetime-local" class="form-control"  ng-model="test.endDate" ng-change="imprimir()">
+                  <input type="datetime-local" class="form-control"  ng-model="test.finishDateTime" ng-change="imprimir()">
                 </div>
               </div>
           </div>
+          <button type="submit" class="btn btn-primary pull-right">Registrar</button>
         </form>
       </div>
     </div>
   </div>
 </div>
-
+<br>
+<div class="row">
+  <div class="col-md-12">
+    <div class="text-center">
+      <a class="btn btn-primary" href="#/question/multipleChoice" ng-click="register()">Guardar</a>
+    </div>
+  </div>
 <div class="section">
   <div class="container">
     <br>

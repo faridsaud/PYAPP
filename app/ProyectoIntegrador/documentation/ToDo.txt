@@ -1,0 +1,6 @@
+No olvidarse del autoIncrement en las tablas
+
+Poner autoincrement en los modelos de sails
+Los errores del servidor no madnarlos en el http puesto que nos los convierte a json
+preguntas de seguridad para la cuenta
+eliminar atributo de username

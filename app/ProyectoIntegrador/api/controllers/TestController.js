@@ -12,71 +12,74 @@ module.exports = {
 	/**
 	* `TestController.insertar()`
 	*/
-	registrar: function (req, res) {
-		var email=req.body.email;
-		var password=req.body.password;
-		console.log(email);
-		console.log(password);
-		sails.models.test.create({id:email,clave:password}).exec(function (error, newRecord){
+	register: function (req, res) {
+		if(req.body.test.title){
+			var title=req.body.test.title;
+		}else{
+			var title=null;
+		}
+		if(req.body.test.description){
+			var description=req.body.test.description;
+		}else{
+			var description=null;
+		}
+		if(req.body.test.createdBy){
+			var createdBy=req.body.test.createdBy;
+		}else{
+			var createdBy=null;
+		}
+		if(req.body.test.status){
+			var status=req.body.test.status;
+		}else{
+			var status=null;
+		}
+		if(req.body.test.startDateTime){
+			var startDateTime=req.body.test.startDateTime;
+		}else{
+			var startDateTime=null;
+		}
+		if(req.body.test.finishDateTime){
+			var finishDateTime=req.body.test.finishDateTime;
+		}else{
+			var finishDateTime=null;
+		}
+		if(req.body.test.course){
+		  var idCourse=req.body.test.course;
+		}else{
+		  var idCourse=null;
+		}
+		sails.models.test.create({
+			title:title,
+			description:description,
+			createdBy:createdBy,
+			status:"c",
+			startDateTime:startDateTime,
+			finishDateTime:finishDateTime,
+			averageScore:0.0,
+			idCourse:idCourse
+		}).exec(function (error, newRecord){
 			if(error){
 				console.log(error);
+				return res.json(512, {msg:error})
 			}else{
-
-				return res.json({
-					msg: 'todo bien'
-				});
-			}
-		});
-	},
-
-/*
-	registrarUsuPru: function (req, res) {
-		var email=req.body.email;
-		var password=req.body.password;
-		var idPrueba=req.body.idprueba;
-		var creadoPor=req.body.creador;
-
-		console.log(email);
-		console.log(password);
-		Usuario.findOne(email).exec(function(err, user) {
-			if(err){
-				res.serverError(err);
-			} // handle error
-
-			// Queue up a record to be inserted into the join table
-			user.pruebas.add(idPrueba);
-
-			// Save the user, creating the new associations in the join table
-			user.save(function(err) {});
-		});
-	},*/
-	registrarUsuPru:function(req,res){
-		User.findOne('1').exec(function(err, user) {
-			if(err){
-				res.serverError(err);
-			} // handle error
-
-			console.log(user.pruebas);
-			var tests;
-			console.log(user.testToDo(function (tests){
-				console.log(tests);
-				user.tests=tests;
-				res.json(user);
-			}));
-		});
-
-	},
-	registrarUsuPru2: function (req, res) {
-		var email=req.body.email;
-		var password=req.body.password;
-		var idPrueba=req.body.idprueba;
-		var creadoPor=req.body.creador;
-		sails.models.usrpru.query(
-			'INSERT INTO USR_PRU (IDPRUEBA, EMAIL) VALUES (?,?)',
-			[ idPrueba, email ]
-			, function(err, results) {
-				if (err) return res.serverError(err);
-				return res.json(results);
-			});
+				console.log("Datos a alamcenarse");
+				console.log(createdBy);
+				console.log(newRecord);
+				sails.models.usrtes.query(
+					'INSERT INTO USR_TES (EMAIL, IDTEST) VALUES (?,?)',
+					[createdBy, newRecord.id ]
+					, function(err, results) {
+						if (err){
+							console.log(err);
+							return res.json(512, {msg:err});
+						}else{
+							return res.json(201,{
+								msg: 'Test created'
+							});
+						}
+					});
+				}
+			})
 		}
+
 	};

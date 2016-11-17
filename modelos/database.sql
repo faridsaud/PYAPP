@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     10/9/2016 10:38:22 PM                        */
+/* Created on:     11/16/2016 9:33:47 PM                        */
 /*==============================================================*/
 
 
@@ -31,7 +31,7 @@ create table COURSE
 (
    IDCOURSE             bigint not null AUTO_INCREMENT,
    DESCRIPTIONCOURSE    text,
-   CREATEDBYCOURSE      varchar(40),
+   CREATEDBYCOURSE      varchar(254),
    NAMECOURSE           varchar(40),
    primary key (IDCOURSE)
 );
@@ -41,8 +41,8 @@ create table COURSE
 /*==============================================================*/
 create table INSTITUTION
 (
-   IDINSTITUTION        int not null,
-   EMAIL                varchar(40),
+   IDINSTITUTION        int not null AUTO_INCREMENT,
+   EMAIL                varchar(254),
    NAMEINSTITUTION      varchar(30),
    CREATEDBYINSTITUTION char(10),
    primary key (IDINSTITUTION)
@@ -53,9 +53,9 @@ create table INSTITUTION
 /*==============================================================*/
 create table OPTIO
 (
-   IDOPTION             bigint not null,
+   IDOPTION             bigint not null AUTO_INCREMENT,
    IDQUESTION           bigint,
-   EMAIL                varchar(40),
+   EMAIL                varchar(254),
    JUSTIFICATION        text,
    ISCORRECT            bool,
    TYPEOPTION           varchar(10),
@@ -69,10 +69,11 @@ create table OPTIO
 /*==============================================================*/
 create table QUESTION
 (
-   IDQUESTION           bigint not null,
+   IDQUESTION           bigint not null AUTO_INCREMENT,
    IDTEST               bigint,
    TYPEQUESTION         varchar(10),
    TEXTQUESTION         text,
+   WEIGHT               int,
    primary key (IDQUESTION)
 );
 
@@ -90,12 +91,15 @@ create table ROLE
 /*==============================================================*/
 create table TEST
 (
-   IDTEST               bigint not null,
+   IDTEST               bigint not null AUTO_INCREMENT,
    IDCOURSE             bigint,
    TITLE                text,
    DESCRIPTIONTEST      text,
-   CREATEDBYTEST        varchar(40),
+   CREATEDBYTEST        varchar(254),
    STATUS               varchar(10),
+   STARTDATETIME        datetime,
+   FINISHDATETIME       datetime,
+   AVERAGESCORE         decimal(4,2),
    primary key (IDTEST)
 );
 
@@ -104,7 +108,7 @@ create table TEST
 /*==============================================================*/
 create table USER
 (
-   EMAIL                varchar(40) not null,
+   EMAIL                varchar(254) not null,
    PASSWORD             varchar(60),
    FIRSTNAME            varchar(30),
    LASTNAME             varchar(30),
@@ -119,7 +123,7 @@ create table USER
 /*==============================================================*/
 create table USR_COU
 (
-   EMAIL                varchar(40) not null,
+   EMAIL                varchar(254) not null,
    IDCOURSE             bigint not null,
    STATUSUSRCOU         varchar(1),
    primary key (EMAIL, IDCOURSE)
@@ -130,7 +134,7 @@ create table USR_COU
 /*==============================================================*/
 create table USR_ROL
 (
-   EMAIL                varchar(40) not null,
+   EMAIL                varchar(254) not null,
    NAME                 varchar(10) not null,
    primary key (EMAIL, NAME)
 );
@@ -140,7 +144,7 @@ create table USR_ROL
 /*==============================================================*/
 create table USR_TES
 (
-   EMAIL                varchar(40) not null,
+   EMAIL                varchar(254) not null,
    IDTEST               bigint not null,
    primary key (EMAIL, IDTEST)
 );
@@ -177,4 +181,3 @@ alter table USR_TES add constraint FK_USR_TES foreign key (EMAIL)
 
 alter table USR_TES add constraint FK_USR_TES2 foreign key (IDTEST)
       references TEST (IDTEST) on delete restrict on update restrict;
-
