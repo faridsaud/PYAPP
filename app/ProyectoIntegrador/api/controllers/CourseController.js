@@ -74,7 +74,7 @@ module.exports = {
 				var email=req.body.user.email;
 				var status="t";
 				sails.models.usrcou.query(
-					'SELECT C.NAMECOURSE FROM USR_COU U, COURSE C WHERE STATUSUSRCOU=? AND EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
+					'SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
 					[status, email]
 					, function(err, results) {
 						if (err){

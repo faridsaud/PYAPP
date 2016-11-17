@@ -38,7 +38,7 @@ module.exports.routes = {
   'post /user/register':'UserController.register',
   'post /login':'UserController.login',
   'post /course/register':'CourseController.register',
-  'post /course/user/created':'CourseController.getCoursesCreatedByUser'
+  'post /course/createdByUser':'CourseController.getCoursesCreatedByUser'
 
 
   /***************************************************************************

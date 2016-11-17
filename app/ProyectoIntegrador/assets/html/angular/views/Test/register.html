@@ -1,17 +1,35 @@
 <div class="section">
   <div class="container">
     <div class="row">
-      <div class="col-md-4 col-md-offset-4">
+      <div class="col-md-8 col-md-offset-2">
         <form role="form">
           <div class="form-group">
             <label class="control-label" for="curso">Curso:</label>
-            <select class="form-control" id="curso">
-              <option ng-repeat="course in courses">{{course.NAMECOURSE}}</option>
+            <select class="form-control" id="curso" ng-model="test.course">
+              <option ng-repeat="course in courses" ng-value="course.IDCOURSE">{{course.NAMECOURSE}}</option>
             </select>
           </div>
           <div class="form-group">
             <label for="pwd">Título:</label>
-            <input type="text" class="form-control" id="pwd">
+            <input type="text" class="form-control" id="pwd" ng-model="test.title">
+          </div>
+          <div class="form-group">
+            <label for="name">Descripción:</label>
+            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Fecha de inicio:</label>
+                <input type="datetime-local" class="form-control"  ng-model="test.initialDate" ng-change="imprimir()">
+              </div>
+            </div>
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label >Fecha de finalizacion:</label>
+                  <input type="datetime-local" class="form-control"  ng-model="test.endDate" ng-change="imprimir()">
+                </div>
+              </div>
           </div>
         </form>
       </div>
