@@ -34,14 +34,12 @@ module.exports = {
 			var status=null;
 		}
 		if(req.body.test.startDateTime){
-			var startDateTime=new Date(Date.parse(req.body.test.startDateTime));
-			var startDateTimeUTC = new Date(startDateTime.getUTCFullYear(), startDateTime.getUTCMonth(), startDateTime.getUTCDate(),  startDateTime.getUTCHours(), startDateTime.getUTCMinutes(), startDateTime.getUTCSeconds());
-		}else{
+			var startDateTime=req.body.test.startDateTime;
+			}else{
 			var startDateTime=null;
 		}
 		if(req.body.test.finishDateTime){
-			var finishDateTime=new Date(Date.parse(req.body.test.finishDateTime));
-			var finishDateTimeUTC = new Date(finishDateTime.getUTCFullYear(), finishDateTime.getUTCMonth(), finishDateTime.getUTCDate(),  finishDateTime.getUTCHours(), finishDateTime.getUTCMinutes(), finishDateTime.getUTCSeconds());
+			var finishDateTime=req.body.test.finishDateTime;
 		}else{
 			var finishDateTime=null;
 		}
@@ -55,8 +53,8 @@ module.exports = {
 			description:description,
 			createdBy:createdBy,
 			status:"c",
-			startDateTime:startDateTimeUTC,
-			finishDateTime:finishDateTimeUTC,
+			startDateTime:startDateTime,
+			finishDateTime:finishDateTime,
 			averageScore:0.0,
 			idCourse:idCourse
 		}).exec(function (error, newRecord){
@@ -86,18 +84,15 @@ module.exports = {
 
 		checkStatus:function(tests){
 			var actualDate = new Date();
-			var actualDateUTC = new Date(Date.UTC(actualDate.getUTCFullYear(), actualDate.getUTCMonth(), actualDate.getUTCDate(),  actualDate.getUTCHours(), actualDate.getUTCMinutes(), actualDate.getUTCSeconds()));
 			console.log("fecha actual");
 			console.log(actualDate);
-			console.log("fecha actual UTC");
-			console.log(actualDateUTC);
 			console.log("pruebas antes del parse");
 			console.log(tests);
-			sails.controllers.test.parseDatesOfTests(tests);
+			tests=sails.controllers.test.parseISOtoDateformat(tests);
 			console.log("pruebas antes de la verificacion");
 			console.log(tests);
 			for(var i=0;i<tests.length;i++){
-			  if(tests[i].FINISHDATETIME<actualDateUTC){
+			  if(tests[i].finishDateTime<actualDate){
 			    sails.models.test.update({id:tests[i].id},{status:"f"}).exec(function(error, updated){
 			      if(error){
 			        console.log(error);
@@ -105,7 +100,7 @@ module.exports = {
 			    });
 			    tests[i].status="f"
 			  }
-			  if((tests[i].FINISHDATETIME>actualDateUTC)&&(tests[i].STARTDATETIME<actualDateUTC)){
+			  if((tests[i].finishDateTime>actualDate)&&(tests[i].startDateTime<actualDate)){
 			    sails.models.test.update({id:tests[i].id},{status:"e"}).exec(function(error, updated){
 			      if(error){
 			        console.log(error);
@@ -116,9 +111,20 @@ module.exports = {
 			}
 			console.log("Pruebas despues de la verificacion");
 			console.log(tests);
+			console.log(tests[0].startDateTime);
 			return tests;
 		},
 
+		parseISOtoDateformat:function(tests){
+			for(var i=0;i<tests.length;i++){
+				console.log(tests[i].startDateTime);
+				tests[i].startDateTime=new Date(Date.parse(tests[i].startDateTime));
+				console.log(tests[i].startDateTime);
+				tests[i].finishDateTime=new Date(Date.parse(tests[i].finishDateTime));
+			}
+			return tests;
+		},
+/*
 		parseMysqlDateToJSDate:function(mysqlDate){
 			var JSDate=new Date(Date.parse(mysqlDate.toString().replace('-','/','g')));
 			return JSDate;
@@ -140,7 +146,7 @@ module.exports = {
 			}
 			return tests;
 		},
-
+*/
 		getTestsCreatedByUser:function(req, res){
 			if(req.body.user.email){
 				var email=req.body.user.email;

@@ -21,8 +21,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             createdBy:$rootScope.loggedUser.email,
             title:$scope.test.title,
             description:$scope.test.description,
-            startDateTime:$scope.test.startDateTime,
-            finishDateTime:$scope.test.finishDateTime,
+            startDateTime:$scope.test.startDateTime.toISOString(),
+            finishDateTime:$scope.test.finishDateTime.toISOString(),
             course:$scope.test.course
           }
 
