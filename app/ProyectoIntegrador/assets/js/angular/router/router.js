@@ -54,6 +54,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Question/fill.html',
     controller: 'newQuestionFillController'
   })
+  .state('courseHomeTeacher', {
+    url: '/teacher/course/home',
+    templateUrl: 'html/angular/views/Course/homeTeacher.html',
+    controller: 'courseHomeTeacherController'
+  })
   /*
   .state('categoriaHome', {
     url: '/categoria/home/{idCategoria:int}',

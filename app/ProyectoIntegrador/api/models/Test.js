@@ -33,7 +33,7 @@ module.exports = {
     },
     createdBy:{
       type:'string',
-      size:40,
+      size:254,
       columnName: 'CREATEDBYTEST'
     },
     status:{
@@ -42,11 +42,13 @@ module.exports = {
       columnName: 'STATUS'
     },
     startDateTime:{
-      type:'datetime',
+      type:'string',
+      size:24,
       columnName: 'STARTDATETIME'
     },
     finishDateTime:{
-      type:'datetime',
+      type:'string',
+      size:24,
       columnName:'FINISHDATETIME'
     },
     averageScore:{

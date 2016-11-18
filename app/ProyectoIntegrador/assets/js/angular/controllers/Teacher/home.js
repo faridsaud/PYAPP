@@ -12,13 +12,34 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
         }
       }).then(function success(response){
         console.log(response);
-        $scope.courses=response.data;
+        $scope.courses=response.data.courses;
         console.log($scope.courses);
       }, function error(response){
         console.log(response);
       })
+      $http({
+        method:'POST',
+        url:globalVariables.url+'/test/createdByUser',
+        data:{
+          user:{
+            email:$rootScope.loggedUser.email
+          }
+        }
+      }).then(function success(response){
+        console.log(response);
+        $scope.tests=response.data.tests;
+        console.log($scope.tests);
+      }, function error(response){
+        console.log(response);
+      })
+      $scope.openCourse=function(courseName, courseId){
+        $rootScope.activeCourse={};
+        $rootScope.activeCourse.name=courseName;
+        $rootScope.activeCourse.id=courseId;
+        $location.path('/teacher/course/home');
+      }
     }else{
-        $location.path('/home');
+      $location.path('/home');
     }
   }else{
     $location.path('/home');

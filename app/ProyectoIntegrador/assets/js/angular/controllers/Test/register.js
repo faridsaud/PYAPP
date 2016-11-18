@@ -12,6 +12,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
     }
     $scope.register=function(){
+      console.log(Date.parse($scope.test.startDateTime));
       $http({
         method:'POST',
         url:globalVariables.url+'/test/register',
@@ -45,7 +46,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       }
     }).then(function success(response){
       console.log(response);
-      $scope.courses=response.data;
+      $scope.courses=response.data.courses;
       console.log($scope.courses);
     }, function error(response){
       console.log(response);

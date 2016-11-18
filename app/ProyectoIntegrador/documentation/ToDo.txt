@@ -4,3 +4,9 @@ Poner autoincrement en los modelos de sails
 Los errores del servidor no madnarlos en el http puesto que nos los convierte a json
 preguntas de seguridad para la cuenta
 eliminar atributo de username
+
+
+Status de las pruebas
+c: created
+e: execution
+f: finished

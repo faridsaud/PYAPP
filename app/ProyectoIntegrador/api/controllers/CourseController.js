@@ -82,7 +82,7 @@ module.exports = {
 							return res.json(512,{msg:"error en la query"});
 						}else{
 							console.log("Estamos en 201");
-							return res.json(201,results);
+							return res.json(201,{msg:"OK", courses:results});
 						}
 					});
 				}else{
