@@ -17,6 +17,8 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
       }, function error(response){
         console.log(response);
       })
+
+
       $http({
         method:'POST',
         url:globalVariables.url+'/test/createdByUser',
@@ -27,11 +29,18 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
         }
       }).then(function success(response){
         console.log(response);
-        $scope.tests=response.data.tests;
+        $scope.tests=response.data.tests;/*
+        for(var i=0;i<$scope.tests.length;i++){
+          var finishDT=new Date(Date.parse($scope.tests[i].finishDateTime));
+          $scope.tests[i].finishDateTimeFormatted=finishDT.getFullYear()+"/"+finishDT.getMonth()+"/"+finishDT.getDay()+" "+finishDT.get
+          $scope.tests[i].startDateTimeFormatted=new Date(Date.parse($scope.tests[i].startDateTime));
+        }*/
         console.log($scope.tests);
       }, function error(response){
         console.log(response);
       })
+
+
       $scope.openCourse=function(courseName, courseId){
         $rootScope.activeCourse={};
         $rootScope.activeCourse.name=courseName;

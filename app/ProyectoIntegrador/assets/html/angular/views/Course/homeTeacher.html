@@ -25,29 +25,47 @@
           <h3 class="panel-title">Pruebas en estado de borrador</h3>
         </div>
         <div class="panel-body">
-          <ul class="list-group">
-            <li class="list-group-item">Prueba 2 - Matematica</li>
-          </ul>
-        </div>
-      </div>
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title">Estudiantes</h3>
-        </div>
-        <div class="panel-body">
           <table class="table">
             <thead>
               <tr>
-                <th>Número</th>
                 <th>Título</th>
                 <th>Nota promedio</th>
               </tr>
             </thead>
             <tbody>
+              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='c'">
+                <td>{{test.title}}</td>
+                <td>NA</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-6">
+              <h3 class="panel-title" title="Estudiantes del curso">Estudiantes</h3>
+            </div>
+            <div class="col-md-6">
+              <a href="#/course/register" class="btn btn-default btn-xs pull-right" title="Agregar un estudiante al curso">
+                <span class="glyphicon glyphicon-plus"> </span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <thead>
               <tr>
-                <td>1</td>
-                <td>Ecuaciones</td>
-                <td>10/10</td>
+                <th>Título</th>
+                <th>Nota promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='c'">
+                <td>{{test.title}}</td>
+                <td>NA</td>
               </tr>
             </tbody>
           </table>
@@ -69,39 +87,42 @@
           </div>
         </div>
         <div class="panel-body">
-          <ul class="list-group">
-            <li class="list-group-item">Prueba 2 - Matematica - 5 horas restantes</li>
-          </ul>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Nota promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'">
+                <td>{{test.title}}</td>
+                <td>{{test.averageScore}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       <div class="panel panel-success">
         <div class="panel-heading">
           <h3 class="panel-title">Pruebas finalizadas</h3>
         </div>
+
         <div class="panel-body">
-          <div class="panel panel-default">
-            <div class="panel-heading">
-              <h3 class="panel-title">Matemática</h3>
-            </div>
-            <div class="panel-body">
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Número</th>
-                    <th>Título</th>
-                    <th>Nota promedio</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>Ecuaciones</td>
-                    <td>10/10</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Título</th>
+                <th>Nota promedio</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='f'">
+                <td>{{test.title}}</td>
+                <td>{{test.averageScore}}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
