@@ -90,6 +90,27 @@ module.exports = {
 				}
 			},
 
+			getCoursesByStudent:function(req,res){
+				if(req.body.user.email){
+					var email=req.body.user.email;
+					var status="s";
+					sails.models.usrcou.query(
+						'SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
+						[status, email]
+						, function(err, results) {
+							if (err){
+								console.log("Estamos aqui en ERR");
+								return res.json(512,{msg:"error en la query"});
+							}else{
+								console.log("Estamos en 201");
+								return res.json(201,{msg:"OK", courses:results});
+							}
+						});
+					}else{
+						return res.json(400,{msg:"Not email send"});
+					}
+
+				},
 			registerStudent:function(req,res){
 
 				if(req.body.student.email){

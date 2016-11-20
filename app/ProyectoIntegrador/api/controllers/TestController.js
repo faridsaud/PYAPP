@@ -84,13 +84,7 @@ module.exports = {
 
 		checkStatus:function(tests){
 			var actualDate = new Date();
-			console.log("fecha actual");
-			console.log(actualDate);
-			console.log("pruebas antes del parse");
-			console.log(tests);
 			tests=sails.controllers.test.parseISOtoDateformat(tests);
-			console.log("pruebas antes de la verificacion");
-			console.log(tests);
 			for(var i=0;i<tests.length;i++){
 			  if(tests[i].finishDateTime<actualDate){
 			    sails.models.test.update({id:tests[i].id},{status:"f"}).exec(function(error, updated){
@@ -109,9 +103,6 @@ module.exports = {
 			    tests[i].status="e"
 			  }
 			}
-			console.log("Pruebas despues de la verificacion");
-			console.log(tests);
-			console.log(tests[0].startDateTime);
 			return tests;
 		},
 
@@ -207,6 +198,26 @@ module.exports = {
 					});
 				}
 			})
+		},
+
+		getTestsByStudent:function(req, res){
+			if(req.body.user.email){
+				var email=req.body.user.email;
+			}else{
+				var email=null;
+			}
+			sails.models.test.query(
+				'SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',
+				[email]
+				, function(err, results) {
+					if (err){
+						console.log(err);
+						return res.json(512,{msg:"Error"});
+					}else{
+						var tests=sails.controllers.test.checkStatus(results);
+						return res.json(200,{msg:"OK", tests:tests});
+					}
+				});
 		}
 
 

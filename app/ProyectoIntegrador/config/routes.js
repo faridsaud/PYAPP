@@ -43,7 +43,9 @@ module.exports.routes = {
   'post /test/createdByUser':'TestController.getTestsCreatedByUser',
   'post /course/registerStudent':'CourseController.registerStudent',
   'post /user/studentsByCourse':'UserController.getStudentsByCourse',
-  'post /test/byCourse':'TestController.getTestsByCourse'
+  'post /test/byCourse':'TestController.getTestsByCourse',
+  'post /course/byStudent':'CourseController.getCoursesByStudent',
+  'post /test/byStudent':'TestController.getTestsByStudent'
 
 
 
