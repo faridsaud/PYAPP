@@ -147,6 +147,47 @@ module.exports = {
 			return tests;
 		},
 */
+
+		getTestsByCourse:function(req, res){
+			if(req.body.user.email){
+				var email=req.body.user.email;
+			}else{
+				var email=null;
+			}
+			if(req.body.course.id){
+				var idCourse=req.body.course.id;
+			}else{
+				var idCourse=null;
+			}
+
+      sails.models.usrcou.findOne({email:email, status:'t', idCourse:idCourse}).exec(function(err, result){
+				if(err){
+					console.log(err);
+					return res.json(500,{msg:"Error"});
+				}else{
+					if(result){
+            var status='s';
+						sails.models.test.find({idCourse:idCourse}).exec(function (error, records){
+							if(error){
+								return res.json(400,{
+									msg: 'Bad request'
+								});
+							}else{
+								var tests=sails.controllers.test.checkStatus(records);
+								return res.json(200,{
+									msg: 'OK',
+									tests:tests
+								});
+							}
+						})
+
+					}else{
+						return res.json(400,{msg:"The user is not the owner of the course"});
+					}
+				}
+			});
+		},
+
 		getTestsCreatedByUser:function(req, res){
 			if(req.body.user.email){
 				var email=req.body.user.email;

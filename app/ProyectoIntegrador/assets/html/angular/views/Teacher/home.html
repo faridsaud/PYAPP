@@ -62,14 +62,14 @@
               <tr>
                 <th>Título</th>
                 <th>Nota promedio</th>
-                <th>Fecha y hora de finalización</th>
+                <th title="La fecha y hora de finalización mostradas estan transformadas de la hora del servidor a la hora de su navegador (PC)">Fecha y hora de finalización </th>
               </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'">
                   <td>{{test.title}}</td>
                   <td>{{test.averageScore}}</td>
-                  <td>{{test.finishDateTime | date : 'yyyy/MM/dd HH:mm-ss'}}</td>
+                  <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
                 </tr>
             </tbody>
           </table>

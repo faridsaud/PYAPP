@@ -88,5 +88,48 @@ module.exports = {
 				}else{
 					return res.json(400,{msg:"Not email send"});
 				}
-			}
+			},
+
+			registerStudent:function(req,res){
+
+				if(req.body.student.email){
+					var studentEmail=req.body.student.email;
+				}else{
+					var studentEmail=null;
+					return res.json(400,{msg:"There is not a student's email send"});
+				}
+				if(req.body.course.id){
+					var idCourse=req.body.course.id;
+				}else{
+					var idCourse=null;
+					return res.json(400,{msg:"There is not a course's id send"});
+				}
+
+				if(req.body.user.email){
+					var userEmail=req.body.user.email;
+				}else{
+					var idCourse=null;
+					return res.json(400,{msg:"There is not a user's email send"});
+				}
+				sails.models.usrcou.findOne({email:userEmail, status:'t'}).exec(function(err, user){
+					if(err){
+						console.log(err);
+						return res.json(500,{msg:"Error"});
+					}else{
+						if(user){
+							sails.models.usrcou.create({email:studentEmail, idCourse:idCourse, status:'s'}).exec(function(err, recordCreated){
+								if(err){
+									console.log(err);
+									return res.json(500,{msg:"Error registering the student"});
+								}else{
+									return res.json(200,{msg:"Student registered"});
+								}
+							});
+						}else{
+							return res.json(400,{msg:"The user is not the owner of the course"});
+						}
+					}
+				});
+			},
+
 		};

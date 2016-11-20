@@ -17,7 +17,7 @@ module.exports = {
     },
     idCourse: {
       type:'integer',
-      columnName:'IDTEST'
+      columnName:'IDCOURSE'
     },
     status:{
       type:'string',

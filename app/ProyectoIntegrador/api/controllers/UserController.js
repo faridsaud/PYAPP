@@ -157,8 +157,46 @@ module.exports = {
 
           });
         }
-
-
-
       },
+
+      getStudentsByCourse: function (req, res) {
+        if(req.body.course.id){
+          var idCourse=req.body.course.id;
+        }else{
+          var idCourse=null;
+          return res.json(400,{msg:"There is not a course's id send"});
+        }
+        if(req.body.user.email){
+          var userEmail=req.body.user.email;
+        }else{
+          var idCourse=null;
+          return res.json(400,{msg:"There is not a user's email send"});
+        }
+
+        sails.models.usrcou.findOne({email:userEmail, status:'t', idCourse:idCourse}).exec(function(err, result){
+					if(err){
+						console.log(err);
+						return res.json(500,{msg:"Error"});
+					}else{
+						if(result){
+              var status='s';
+              sails.models.user.query(
+      					'SELECT USR.FIRSTNAME, USR.LASTNAME, USR.EMAIL FROM USR_COU U, USER USR WHERE U.STATUSUSRCOU=? AND U.EMAIL=USR.EMAIL AND U.IDCOURSE=? ',
+      					[status, idCourse]
+      					, function(err, results) {
+      						if (err){
+      							console.log(err);
+      							return res.json(512,{msg:"Error"});
+      						}else{
+      							return res.json(201,{msg:"OK", students:results});
+      						}
+      					});
+
+						}else{
+							return res.json(400,{msg:"The user is not the owner of the course"});
+						}
+					}
+				});
+
+      }
     };
