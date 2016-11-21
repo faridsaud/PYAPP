@@ -4,7 +4,7 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
       console.log("home teacher controller");
       $http({
         method:'POST',
-        url:globalVariables.url+'/course/createdByUser',
+        url:globalVariables.url+'/course/byTeacher',
         data:{
           user:{
             email:$rootScope.loggedUser.email

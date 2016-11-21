@@ -40,7 +40,7 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
         $rootScope.activeCourse={};
         $rootScope.activeCourse.name=courseName;
         $rootScope.activeCourse.id=courseId;
-        $location.path('/teacher/course/home');
+        $location.path('/student/course/home');
       }
     }else{
       $location.path('/home');

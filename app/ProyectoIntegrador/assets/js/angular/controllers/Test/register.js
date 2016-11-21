@@ -37,7 +37,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }
     $http({
       method:'POST',
-      url:globalVariables.url+'/course/createdByUser',
+      url:globalVariables.url+'/course/byTeacher',
       data:{
         user:{
           email:"test@test.com"

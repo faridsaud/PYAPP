@@ -28,7 +28,7 @@ app.controller('courseHomeTeacherController',['$scope','$http','toastr','$locati
 
         $http({
           method:'POST',
-          url:globalVariables.url+'/test/byCourse',
+          url:globalVariables.url+'/test/byCourseByTeacher',
           data:{
             user:{
               email:$rootScope.loggedUser.email

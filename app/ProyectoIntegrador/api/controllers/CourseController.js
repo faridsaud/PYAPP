@@ -47,8 +47,7 @@ module.exports = {
 		}).exec(function(error, newRecord){
 			if(error){
 				console.log(error);
-				console.log("Estamos aqui en ERRROR");
-				return res.json(512, {msg:error});
+				return res.json(512, {msg:"Error creating the course"});
 			}else{
 				sails.models.usrcou.query(
 					'INSERT INTO USR_COU (EMAIL, IDCOURSE, STATUSUSRCOU) VALUES (?,?,?)',
@@ -56,7 +55,7 @@ module.exports = {
 					, function(err, results) {
 						if (err){
 							console.log("Estamos aqui en ERR");
-							return res.json(512,{msg:error});
+							return res.json(512,{msg:"Error creating the course"});
 						}else{
 							console.log("Estamos en 201");
 							return res.json(201,{msg:"Course created"});
@@ -72,7 +71,7 @@ module.exports = {
 		getCoursesCreatedByUser:function(req,res){
 			if(req.body.user.email){
 				var email=req.body.user.email;
-				var status="t";
+				var status="c";
 				sails.models.usrcou.query(
 					'SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
 					[status, email]
@@ -90,10 +89,10 @@ module.exports = {
 				}
 			},
 
-			getCoursesByStudent:function(req,res){
+			getCoursesByTeacher:function(req,res){
 				if(req.body.user.email){
 					var email=req.body.user.email;
-					var status="s";
+					var status="t";
 					sails.models.usrcou.query(
 						'SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
 						[status, email]
@@ -109,67 +108,95 @@ module.exports = {
 					}else{
 						return res.json(400,{msg:"Not email send"});
 					}
-
 				},
-
-			registerStudent:function(req,res){
-
-				if(req.body.student.email){
-					var studentEmail=req.body.student.email;
-				}else{
-					var studentEmail=null;
-					return res.json(400,{msg:"There is not a student's email send"});
-				}
-				if(req.body.course.id){
-					var idCourse=req.body.course.id;
-				}else{
-					var idCourse=null;
-					return res.json(400,{msg:"There is not a course's id send"});
-				}
-
-				if(req.body.user.email){
-					var userEmail=req.body.user.email;
-				}else{
-					var idCourse=null;
-					return res.json(400,{msg:"There is not a user's email send"});
-				}
-				if(userEmail==studentEmail){
-					return res.json(400,{msg:"The teacher cannot be an student of the same course"});
-				}
-				/*Compruebo si el profesor es el dueno del curso*/
-				sails.models.usrcou.findOne({email:userEmail, status:'t', idCourse:idCourse}).exec(function(err, teacher){
-					if(err){
-						console.log(err);
-						return res.json(500,{msg:"Error"});
-					}else{
-						if(teacher){
-							/*Compruebo si existe un estudiante con el email a registrar*/
-							sails.models.user.query("SELECT * FROM USR_ROL WHERE EMAIL=? AND NAME='student' ",[studentEmail], function (error, results){
-								if(error){
-									console.log(error);
-									return res.json(500,{msg:"Error registering the student"});
+				getCoursesByStudent:function(req,res){
+					if(req.body.user.email){
+						var email=req.body.user.email;
+						var status="s";
+						sails.models.usrcou.query(
+							'SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',
+							[status, email]
+							, function(err, results) {
+								if (err){
+									console.log("Estamos aqui en ERR");
+									return res.json(512,{msg:"error en la query"});
 								}else{
-									if(results[0]){
-										console.log(results[0]);
-										/*Registro al estudiante en el curso*/
-										sails.models.usrcou.create({email:studentEmail, idCourse:idCourse, status:'s'}).exec(function(err, recordCreated){
-											if(err){
-												console.log(err);
-												return res.json(500,{msg:"Error registering the student"});
-											}else{
-												return res.json(200,{msg:"Student registered"});
-											}
-										});
-									}else{
-										return res.json(400,{msg:"There is not an student with that email"});
-									}
+									console.log("Estamos en 201");
+									return res.json(201,{msg:"OK", courses:results});
 								}
 							});
 						}else{
-							return res.json(400,{msg:"The user is not the owner of the course"});
+							return res.json(400,{msg:"Not email send"});
 						}
-					}
-				});
-			},
 
-		};
+					},
+
+					registerStudent:function(req,res){
+
+						if(req.body.student.email){
+							var studentEmail=req.body.student.email;
+						}else{
+							var studentEmail=null;
+							return res.json(400,{msg:"There is not a student's email send"});
+						}
+						if(req.body.course.id){
+							var idCourse=req.body.course.id;
+						}else{
+							var idCourse=null;
+							return res.json(400,{msg:"There is not a course's id send"});
+						}
+
+						if(req.body.user.email){
+							var userEmail=req.body.user.email;
+						}else{
+							var idCourse=null;
+							return res.json(400,{msg:"There is not a user's email send"});
+						}
+						if(userEmail==studentEmail){
+							return res.json(400,{msg:"The teacher cannot be an student of the same course"});
+						}
+						/*Compruebo si el profesor es el dueno del curso*/
+						sails.models.usrcou.findOne({email:userEmail, status:'t', idCourse:idCourse}).exec(function(err, teacher){
+							if(err){
+								console.log(err);
+								return res.json(500,{msg:"Error"});
+							}else{
+								if(teacher){
+									/*Compruebo si existe un estudiante con el email a registrar*/
+									sails.models.user.query("SELECT * FROM USR_ROL WHERE EMAIL=? AND NAME='student' ",[studentEmail], function (error, results){
+										if(error){
+											console.log(error);
+											return res.json(500,{msg:"Error registering the student"});
+										}else{
+											if(results[0]){
+												console.log(results[0]);
+												/*Registro al estudiante en el curso*/
+												sails.models.usrcou.create({email:studentEmail, idCourse:idCourse, status:'s'}).exec(function(err, recordCreated){
+													if(err){
+														console.log(err);
+														return res.json(500,{msg:"Error registering the student"});
+													}else{
+														/*Asignacion de las pruebas del curso al cual acaba de ser registrado el estudiante*/
+														sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT ?, T.IDTEST, 's' FROM TEST T WHERE T.IDCOURSE=? ",[studentEmail, idCourse], function(error, callback){
+															if(error){
+																console.log(error);
+																return res.json(512,{msg: 'Error registering the student'});
+															}else{
+																return res.json(200,{msg:"Student registered"});
+															}
+														});
+													}
+												});
+											}else{
+												return res.json(400,{msg:"There is not an student with that email"});
+											}
+										}
+									});
+								}else{
+									return res.json(400,{msg:"The user is not the owner of the course"});
+								}
+							}
+						});
+					},
+
+				};

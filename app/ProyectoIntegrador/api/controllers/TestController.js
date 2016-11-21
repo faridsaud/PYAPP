@@ -35,7 +35,7 @@ module.exports = {
 		}
 		if(req.body.test.startDateTime){
 			var startDateTime=req.body.test.startDateTime;
-			}else{
+		}else{
 			var startDateTime=null;
 		}
 		if(req.body.test.finishDateTime){
@@ -60,21 +60,23 @@ module.exports = {
 		}).exec(function (error, newRecord){
 			if(error){
 				console.log(error);
-				return res.json(512, {msg:error})
+				return res.json(512, {msg:"Error creating the test"});
 			}else{
-				console.log("Datos a alamcenarse");
-				console.log(createdBy);
-				console.log(newRecord);
 				sails.models.usrtes.query(
-					'INSERT INTO USR_TES (EMAIL, IDTEST) VALUES (?,?)',
-					[createdBy, newRecord.id ]
+					'INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) VALUES (?,?,?)',
+					[createdBy, newRecord.id, 't' ]
 					, function(err, results) {
 						if (err){
 							console.log(err);
-							return res.json(512, {msg:err});
+							return res.json(512, {msg:"Error creating the test"});
 						}else{
-							return res.json(201,{
-								msg: 'Test created'
+							sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT U.EMAIL, ?, 's' FROM USER U, USR_COU UC WHERE U.EMAIL=UC.EMAIL AND UC.IDCOURSE=? AND U.EMAIL!=?",[newRecord.id, idCourse, createdBy], function(error, callback){
+								if(error){
+									console.log(error);
+									return res.json(512,{msg: 'Error creating the test'});
+								}else{
+									return res.json(201,{msg: 'Test created'});
+								}
 							});
 						}
 					});
@@ -86,22 +88,22 @@ module.exports = {
 			var actualDate = new Date();
 			tests=sails.controllers.test.parseISOtoDateformat(tests);
 			for(var i=0;i<tests.length;i++){
-			  if(tests[i].finishDateTime<actualDate){
-			    sails.models.test.update({id:tests[i].id},{status:"f"}).exec(function(error, updated){
-			      if(error){
-			        console.log(error);
-			      }
-			    });
-			    tests[i].status="f"
-			  }
-			  if((tests[i].finishDateTime>actualDate)&&(tests[i].startDateTime<actualDate)){
-			    sails.models.test.update({id:tests[i].id},{status:"e"}).exec(function(error, updated){
-			      if(error){
-			        console.log(error);
-			      }
-			    });
-			    tests[i].status="e"
-			  }
+				if(tests[i].finishDateTime<actualDate){
+					sails.models.test.update({id:tests[i].id},{status:"f"}).exec(function(error, updated){
+						if(error){
+							console.log(error);
+						}
+					});
+					tests[i].status="f"
+				}
+				if((tests[i].finishDateTime>actualDate)&&(tests[i].startDateTime<actualDate)){
+					sails.models.test.update({id:tests[i].id},{status:"e"}).exec(function(error, updated){
+						if(error){
+							console.log(error);
+						}
+					});
+					tests[i].status="e"
+				}
 			}
 			return tests;
 		},
@@ -115,31 +117,8 @@ module.exports = {
 			}
 			return tests;
 		},
-/*
-		parseMysqlDateToJSDate:function(mysqlDate){
-			var JSDate=new Date(Date.parse(mysqlDate.toString().replace('-','/','g')));
-			return JSDate;
-		},
 
-		parseDatesOfTests:function(tests){
-			for(var i=0;i<tests.length;i++){
-				tests[i].startDateTime=sails.controllers.test.parseMysqlDateToJSDate(tests[i].startDateTime);
-				tests[i].finishDateTime=sails.controllers.test.parseMysqlDateToJSDate(tests[i].finishDateTime);
-			}
-			sails.controllers.test.createUTCDates(tests);
-			return tests
-		},
-
-		createUTCDates:function(tests){
-			for(var i=0;i<tests.length;i++){
-				tests[i].startDateTime=new Date(Date.UTC(tests[i].startDateTime.getFullYear(), tests[i].startDateTime.getMonth(), tests[i].startDateTime.getDay(),tests[i].startDateTime.getHours(), tests[i].startDateTime.getMinutes(), tests[i].startDateTime.getSeconds()));
-				tests[i].finishDateTime=new Date(Date.UTC(tests[i].finishDateTime.getFullYear(), tests[i].finishDateTime.getMonth(), tests[i].finishDateTime.getDay(),tests[i].finishDateTime.getHours(), tests[i].finishDateTime.getMinutes(), tests[i].finishDateTime.getSeconds()));
-			}
-			return tests;
-		},
-*/
-
-		getTestsByCourse:function(req, res){
+		getTestsByCourseByTeacher:function(req, res){
 			if(req.body.user.email){
 				var email=req.body.user.email;
 			}else{
@@ -151,13 +130,13 @@ module.exports = {
 				var idCourse=null;
 			}
 
-      sails.models.usrcou.findOne({email:email, status:'t', idCourse:idCourse}).exec(function(err, result){
+			sails.models.usrcou.findOne({email:email, status:'t', idCourse:idCourse}).exec(function(err, result){
 				if(err){
 					console.log(err);
 					return res.json(500,{msg:"Error"});
 				}else{
 					if(result){
-            var status='s';
+						var status='s';
 						sails.models.test.find({idCourse:idCourse}).exec(function (error, records){
 							if(error){
 								return res.json(400,{
@@ -179,6 +158,45 @@ module.exports = {
 			});
 		},
 
+		getTestsByCourseByStudent:function(req, res){
+			if(req.body.user.email){
+				var email=req.body.user.email;
+			}else{
+				var email=null;
+			}
+			if(req.body.course.id){
+				var idCourse=req.body.course.id;
+			}else{
+				var idCourse=null;
+			}
+
+			sails.models.usrcou.findOne({email:email, status:'s', idCourse:idCourse}).exec(function(err, result){
+				if(err){
+					console.log(err);
+					return res.json(500,{msg:"Error"});
+				}else{
+					if(result){
+						var status='s';
+						sails.models.test.find({idCourse:idCourse}).exec(function (error, records){
+							if(error){
+								return res.json(400,{
+									msg: 'Bad request'
+								});
+							}else{
+								var tests=sails.controllers.test.checkStatus(records);
+								return res.json(200,{
+									msg: 'OK',
+									tests:tests
+								});
+							}
+						})
+
+					}else{
+						return res.json(400,{msg:"The user is not a student of the course"});
+					}
+				}
+			});
+		},
 		getTestsCreatedByUser:function(req, res){
 			if(req.body.user.email){
 				var email=req.body.user.email;
@@ -218,7 +236,7 @@ module.exports = {
 						return res.json(200,{msg:"OK", tests:tests});
 					}
 				});
-		}
+			}
 
 
-	};
+		};

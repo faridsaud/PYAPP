@@ -18,6 +18,15 @@ module.exports = {
     idTest: {
         type:'integer',
         columnName:'IDTEST'
+    },
+    status:{
+      type:'string',
+      columnName:'STATUSUSRTES',
+      size:1
+    },
+    score:{
+      type:'float',
+      columnName: 'SCORE'
     }
   }
 };
