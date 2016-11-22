@@ -30,7 +30,7 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
         console.log(response);
         $location.path('/home');
       }, function error(response){
-        toastr.error("Error al crear el usuario","Error");
+        toastr.error("Error al crear el usuario" + response.data.msg,"Error");
         console.log(response);
       })
     }

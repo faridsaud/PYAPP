@@ -11,6 +11,55 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       var startDateTime=new Date($scope.test.startDateTime);
 
     }
+    /*Fill question scope*/
+    $scope.fillQuestions=[];
+    $scope.addFillQuestion=function(){
+
+      var fillQuestion={};
+      fillQuestion.texts=[];
+      fillQuestion.texts.push({});
+      fillQuestion.options=[];
+      fillQuestion.options.push({});
+      $scope.fillQuestions.push(fillQuestion);
+      console.log($scope.fillQuestions);
+    }
+
+    $scope.addOptionFillQuestion=function(index){
+      console.log(index);
+      $scope.fillQuestions[index].options.push({});
+      console.log($scope.fillQuestions[index]);
+    }
+    $scope.addStatementFillQuestion=function(index){
+      console.log(index);
+      $scope.fillQuestions[index].texts.push({});
+      console.log($scope.fillQuestions[index]);
+    }
+
+    /*Multiple choice question scope*/
+    $scope.multipleChoiceQuestions=[];
+    $scope.addMultipleChoiceQuestion=function(){
+      var multipleChoiceQuestion={};
+      multipleChoiceQuestion.options=[];
+      multipleChoiceQuestion.options.push({});
+      $scope.multipleChoiceQuestions.push(multipleChoiceQuestion);
+      console.log($scope.multipleChoiceQuestions);
+    }
+    $scope.addOptionMultipleChoiceQuestion=function(index){
+      $scope.multipleChoiceQuestions[index].options.push({});
+      console.log($scope.multipleChoiceQuestions[index].options);
+    }
+
+    /*True/False question scope*/
+    $scope.trueFalseQuestions=[];
+    $scope.addTrueFalseQuestion=function(){
+      var trueFalseQuestion={};
+      trueFalseQuestion.option={};
+      trueFalseQuestion.option.text=true;
+      $scope.trueFalseQuestions.push(trueFalseQuestion);
+    }
+
+    
+
     $scope.register=function(){
       console.log(Date.parse($scope.test.startDateTime));
       $http({
