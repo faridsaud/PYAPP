@@ -67,8 +67,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
     $scope.addTrueFalseQuestion=function(){
       var trueFalseQuestion={};
-      trueFalseQuestion.option={};
-      trueFalseQuestion.option.text=true;
+      trueFalseQuestion.text="";
+      trueFalseQuestion.option="true";
       trueFalseQuestion.weighing=1;
       $scope.trueFalseQuestions.push(trueFalseQuestion);
     }
@@ -87,10 +87,80 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         console.log("No error checking multipleChoiceQuestions");
       }
       console.log($scope.multipleChoiceQuestions);
-
+      var errorTrueFalse=$scope.checkTrueFalseQuestions();
+      if(errorTrueFalse.error==true){
+        console.log("Error checking trueFalseQuestions" + errorTrueFalse.msg);
+      }else{
+        console.log("No error checking trueFalseQuestions");
+      }
+      console.log($scope.trueFalseQuestions);
     }
+
+
     $scope.checkTrueFalseQuestions=function(){
-      
+      for(var i=0;i<$scope.trueFalseQuestions.length;i++){
+        console.log("imprimiendo preguntas trufalse")
+        console.log($scope.trueFalseQuestions);
+        console.log($scope.trueFalseQuestions[i]);
+        if($scope.trueFalseQuestions[i].text){
+          if($scope.trueFalseQuestions[i].text.length>=1){
+            console.log($scope.trueFalseQuestions[i].text);
+            var patt = /^\w{1,}.{0,}$/;
+            var res = patt.test($scope.trueFalseQuestions[i].text);
+            console.log(res);
+            if(res==false){
+              return {
+                error:true,
+                msg:"Wrong statement in question "+i+", cannot be empty",
+                question:i,
+                type:"trueFalseQuestions"
+              }
+            }
+          }else{
+            return {
+              error:true,
+              msg:"Wrong statement in question "+i+", cannot be empty",
+              question:i,
+              type:"trueFalseQuestions"
+            }
+          }
+        }else{
+          return {
+            error:true,
+            msg:"Wrong statement in question "+i+", cannot be empty",
+            question:i,
+            type:"trueFalseQuestions"
+          }
+        }
+        if($scope.trueFalseQuestions[i].weighing){
+          var patt = new RegExp("^\d{1,1}$");
+          var res = patt.test($scope.trueFalseQuestions[i].weighing);
+          if(res==false){
+            $scope.trueFalseQuestions[i].weighing=1;
+          }
+        }else{
+          $scope.trueFalseQuestions[i].weighing=1;
+        }
+        if($scope.trueFalseQuestions[i].justification){
+          if($scope.trueFalseQuestions[i].justification.length>=1){
+            console.log($scope.trueFalseQuestions[i].justification);
+            var patt = /^\w{1,}.{0,}$/;
+            var res = patt.test($scope.trueFalseQuestions[i].justification);
+            console.log(res);
+            if(res==false){
+              $scope.trueFalseQuestions[i].justification="";
+            }
+          }else{
+            $scope.trueFalseQuestions[i].justification=""
+          }
+        }else{
+          $scope.trueFalseQuestions[i].justification="";
+        }
+      }
+      return {
+        error:false,
+        msg:"Not error found"
+      }
     }
 
     $scope.checkMultipleChoiceQuestions=function(){
@@ -209,7 +279,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       console.log("Multiple choice questions after verification");
       console.log($scope.multipleChoiceQuestions);
       return {
-        error:false
+        error:false,
+        msg:"not error found"
       }
     }
 

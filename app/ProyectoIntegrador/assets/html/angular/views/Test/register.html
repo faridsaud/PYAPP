@@ -156,11 +156,11 @@
               <label for="comment">Opcion correcta:</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optradio" ng-value="true" ng-model="trueFalseQuestion.option.text" checked>Verdadero</label>
+                  <input type="radio" name="optradio" ng-value="'true'" ng-model="trueFalseQuestion.option" checked>Verdadero</label>
                 </div>
                 <div class="radio">
                   <label>
-                    <input type="radio" name="optradio" ng-value="false" ng-model="trueFalseQuestion.option.text">Falso</label>
+                    <input type="radio" name="optradio" ng-value="'false'" ng-model="trueFalseQuestion.option">Falso</label>
                   </div>
                 </div>
               </div>
@@ -173,7 +173,7 @@
               <div class="col-md-8">
                 <div class="form-group">
                   <label for="comment">Justificación:</label>
-                  <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.option.justification"></textarea>
+                  <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.justification"></textarea>
                 </div>
               </div>
             </div>
