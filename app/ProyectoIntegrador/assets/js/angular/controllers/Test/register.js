@@ -19,7 +19,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       fillQuestion.texts=[];
       fillQuestion.texts.push({});
       fillQuestion.options=[];
-      fillQuestion.options.push({});
+      fillQuestion.options.push({correct:true});
+      fillQuestion.weighing=1;
       $scope.fillQuestions.push(fillQuestion);
       console.log($scope.fillQuestions);
     }
@@ -35,12 +36,19 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       console.log($scope.fillQuestions[index]);
     }
 
+    $scope.removeFillQuestion=function(index){
+      if (index > -1) {
+        $scope.fillQuestions.splice(index, 1);
+      }
+    }
+
     /*Multiple choice question scope*/
     $scope.multipleChoiceQuestions=[];
     $scope.addMultipleChoiceQuestion=function(){
       var multipleChoiceQuestion={};
       multipleChoiceQuestion.options=[];
-      multipleChoiceQuestion.options.push({});
+      multipleChoiceQuestion.options.push({correct:true});
+      multipleChoiceQuestion.weighing=1;
       $scope.multipleChoiceQuestions.push(multipleChoiceQuestion);
       console.log($scope.multipleChoiceQuestions);
     }
@@ -48,17 +56,29 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       $scope.multipleChoiceQuestions[index].options.push({});
       console.log($scope.multipleChoiceQuestions[index].options);
     }
+    $scope.removeMultipleChoiceQuestion=function(index){
+      if (index > -1) {
+        $scope.multipleChoiceQuestions.splice(index, 1);
+      }
+    }
 
     /*True/False question scope*/
     $scope.trueFalseQuestions=[];
+
     $scope.addTrueFalseQuestion=function(){
       var trueFalseQuestion={};
       trueFalseQuestion.option={};
       trueFalseQuestion.option.text=true;
+      trueFalseQuestion.weighing=1;
       $scope.trueFalseQuestions.push(trueFalseQuestion);
     }
+    $scope.removeTrueFalseQuestion=function(index){
+      if (index > -1) {
+        $scope.trueFalseQuestions.splice(index, 1);
+      }
+    }
 
-    
+
 
     $scope.register=function(){
       console.log(Date.parse($scope.test.startDateTime));
