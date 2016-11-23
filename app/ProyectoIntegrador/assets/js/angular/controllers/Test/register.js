@@ -16,8 +16,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     $scope.addFillQuestion=function(){
 
       var fillQuestion={};
-      fillQuestion.texts=[];
-      fillQuestion.texts.push({});
+      fillQuestion.statements=[];
+      fillQuestion.statements.push({text:""});
       fillQuestion.options=[];
       fillQuestion.options.push({isCorrect:true});
       fillQuestion.weighing=1;
@@ -32,7 +32,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }
     $scope.addStatementFillQuestion=function(index){
       console.log(index);
-      $scope.fillQuestions[index].texts.push({});
+      $scope.fillQuestions[index].statements.push({text:""});
       console.log($scope.fillQuestions[index]);
     }
 
@@ -94,6 +94,13 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         console.log("No error checking trueFalseQuestions");
       }
       console.log($scope.trueFalseQuestions);
+      var errorFillQuestion=$scope.checkFillQuestions();
+      if(errorFillQuestion.error==true){
+        console.log("Error checking fillQuestions" + errorFillQuestion.msg);
+      }else{
+        console.log("No error checking fillQuestions");
+      }
+      console.log($scope.fillQuestions);
     }
 
 
@@ -285,7 +292,121 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }
 
     $scope.checkFillQuestions=function(){
+      for(var i=0;i<$scope.fillQuestions.length;i++){
+        if($scope.fillQuestions[i].weighing){
+          var patt = new RegExp("^\d{1,1}$");
+          var res = patt.test($scope.fillQuestions[i].weighing);
+          if(res==false){
+            $scope.fillQuestions[i].weighing=1;
+          }
+        }else{
+          $scope.fillQuestions[i].weighing=1;
+        }
+        for(var j=0;j<$scope.fillQuestions[i].statements.length;j++){
+          console.log($scope.fillQuestions[i].statements[j].text);
+          if($scope.fillQuestions[i].statements[j].text){
+            if($scope.fillQuestions[i].statements[j].text.length>=1){
+              var patt = /^\w{1,}.{0,}$/;
+              var res = patt.test($scope.fillQuestions[i].statements[j].text);
+              console.log($scope.fillQuestions[i].statements[j].text);
+              if(res==false){
+                return {
+                  error:true,
+                  msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+                  question:i,
+                  type:"fillQuestions"
+                }
+              }
+            }else{
+              return {
+                error:true,
+                msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+                question:i,
+                type:"fillQuestions"
+              }
 
+            }
+          }else{
+
+            return {
+              error:true,
+              msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+              question:i,
+              type:"fillQuestions"
+            }
+          }
+        }
+        var correctAnswers=0;
+        for(var j=0;j<$scope.fillQuestions[i].options.length;j++){
+          /*check Options*/
+          console.log("chequeando opciones");
+          if($scope.fillQuestions[i].options[j].text){
+            if($scope.fillQuestions[i].options[j].text.length>=1){
+              var patt = /^\w{1,}.{0,}$/;
+              var res = patt.test($scope.fillQuestions[i].options[j].text);
+              if(res==false){
+                return {
+                  error:true,
+                  msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                  question:i,
+                  type:"fillQuestions"
+                }
+              }
+            }else{
+              return {
+                error:true,
+                msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                question:i,
+                type:"fillQuestions"
+              }
+            }
+          }else{
+            return {
+              error:true,
+              msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+              question:i,
+              type:"fillQuestions"
+            }
+          }
+          /*check justification*/
+          if($scope.fillQuestions[i].options[j].justification){
+            if($scope.fillQuestions[i].options[j].justification.length>=1){
+              var patt = /^\w{1,}.{0,}$/;
+              var res = patt.test($scope.fillQuestions[i].options[j].justification);
+              if(res==false){
+                $scope.fillQuestions[i].options[j].justification="";
+              }
+            }else{
+              $scope.fillQuestions[i].options[j].justification="";
+            }
+          }else{
+            $scope.fillQuestions[i].options[j].justification="";
+
+          }
+          /*check correctAnswers*/
+          console.log($scope.fillQuestions[i].options[j].isCorrect);
+          if($scope.fillQuestions[i].options[j].isCorrect){
+            console.log("tratando");
+            correctAnswers++;
+          }else{
+            $scope.fillQuestions[i].options[j].isCorrect=false;
+          }
+        }
+        if(correctAnswers==0){
+          if(correctAnswers==0){
+            return {
+              error:true,
+              msg:"There should be at least 1 correct answer in question "+i,
+              question:i,
+              type:"multipleChoiceQuestions"
+            }
+          }  
+        }
+        return {
+          error:false,
+          msg:"not error found"
+        }
+      }
     }
     $scope.register=function(){
       console.log(Date.parse($scope.test.startDateTime));

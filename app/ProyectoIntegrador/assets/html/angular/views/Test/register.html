@@ -206,8 +206,8 @@
               <div class="col-md-10">
                 <div class="form-group">
                   <label for="comment">Enunciados:</label>
-                  <div ng-repeat="text in fillQuestion.texts track by $index" >
-                    <textarea class="form-control" rows="2"  ng-model="fillQuestion.text"></textarea>
+                  <div ng-repeat="statement in fillQuestion.statements track by $index" >
+                    <textarea class="form-control" rows="2"  ng-model="statement.text"></textarea>
                   </div>
                 </div>
               </div>
