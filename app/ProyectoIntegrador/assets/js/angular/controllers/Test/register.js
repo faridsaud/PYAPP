@@ -19,7 +19,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       fillQuestion.texts=[];
       fillQuestion.texts.push({});
       fillQuestion.options=[];
-      fillQuestion.options.push({correct:true});
+      fillQuestion.options.push({isCorrect:true});
       fillQuestion.weighing=1;
       $scope.fillQuestions.push(fillQuestion);
       console.log($scope.fillQuestions);
@@ -47,7 +47,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     $scope.addMultipleChoiceQuestion=function(){
       var multipleChoiceQuestion={};
       multipleChoiceQuestion.options=[];
-      multipleChoiceQuestion.options.push({correct:true});
+      multipleChoiceQuestion.options.push({isCorrect:true});
       multipleChoiceQuestion.weighing=1;
       $scope.multipleChoiceQuestions.push(multipleChoiceQuestion);
       console.log($scope.multipleChoiceQuestions);
@@ -79,7 +79,143 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }
 
 
+    $scope.checkData=function(){
+      var errorMultipleChoice=$scope.checkMultipleChoiceQuestions();
+      if(errorMultipleChoice.error==true){
+        console.log("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
+      }else{
+        console.log("No error checking multipleChoiceQuestions");
+      }
+      console.log($scope.multipleChoiceQuestions);
 
+    }
+    $scope.checkTrueFalseQuestions=function(){
+      
+    }
+
+    $scope.checkMultipleChoiceQuestions=function(){
+      for(var i=0;i<$scope.multipleChoiceQuestions.length;i++){
+        /*check weighing*/
+        if($scope.multipleChoiceQuestions[i].weighing){
+          var patt = new RegExp("^\d{1,1}$");
+          var res = patt.test($scope.multipleChoiceQuestions[i].weighing);
+          if(res==false){
+            $scope.multipleChoiceQuestions[i].weighing=1;
+          }
+        }else{
+          $scope.multipleChoiceQuestions[i].weighing=1;
+        }
+        /*Check statement*/
+        if($scope.multipleChoiceQuestions[i].text){
+          if($scope.multipleChoiceQuestions[i].text.length>=1){
+            console.log($scope.multipleChoiceQuestions[i].text);
+            var patt = /^\w{1,}.{0,}$/;
+            var res = patt.test($scope.multipleChoiceQuestions[i].text);
+            console.log(res);
+            if(res==false){
+              return {
+                error:true,
+                msg:"Wrong statement in question "+i+", cannot be empty",
+                question:i,
+                type:"multipleChoiceQuestions"
+              }
+            }
+          }else{
+            return {
+              error:true,
+              msg:"Wrong statement in question "+i+", cannot be empty",
+              question:i,
+              type:"multipleChoiceQuestions"
+            }
+          }
+        }else{
+          return {
+            error:true,
+            msg:"Wrong statement in question "+i+", cannot be empty",
+            question:i,
+            type:"multipleChoiceQuestions"
+          }
+        }
+        console.log("antes de correctAnswers");
+        var correctAnswers=0;
+        console.log($scope.multipleChoiceQuestions[i].options);
+        /*check Options*/
+        for(var j=0;j<$scope.multipleChoiceQuestions[i].options.length;j++){
+          /*check Options*/
+          console.log("chequeando opciones");
+          if($scope.multipleChoiceQuestions[i].options[j].text){
+            if($scope.multipleChoiceQuestions[i].options[j].text.length>=1){
+              var patt = /^\w{1,}.{0,}$/;
+              var res = patt.test($scope.multipleChoiceQuestions[i].options[j].text);
+              if(res==false){
+                return {
+                  error:true,
+                  msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                  question:i,
+                  type:"multipleChoiceQuestions"
+                }
+              }
+            }else{
+              return {
+                error:true,
+                msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                question:i,
+                type:"multipleChoiceQuestions"
+              }
+            }
+          }else{
+            return {
+              error:true,
+              msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+              question:i,
+              type:"multipleChoiceQuestions"
+            }
+          }
+          /*check justification*/
+          if($scope.multipleChoiceQuestions[i].options[j].justification){
+            if($scope.multipleChoiceQuestions[i].options[j].justification.length>=1){
+              var patt = /^\w{1,}.{0,}$/;
+              var res = patt.test($scope.multipleChoiceQuestions[i].options[j].justification);
+              if(res==false){
+                $scope.multipleChoiceQuestions[i].options[j].justification="";
+              }
+            }else{
+              $scope.multipleChoiceQuestions[i].options[j].justification="";
+            }
+          }else{
+            $scope.multipleChoiceQuestions[i].options[j].justification="";
+
+          }
+          /*check correctAnswers*/
+          console.log($scope.multipleChoiceQuestions[i].options[j].isCorrect);
+          if($scope.multipleChoiceQuestions[i].options[j].isCorrect){
+            console.log("tratando");
+            correctAnswers++;
+          }else{
+            $scope.multipleChoiceQuestions[i].options[j].isCorrect=false;
+          }
+        }
+        console.log("estamos aqui");
+        console.log(correctAnswers);
+        if(correctAnswers==0){
+          return {
+            error:true,
+            msg:"There should be at least 1 correct answer in question "+i,
+            question:i,
+            type:"multipleChoiceQuestions"
+          }
+        }
+      }
+      console.log("Multiple choice questions after verification");
+      console.log($scope.multipleChoiceQuestions);
+      return {
+        error:false
+      }
+    }
+
+    $scope.checkFillQuestions=function(){
+
+    }
     $scope.register=function(){
       console.log(Date.parse($scope.test.startDateTime));
       $http({
@@ -104,6 +240,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         toastr.error("Error al registrar la prueba","Success");
       })
     }
+
+    /*Load course by teacher*/
     $http({
       method:'POST',
       url:globalVariables.url+'/course/byTeacher',
