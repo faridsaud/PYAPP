@@ -10,3 +10,5 @@ Status de las pruebas
 c: created
 e: execution
 f: finished
+
+cambio a los tipos de dato date por string con longitud 24 para almacenar la fecha en formato ISO 8601

@@ -398,14 +398,14 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
               error:true,
               msg:"There should be at least 1 correct answer in question "+i,
               question:i,
-              type:"multipleChoiceQuestions"
+              type:"fillQuestions"
             }
-          }  
+          }
         }
-        return {
-          error:false,
-          msg:"not error found"
-        }
+      }
+      return {
+        error:false,
+        msg:"not error found"
       }
     }
     $scope.register=function(){
@@ -421,7 +421,10 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             startDateTime:$scope.test.startDateTime.toISOString(),
             finishDateTime:$scope.test.finishDateTime.toISOString(),
             course:$scope.test.course
-          }
+          },
+          multipleChoiceQuestions:$scope.multipleChoiceQuestions,
+          fillQuestions:$scope.fillQuestions,
+          trueFalseQuestions:$scope.trueFalseQuestions
 
         }
       }).then(function success(response){

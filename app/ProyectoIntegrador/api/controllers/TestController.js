@@ -57,31 +57,431 @@ module.exports = {
 			finishDateTime:finishDateTime,
 			averageScore:0.0,
 			idCourse:idCourse
-		}).exec(function (error, newRecord){
+		}).exec(function (error, newTest){
 			if(error){
 				console.log(error);
 				return res.json(512, {msg:"Error creating the test"});
 			}else{
 				sails.models.usrtes.query(
 					'INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) VALUES (?,?,?)',
-					[createdBy, newRecord.id, 't' ]
+					[createdBy, newTest.id, 't' ]
 					, function(err, results) {
 						if (err){
 							console.log(err);
 							return res.json(512, {msg:"Error creating the test"});
 						}else{
-							sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT U.EMAIL, ?, 's' FROM USER U, USR_COU UC WHERE U.EMAIL=UC.EMAIL AND UC.IDCOURSE=? AND U.EMAIL!=?",[newRecord.id, idCourse, createdBy], function(error, callback){
+							sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT U.EMAIL, ?, 's' FROM USER U, USR_COU UC WHERE U.EMAIL=UC.EMAIL AND UC.IDCOURSE=? AND U.EMAIL!=?",[newTest.id, idCourse, createdBy], function(error, callback){
 								if(error){
 									console.log(error);
 									return res.json(512,{msg: 'Error creating the test'});
 								}else{
-									return res.json(201,{msg: 'Test created'});
+
+									//return res.json(201,{msg: 'Test created'});
+									var errorCheckingTest=sails.controllers.test.checkTestData(req);
+									if(errorCheckingTest.error==true){
+										console.log(errorCheckingTest.msg);
+										return res.json(400, {msg:"Error creating the test, wrong test format send"});
+									}
+									/*Get questions*/
+									var multipleChoiceQuestions=req.body.multipleChoiceQuestions;
+									var fillQuestions=req.body.fillQuestions;
+									var trueFalseQuestions=req.body.trueFalseQuestions;
+									/*Format questions*/
+									sails.controllers.question.formatMultipleChoiceQuestionsAngularToServer(multipleChoiceQuestions);
+									sails.controllers.question.formatFillQuestionsAngularToServer(fillQuestions);
+									sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
+									var questionsPromises=[];
+									var optionsPromises=[];
+									console.log(multipleChoiceQuestions[0]);
+
+									/*register multiple choice questions and options*/
+									for (var i=0;i<multipleChoiceQuestions.length;i++){
+										var questionPromise=sails.controllers.question.register(multipleChoiceQuestions[i],newTest)
+										.then(function(questionCreated){
+											for(var k=0;k<multipleChoiceQuestions.length;k++){
+												if(multipleChoiceQuestions[k].text==questionCreated.text){
+													console.log("Se hizo match");
+													multipleChoiceQuestions[k].id=questionCreated.id;
+												}
+											}
+										})
+										.catch(function(error){
+											console.log(error);
+											return res.json(512,{msg: 'Error creating the test'});
+										})
+										questionsPromises.push(questionPromise);
+									}
+
+									/*register fill questions*/
+									for (var i=0;i<fillQuestions.length;i++){
+										var questionPromise=sails.controllers.question.register(fillQuestions[i],newTest)
+										.then(function(questionCreated){
+										  for(var k=0;k<fillQuestions.length;k++){
+										    if(fillQuestions[k].text==questionCreated.text){
+										      fillQuestions[k].id=questionCreated.id;
+										    }
+										  }
+										})
+										.catch(function(error){
+										  console.log(error);
+										  return res.json(512,{msg: 'Error creating the test'});
+										})
+										questionsPromises.push(questionPromise);
+									}
+
+									/*register true false questions*/
+									for (var i=0;i<trueFalseQuestions.length;i++){
+										var questionPromise=sails.controllers.question.register(trueFalseQuestions[i],newTest)
+										.then(function(questionCreated){
+										  for(var k=0;k<trueFalseQuestions.length;k++){
+										    if(trueFalseQuestions[k].text==questionCreated.text){
+										      trueFalseQuestions[k].id=questionCreated.id;
+										    }
+										  }
+										})
+										.catch(function(error){
+										  console.log(error);
+										  return res.json(512,{msg: 'Error creating the test'});
+										})
+										questionsPromises.push(questionPromise);
+									}
+
+									/*Check promises*/
+									Promise.all(questionsPromises)
+									.then(function(){
+										for(var i=0;i<multipleChoiceQuestions.length;i++){
+											for(var j=0;j<multipleChoiceQuestions[i].options.length;j++){
+												var optionPromise=sails.controllers.option.register(multipleChoiceQuestions[i].options[j],multipleChoiceQuestions[i]);
+												//console.log("imprimiendo");
+												//console.log(multipleChoiceQuestions[i]);
+												optionsPromises.push(optionPromise);
+											}
+										}
+										for(var i=0;i<trueFalseQuestions.length;i++){
+										  for(var j=0;j<trueFalseQuestions[i].options.length;j++){
+										    var optionPromise=sails.controllers.option.register(trueFalseQuestions[i].options[j],trueFalseQuestions[i]);
+										    optionsPromises.push(optionPromise);
+										  }
+										}
+										for(var i=0;i<fillQuestions.length;i++){
+										  for(var j=0;j<fillQuestions[i].options.length;j++){
+										    var optionPromise=sails.controllers.option.register(fillQuestions[i].options[j],fillQuestions[i]);
+										    optionsPromises.push(optionPromise);
+										  }
+										}
+										Promise.all(optionsPromises)
+										.then(function(){
+											return res.json(200,{msg: 'Test sucessfully created'});
+										})
+										.catch(function(error){
+											console.log(error);
+											return res.json(512,{msg: 'Error creating the test'});
+										})
+									})
+									.catch(function(error){
+										console.log(error);
+										return res.json(512,{msg: 'Error creating the test'});
+									});
 								}
 							});
 						}
 					});
 				}
 			})
+		},
+
+		checkTestData:function(req){
+			/*Check True False questions*/
+			for(var i=0;i<req.body.trueFalseQuestions.length;i++){
+				console.log("imprimiendo preguntas trufalse")
+				console.log(req.body.trueFalseQuestions);
+				console.log(req.body.trueFalseQuestions[i]);
+				if(req.body.trueFalseQuestions[i].text){
+					if(req.body.trueFalseQuestions[i].text.length>=1){
+						console.log(req.body.trueFalseQuestions[i].text);
+						var patt = /^\w{1,}.{0,}$/;
+						var res = patt.test(req.body.trueFalseQuestions[i].text);
+						console.log(res);
+						if(res==false){
+							return {
+								error:true,
+								msg:"Wrong statement in question "+i+", cannot be empty",
+								question:i,
+								type:"trueFalseQuestions"
+							}
+						}
+					}else{
+						return {
+							error:true,
+							msg:"Wrong statement in question "+i+", cannot be empty",
+							question:i,
+							type:"trueFalseQuestions"
+						}
+					}
+				}else{
+					return {
+						error:true,
+						msg:"Wrong statement in question "+i+", cannot be empty",
+						question:i,
+						type:"trueFalseQuestions"
+					}
+				}
+				if(req.body.trueFalseQuestions[i].weighing){
+					var patt = new RegExp("^\d{1,1}$");
+					var res = patt.test(req.body.trueFalseQuestions[i].weighing);
+					if(res==false){
+						req.body.trueFalseQuestions[i].weighing=1;
+					}
+				}else{
+					req.body.trueFalseQuestions[i].weighing=1;
+				}
+				if(req.body.trueFalseQuestions[i].justification){
+					if(req.body.trueFalseQuestions[i].justification.length>=1){
+						console.log(req.body.trueFalseQuestions[i].justification);
+						var patt = /^\w{1,}.{0,}$/;
+						var res = patt.test(req.body.trueFalseQuestions[i].justification);
+						console.log(res);
+						if(res==false){
+							req.body.trueFalseQuestions[i].justification="";
+						}
+					}else{
+						req.body.trueFalseQuestions[i].justification=""
+					}
+				}else{
+					req.body.trueFalseQuestions[i].justification="";
+				}
+			}
+			/*Check Multiple Choice Questions*/
+
+			for(var i=0;i<req.body.multipleChoiceQuestions.length;i++){
+				/*check weighing*/
+				if(req.body.multipleChoiceQuestions[i].weighing){
+					var patt = new RegExp("^\d{1,1}$");
+					var res = patt.test(req.body.multipleChoiceQuestions[i].weighing);
+					if(res==false){
+						req.body.multipleChoiceQuestions[i].weighing=1;
+					}
+				}else{
+					req.body.multipleChoiceQuestions[i].weighing=1;
+				}
+				/*Check statement*/
+				if(req.body.multipleChoiceQuestions[i].text){
+					if(req.body.multipleChoiceQuestions[i].text.length>=1){
+						console.log(req.body.multipleChoiceQuestions[i].text);
+						var patt = /^\w{1,}.{0,}$/;
+						var res = patt.test(req.body.multipleChoiceQuestions[i].text);
+						console.log(res);
+						if(res==false){
+							return {
+								error:true,
+								msg:"Wrong statement in question "+i+", cannot be empty",
+								question:i,
+								type:"multipleChoiceQuestions"
+							}
+						}
+					}else{
+						return {
+							error:true,
+							msg:"Wrong statement in question "+i+", cannot be empty",
+							question:i,
+							type:"multipleChoiceQuestions"
+						}
+					}
+				}else{
+					return {
+						error:true,
+						msg:"Wrong statement in question "+i+", cannot be empty",
+						question:i,
+						type:"multipleChoiceQuestions"
+					}
+				}
+				console.log("antes de correctAnswers");
+				var correctAnswers=0;
+				console.log(req.body.multipleChoiceQuestions[i].options);
+				/*check Options*/
+				for(var j=0;j<req.body.multipleChoiceQuestions[i].options.length;j++){
+					/*check Options*/
+					console.log("chequeando opciones");
+					if(req.body.multipleChoiceQuestions[i].options[j].text){
+						if(req.body.multipleChoiceQuestions[i].options[j].text.length>=1){
+							var patt = /^\w{1,}.{0,}$/;
+							var res = patt.test(req.body.multipleChoiceQuestions[i].options[j].text);
+							if(res==false){
+								return {
+									error:true,
+									msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+									question:i,
+									type:"multipleChoiceQuestions"
+								}
+							}
+						}else{
+							return {
+								error:true,
+								msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+								question:i,
+								type:"multipleChoiceQuestions"
+							}
+						}
+					}else{
+						return {
+							error:true,
+							msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+							question:i,
+							type:"multipleChoiceQuestions"
+						}
+					}
+					/*check justification*/
+					if(req.body.multipleChoiceQuestions[i].options[j].justification){
+						if(req.body.multipleChoiceQuestions[i].options[j].justification.length>=1){
+							var patt = /^\w{1,}.{0,}$/;
+							var res = patt.test(req.body.multipleChoiceQuestions[i].options[j].justification);
+							if(res==false){
+								req.body.multipleChoiceQuestions[i].options[j].justification="";
+							}
+						}else{
+							req.body.multipleChoiceQuestions[i].options[j].justification="";
+						}
+					}else{
+						req.body.multipleChoiceQuestions[i].options[j].justification="";
+
+					}
+					/*check correctAnswers*/
+					console.log(req.body.multipleChoiceQuestions[i].options[j].isCorrect);
+					if(req.body.multipleChoiceQuestions[i].options[j].isCorrect){
+						console.log("tratando");
+						correctAnswers++;
+					}else{
+						req.body.multipleChoiceQuestions[i].options[j].isCorrect=false;
+					}
+				}
+				console.log("estamos aqui");
+				console.log(correctAnswers);
+				if(correctAnswers==0){
+					return {
+						error:true,
+						msg:"There should be at least 1 correct answer in question "+i,
+						question:i,
+						type:"multipleChoiceQuestions"
+					}
+				}
+			}
+			/*Check Fill Questions*/
+			for(var i=0;i<req.body.fillQuestions.length;i++){
+				if(req.body.fillQuestions[i].weighing){
+					var patt = new RegExp("^\d{1,1}$");
+					var res = patt.test(req.body.fillQuestions[i].weighing);
+					if(res==false){
+						req.body.fillQuestions[i].weighing=1;
+					}
+				}else{
+					req.body.fillQuestions[i].weighing=1;
+				}
+				for(var j=0;j<req.body.fillQuestions[i].statements.length;j++){
+					console.log(req.body.fillQuestions[i].statements[j].text);
+					if(req.body.fillQuestions[i].statements[j].text){
+						if(req.body.fillQuestions[i].statements[j].text.length>=1){
+							var patt = /^\w{1,}.{0,}$/;
+							var res = patt.test(req.body.fillQuestions[i].statements[j].text);
+							console.log(req.body.fillQuestions[i].statements[j].text);
+							if(res==false){
+								return {
+									error:true,
+									msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+									question:i,
+									type:"fillQuestions"
+								}
+							}
+						}else{
+							return {
+								error:true,
+								msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+								question:i,
+								type:"fillQuestions"
+							}
+
+						}
+					}else{
+
+						return {
+							error:true,
+							msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+							question:i,
+							type:"fillQuestions"
+						}
+					}
+				}
+				var correctAnswers=0;
+				for(var j=0;j<req.body.fillQuestions[i].options.length;j++){
+					/*check Options*/
+					console.log("chequeando opciones");
+					if(req.body.fillQuestions[i].options[j].text){
+						if(req.body.fillQuestions[i].options[j].text.length>=1){
+							var patt = /^\w{1,}.{0,}$/;
+							var res = patt.test(req.body.fillQuestions[i].options[j].text);
+							if(res==false){
+								return {
+									error:true,
+									msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+									question:i,
+									type:"fillQuestions"
+								}
+							}
+						}else{
+							return {
+								error:true,
+								msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+								question:i,
+								type:"fillQuestions"
+							}
+						}
+					}else{
+						return {
+							error:true,
+							msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+							question:i,
+							type:"fillQuestions"
+						}
+					}
+					/*check justification*/
+					if(req.body.fillQuestions[i].options[j].justification){
+						if(req.body.fillQuestions[i].options[j].justification.length>=1){
+							var patt = /^\w{1,}.{0,}$/;
+							var res = patt.test(req.body.fillQuestions[i].options[j].justification);
+							if(res==false){
+								req.body.fillQuestions[i].options[j].justification="";
+							}
+						}else{
+							req.body.fillQuestions[i].options[j].justification="";
+						}
+					}else{
+						req.body.fillQuestions[i].options[j].justification="";
+
+					}
+					/*check correctAnswers*/
+					console.log(req.body.fillQuestions[i].options[j].isCorrect);
+					if(req.body.fillQuestions[i].options[j].isCorrect){
+						console.log("tratando");
+						correctAnswers++;
+					}else{
+						req.body.fillQuestions[i].options[j].isCorrect=false;
+					}
+				}
+				if(correctAnswers==0){
+					if(correctAnswers==0){
+						return {
+							error:true,
+							msg:"There should be at least 1 correct answer in question "+i,
+							question:i,
+							type:"fillQuestions"
+						}
+					}
+				}
+			}
+			return {
+				error:false,
+				msg: "No error found"
+			}
+
 		},
 
 		checkStatus:function(tests){

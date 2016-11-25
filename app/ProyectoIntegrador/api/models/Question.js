@@ -12,9 +12,18 @@ module.exports = {
   attributes: {
     id:{
       type:'integer',
+      autoIncrement:true,
       primaryKey: true,
       unique: true,
       columnName: 'IDQUESTION'
+    },
+    idTest:{
+      type:'integer',
+      columnName: 'IDTEST'
+    },
+    weighing:{
+      type:'integer',
+      columnName: 'WEIGHT'
     },
     type:{
       type:'string',

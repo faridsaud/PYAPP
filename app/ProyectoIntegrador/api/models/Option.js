@@ -7,19 +7,24 @@
 
 module.exports = {
 
-  tableName:'OPTION_A',
+  tableName:'OPTIO',
 
   attributes: {
     id:{
       type:'integer',
+      autoIncrement:true,
       primaryKey: true,
       unique: true,
       columnName: 'IDOPTION'
     },
+    idQuestion:{
+      type:'integer',
+      columnName: 'IDQUESTION'
+    },
     justification:{
       type:'text',
       size:800,
-      columnName: 'NAMEINSTITUTION'
+      columnName: 'JUSTIFICATION'
     },
     isCorrect:{
       type:'boolean',
