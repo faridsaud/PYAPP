@@ -1,9 +1,9 @@
 /**
- * QuestionController
- *
- * @description :: Server-side logic for managing questions
- * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
- */
+* QuestionController
+*
+* @description :: Server-side logic for managing questions
+* @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
+*/
 
 var Promise = require("bluebird");
 module.exports = {
@@ -45,6 +45,22 @@ module.exports = {
 	getQuestionsByTest:function(idTest){
 		var promise=sails.models.question.find({idTest:idTest});
 		return promise;
+	},
+
+	separateQuestionsByType:function(test){
+		var questions=test.questions;
+		delete test.questions;
+		for(var i=0; i<questions.length;i++){
+			if(questions[i].type=="multipleCh"){
+				test.multipleChoiceQuestions.push(questions[i]);
+			}
+			if(questions[i].type=="fill"){
+				test.fillQuestions.push(questions[i]);
+			}
+			if(questions[i].type=="trueFalse"){
+				test.trueFalseQuestions.push(questions[i]);
+			}
+		}
 	},
 
 };

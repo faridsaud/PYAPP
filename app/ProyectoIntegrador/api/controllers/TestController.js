@@ -664,7 +664,8 @@ module.exports = {
 	},
 
 	getTestById:function(req,res){
-		
+
+/*
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
@@ -675,6 +676,9 @@ module.exports = {
 		}else{
 			return res.json(400,{msg:"No test send"});
 		}
+		*/
+		var email="test@test.com";
+		var testId=8;
 		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
 			if(error){
 				return res.json(500,{msg:"Error"});
@@ -702,6 +706,7 @@ module.exports = {
 						Promise.all(optionsPromises).then(function(){
 							console.log("se obtuvieron los datos completos");
 							//console.log(test.questions);
+							sails.controllers.question.separateQuestionsByType(test);
 							return res.json(200,{test:test, msg:"OK"});
 						})
 						.catch(function(error){
@@ -722,6 +727,7 @@ module.exports = {
 		})
 
 	},
+
 
 
 };
