@@ -40,6 +40,11 @@ module.exports = {
 			sails.controllers.option.formatTrueFalseOptionsAngularToServer(questions[i]);
 		}
 
-	}
+	},
+
+	getQuestionsByTest:function(idTest){
+		var promise=sails.models.question.find({idTest:idTest});
+		return promise;
+	},
 
 };

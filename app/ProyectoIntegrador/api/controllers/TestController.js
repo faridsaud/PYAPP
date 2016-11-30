@@ -5,6 +5,7 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 
+var Promise = require("bluebird");
 module.exports = {
 
 
@@ -660,6 +661,66 @@ module.exports = {
 				}
 			}
 		});
+	},
+
+	getTestById:function(req,res){
+		
+		if(req.body.user.email){
+			var email=req.body.user.email;
+		}else{
+			return res.json(400,{msg:"No email send"});
+		}
+		if(req.body.test.id){
+			var testId=req.body.test.id;
+		}else{
+			return res.json(400,{msg:"No test send"});
+		}
+		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
+			if(error){
+				return res.json(500,{msg:"Error"});
+			}else{
+				if(finded){
+					test={};
+					test.title=finded.title;
+					test.description=finded.description;
+					test.course=finded.idCourse;
+					test.startDateTime=new Date(finded.startDateTime);
+					test.finishDateTime=new Date(finded.finishDateTime);
+					test.multipleChoiceQuestions=[];
+					test.fillQuestions=[];
+					test.trueFalseQuestions=[];
+					test.questions=[];
+					var optionsPromises=[];
+					var questionsPromise=sails.controllers.question.getQuestionsByTest(testId)
+					.then(function(questions){
+						console.log("Se obtuvieron las preguntas");
+						test.questions=questions;
+						for(var i=0;i<test.questions.length;i++){
+							optionsPromises.push(sails.controllers.option.getOptionsByQuestion(test.questions[i]));
+						}
+						console.log("Esperando los datos")
+						Promise.all(optionsPromises).then(function(){
+							console.log("se obtuvieron los datos completos");
+							//console.log(test.questions);
+							return res.json(200,{test:test, msg:"OK"});
+						})
+						.catch(function(error){
+							console.log(error);
+							return res.json(500,{msg:"Error retrieving the questions"});
+
+						})
+					})
+					.catch(function(error){
+						return res.json(500,{msg:"Error retrieving the questions"});
+					})
+					//get questions
+
+				}else{
+					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+				}
+			}
+		})
+
 	},
 
 

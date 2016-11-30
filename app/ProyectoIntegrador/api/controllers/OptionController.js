@@ -30,6 +30,18 @@ module.exports = {
 		}
 		delete question.justificaion;
 		delete question.option;
-	}
+	},
+
+	getOptionsByQuestion:function(question){
+		question.options=[];
+		var promise=sails.models.option.find({idQuestion:question.id})
+		.then(function(options){
+			for(var i=0;i<options.length;i++){
+				console.log("obteniendo opcion:" + options[i].id);
+				question.options.push(options[i]);
+			}
+		})
+		return promise;
+	},
 
 };

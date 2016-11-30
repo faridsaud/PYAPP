@@ -53,7 +53,8 @@ module.exports.routes = {
   'post /course/delete':'CourseController.deleteCourse',
   'post /course/getById':'CourseController.getCourseById',
   'post /course/update':'CourseController.editCourse',
-  'post /test/delete':'TestController.deleteTest'
+  'post /test/delete':'TestController.deleteTest',
+  'post /test/getTestById':'TestController.getTestById'
 
 
 
