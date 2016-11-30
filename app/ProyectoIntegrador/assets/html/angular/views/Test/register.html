@@ -6,28 +6,28 @@
           <div class="form-group">
             <label class="control-label" for="curso">Curso:</label>
             <select class="form-control" id="curso" ng-model="test.course">
-              <option ng-repeat="course in courses" ng-value="course.IDCOURSE">{{course.NAMECOURSE}}</option>
+              <option ng-repeat="course in courses" ng-value="course.IDCOURSE" ng-required="true">{{course.NAMECOURSE}}</option>
             </select>
           </div>
           <div class="form-group">
             <label for="pwd">Título:</label>
-            <input type="text" class="form-control" id="pwd" ng-model="test.title">
+            <input type="text" class="form-control" id="pwd" ng-model="test.title" ng-required="true">
           </div>
           <div class="form-group">
             <label for="name">Descripción:</label>
-            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ></textarea>
+            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ng-required="true" ></textarea>
           </div>
           <div class="row">
             <div class="col-md-6">
               <div class="form-group">
                 <label >Fecha de inicio:</label>
-                <input type="datetime-local" class="form-control"  ng-model="test.startDateTime" ng-change="imprimir()">
+                <input type="datetime-local" class="form-control"  ng-model="test.startDateTime" ng-required="true">
               </div>
             </div>
             <div class="col-md-6">
               <div class="form-group">
                 <label >Fecha de finalizacion:</label>
-                <input type="datetime-local" class="form-control"  ng-model="test.finishDateTime" ng-change="imprimir()">
+                <input type="datetime-local" class="form-control"  ng-model="test.finishDateTime" ng-required="true">
               </div>
             </div>
           </div>

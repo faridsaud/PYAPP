@@ -38,7 +38,7 @@ module.exports = {
     },
     status:{
       type:'string',
-      size:10,
+      size:1,
       columnName: 'STATUS'
     },
     startDateTime:{

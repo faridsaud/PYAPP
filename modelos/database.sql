@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     11/20/2016 9:25:37 PM                        */
+/* Created on:     11/29/2016 11:22:18 PM                       */
 /*==============================================================*/
 
 
@@ -19,6 +19,8 @@ drop table if exists TEST;
 drop table if exists USER;
 
 drop table if exists USR_COU;
+
+drop table if exists USR_OPC;
 
 drop table if exists USR_ROL;
 
@@ -55,7 +57,6 @@ create table OPTIO
 (
    IDOPTION             bigint not null auto_increment,
    IDQUESTION           bigint,
-   EMAIL                varchar(254),
    JUSTIFICATION        text,
    ISCORRECT            bool,
    TYPEOPTION           varchar(10),
@@ -96,7 +97,7 @@ create table TEST
    TITLE                text,
    DESCRIPTIONTEST      text,
    CREATEDBYTEST        varchar(254),
-   STATUS               varchar(10),
+   STATUS               char(1),
    STARTDATETIME        varchar(24),
    FINISHDATETIME       varchar(24),
    AVERAGESCORE         decimal(4,2),
@@ -130,6 +131,16 @@ create table USR_COU
 );
 
 /*==============================================================*/
+/* Table: USR_OPC                                               */
+/*==============================================================*/
+create table USR_OPC
+(
+   EMAIL                varchar(254) not null,
+   IDOPTION             bigint not null,
+   primary key (EMAIL, IDOPTION)
+);
+
+/*==============================================================*/
 /* Table: USR_ROL                                               */
 /*==============================================================*/
 create table USR_ROL
@@ -154,16 +165,13 @@ create table USR_TES
 alter table INSTITUTION add constraint FK_USR_INS foreign key (EMAIL)
       references USER (EMAIL) on delete restrict on update restrict;
 
-alter table OPTIO add constraint FK_POSEE foreign key (IDQUESTION)
+alter table OPTIO add constraint FK_HAVE_QUE_OPT foreign key (IDQUESTION)
       references QUESTION (IDQUESTION) on delete restrict on update restrict;
 
-alter table OPTIO add constraint FK_USR_OPC foreign key (EMAIL)
-      references USER (EMAIL) on delete restrict on update restrict;
-
-alter table QUESTION add constraint FK_CONTIENE foreign key (IDTEST)
+alter table QUESTION add constraint FK_HAVE_TES_QUE foreign key (IDTEST)
       references TEST (IDTEST) on delete restrict on update restrict;
 
-alter table TEST add constraint FK_TIENE_CUR_PRU foreign key (IDCOURSE)
+alter table TEST add constraint FK_HAVE_COU_TES foreign key (IDCOURSE)
       references COURSE (IDCOURSE) on delete restrict on update restrict;
 
 alter table USR_COU add constraint FK_USR_COU foreign key (EMAIL)
@@ -171,6 +179,12 @@ alter table USR_COU add constraint FK_USR_COU foreign key (EMAIL)
 
 alter table USR_COU add constraint FK_USR_COU2 foreign key (IDCOURSE)
       references COURSE (IDCOURSE) on delete restrict on update restrict;
+
+alter table USR_OPC add constraint FK_USR_OPC foreign key (EMAIL)
+      references USER (EMAIL) on delete restrict on update restrict;
+
+alter table USR_OPC add constraint FK_USR_OPC2 foreign key (IDOPTION)
+      references OPTIO (IDOPTION) on delete restrict on update restrict;
 
 alter table USR_ROL add constraint FK_USR_ROL foreign key (EMAIL)
       references USER (EMAIL) on delete restrict on update restrict;

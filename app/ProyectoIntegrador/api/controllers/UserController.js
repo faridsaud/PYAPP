@@ -107,7 +107,7 @@ module.exports = {
       }
       if(email==null){
         return res.json(400,{
-          msg: 'Non email or username send'
+          msg: 'No email or username send'
         });
       }else{
         console.log(role);
@@ -119,7 +119,6 @@ module.exports = {
         }).exec(function (error, userFinded){
           if(error){
             console.log(error);
-            console.log("error aqui");
             return res.json(512, {msg:error})
           }else{
             if(userFinded){
@@ -153,8 +152,13 @@ module.exports = {
                   });
                 }
               }
-            }
+              else{
+                return res.json(400,{
+                  msg: 'Not user finded with those credentials'
+                });
 
+              }
+            }
           });
         }
       },

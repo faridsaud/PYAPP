@@ -409,31 +409,36 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       }
     }
     $scope.register=function(){
-      console.log(Date.parse($scope.test.startDateTime));
-      $http({
-        method:'POST',
-        url:globalVariables.url+'/test/register',
-        data:{
-          test:{
-            createdBy:$rootScope.loggedUser.email,
-            title:$scope.test.title,
-            description:$scope.test.description,
-            startDateTime:$scope.test.startDateTime.toISOString(),
-            finishDateTime:$scope.test.finishDateTime.toISOString(),
-            course:$scope.test.course
-          },
-          multipleChoiceQuestions:$scope.multipleChoiceQuestions,
-          fillQuestions:$scope.fillQuestions,
-          trueFalseQuestions:$scope.trueFalseQuestions
+      if($scope.test.startDateTime>$scope.test.finishDateTime){
+        toastr.error("La fecha de inicio de la prueba debe ser antes que la fecha de finalizacion", "Error");
+      }else{
 
-        }
-      }).then(function success(response){
-        console.log(response);
-        toastr.success("Prueba registrada con éxito","Success");
-      }, function error(response){
-        console.log(response);
-        toastr.error("Error al registrar la prueba","Success");
-      })
+        console.log(Date.parse($scope.test.startDateTime));
+        $http({
+          method:'POST',
+          url:globalVariables.url+'/test/register',
+          data:{
+            test:{
+              createdBy:$rootScope.loggedUser.email,
+              title:$scope.test.title,
+              description:$scope.test.description,
+              startDateTime:$scope.test.startDateTime.toISOString(),
+              finishDateTime:$scope.test.finishDateTime.toISOString(),
+              course:$scope.test.course
+            },
+            multipleChoiceQuestions:$scope.multipleChoiceQuestions,
+            fillQuestions:$scope.fillQuestions,
+            trueFalseQuestions:$scope.trueFalseQuestions
+
+          }
+        }).then(function success(response){
+          console.log(response);
+          toastr.success("Prueba registrada con éxito","Success");
+        }, function error(response){
+          console.log(response);
+          toastr.error("Error al registrar la prueba","Success");
+        })
+      }
     }
 
     /*Load course by teacher*/
