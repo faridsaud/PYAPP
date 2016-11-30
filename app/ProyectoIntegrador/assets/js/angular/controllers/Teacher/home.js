@@ -79,7 +79,7 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
       $scope.editTest=function(testId){
         $rootScope.activeCourse={};
         $rootScope.activeCourse.id=testId;
-        $location.path('/course/edit');
+        $location.path('/test/edit');
       }
 
       $scope.deleteTest=function(testId){

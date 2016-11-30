@@ -665,7 +665,7 @@ module.exports = {
 
 	getTestById:function(req,res){
 
-/*
+
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
@@ -676,9 +676,8 @@ module.exports = {
 		}else{
 			return res.json(400,{msg:"No test send"});
 		}
-		*/
-		var email="test@test.com";
-		var testId=8;
+		console.log(email);
+		console.log(testId);
 		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
 			if(error){
 				return res.json(500,{msg:"Error"});
@@ -688,8 +687,8 @@ module.exports = {
 					test.title=finded.title;
 					test.description=finded.description;
 					test.course=finded.idCourse;
-					test.startDateTime=new Date(finded.startDateTime);
-					test.finishDateTime=new Date(finded.finishDateTime);
+					test.startDateTime=finded.startDateTime;
+					test.finishDateTime=finded.finishDateTime;
 					test.multipleChoiceQuestions=[];
 					test.fillQuestions=[];
 					test.trueFalseQuestions=[];

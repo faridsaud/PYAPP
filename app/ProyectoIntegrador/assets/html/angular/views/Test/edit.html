@@ -1,0 +1,268 @@
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <form role="form" ng-submit="register()">
+          <div class="form-group">
+            <label class="control-label" for="curso">Curso:</label>
+            <select class="form-control" id="curso" ng-model="test.course">
+              <option ng-repeat="course in courses" ng-value="{{course.IDCOURSE}}" ng-required="true">{{course.NAMECOURSE}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="pwd">Título:</label>
+            <input type="text" class="form-control" id="pwd" ng-model="test.title" ng-required="true">
+          </div>
+          <div class="form-group">
+            <label for="name">Descripción:</label>
+            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ng-required="true" ></textarea>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Fecha de inicio:</label>
+                <input type="datetime-local" class="form-control"  ng-model="test.startDateTime" ng-required="true">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group">
+                <label >Fecha de finalizacion:</label>
+                <input type="datetime-local" class="form-control"  ng-model="test.finishDateTime" ng-required="true">
+              </div>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<div class="section">
+  <div class="container">
+    <br>
+    <div class="row">
+      <div class="col-md-8 col-md-offset-4">
+        <label for="comment">Agregar pregunta:</label>
+      </div>
+      <div class="col-md-12">
+        <div class="text-center">
+
+                    <button type="button" class="btn btn-primary" ng-click="imprimir()">Imprimir</button>
+          <button type="button" class="btn btn-primary" ng-click="checkData()">Verificar</button>
+          <button type="button" class="btn btn-primary" ng-click="addMultipleChoiceQuestion()">Opción Múltiple</button>
+          <button type="button" class="btn btn-primary" ng-click="addTrueFalseQuestion()">Verdadero/Falso</button>
+          <button type="button" class="btn btn-primary" ng-click="addFillQuestion()">Completar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<br>
+<!-- Multiple choice question  -->
+<div class="row">
+  <div class="col-md-12">
+    <h3>Preguntas de opción múltiple</h3>
+  </div>
+</div>
+<div class="section" ng-if="multipleChoiceQuestions.length>=1">
+  <div class="panel panel-default" ng-repeat="multipleChoiceQuestion in multipleChoiceQuestions track by $index" >
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-12">
+          <h5>Pregunta {{$index+1}}</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-10">
+          <div class="form-group">
+            <label for="comment">Enunciado:</label>
+            <textarea class="form-control" rows="3" id="comment" ng-model="multipleChoiceQuestion.text"></textarea>
+          </div>
+        </div>
+        <div class="col-md-2">
+          <div class="form-group">
+            <label for="usr" title="">Ponderación: X:1</label>
+            <input type="text" class="form-control" ng-model="multipleChoiceQuestion.weighing">
+          </div>
+        </div>
+      </div>
+      <div ng-repeat="option in multipleChoiceQuestion.options track by $index">
+        <div class="row">
+          <div class="col-md-10">
+            <div class="form-group">
+              <label for="comment">Opcion {{$index+1}}:</label>
+              <textarea class="form-control" rows="2" id="comment" ng-model="option.text"></textarea>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <br>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" ng-model="option.isCorrect" ng-false-value="false">Respuesta correcta</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 ">
+              <div class="form-group">
+                <label for="comment">Justificación opción {{$index+1}}:</label>
+                <textarea class="form-control" rows="3" id="comment" ng-model="option.justification"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 ">
+            <a class="btn btn-primary" ng-click="addOptionMultipleChoiceQuestion($index)">Agregar opción</a>
+          </div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-12 text-center">
+            <button class="btn btn-danger" ng-click="removeMultipleChoiceQuestion($index)">Eliminar pregunta</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- True False questions -->
+  <div class="row">
+    <div class="col-md-12">
+      <h3>Preguntas de verdadero/falso</h3>
+    </div>
+  </div>
+  <div class="section" ng-if="trueFalseQuestions.length>=1">
+    <div class="panel panel-default" ng-repeat="trueFalseQuestion in trueFalseQuestions track by $index" >
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-12">
+            <h5>Pregunta {{$index+1}}</h5>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label for="comment">Enunciado:</label>
+              <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.text"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-2">
+            <div class="form-group">
+              <label for="comment">Opcion correcta:</label>
+              <div class="radio">
+                <label>
+                  <input type="radio" name="optradio" ng-value="'true'" ng-model="trueFalseQuestion.option" checked>Verdadero</label>
+                </div>
+                <div class="radio">
+                  <label>
+                    <input type="radio" name="optradio" ng-value="'false'" ng-model="trueFalseQuestion.option">Falso</label>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="usr" title="">Ponderación: X:1</label>
+                  <input type="text" class="form-control" id="usr" ng-model="trueFalseQuestion.weighing">
+                </div>
+              </div>
+              <div class="col-md-8">
+                <div class="form-group">
+                  <label for="comment">Justificación:</label>
+                  <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.justification"></textarea>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-12 text-center">
+
+                <button class="btn btn-danger" ng-click="removeTrueFalseQuestion($index)">Eliminar pregunta</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!--Fill type of question -->
+      <div class="row">
+        <div class="col-md-12">
+          <h3>Preguntas de completar</h3>
+        </div>
+      </div>
+      <div class="section" ng-if="fillQuestions.length>=1">
+        <div class="panel panel-default" ng-repeat="fillQuestion in fillQuestions track by $index" >
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-12">
+                <h5>Pregunta {{$index+1}}</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-10">
+                <div class="form-group">
+                  <label for="comment">Enunciados:</label>
+                  <div ng-repeat="statement in fillQuestion.statements track by $index" >
+                    <textarea class="form-control" rows="2"  ng-model="statement.text"></textarea>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-2">
+                <div class="form-group">
+                  <label for="usr" title="">Ponderación: X:1</label>
+                  <input type="text" class="form-control" id="usr" ng-model="fillQuestion.weighing">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 ">
+                <a class="btn btn-primary" ng-click="addStatementFillQuestion($index)">Agregar enunciado</a>
+              </div>
+            </div>
+            <br>
+            <div ng-repeat="option in fillQuestion.options track by $index">
+              <div class="row">
+                <div class="col-md-10">
+                  <div class="form-group">
+                    <label for="comment">Opción {{$index+1}}:</label>
+                    <textarea class="form-control" rows="2" id="comment" ng-model="option.text"></textarea>
+                  </div>
+                </div>
+                <div class="col-md-2">
+                  <br>
+                  <div class="checkbox">
+                    <label>
+                      <input type="checkbox" ng-model="option.isCorrect">Respuesta correcta
+                    </label>
+                  </div>
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="comment">Justificación {{$index+1}}:</label>
+                    <textarea class="form-control" rows="2"  ng-model="option.justification"></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 ">
+                <a class="btn btn-primary" ng-click="addOptionFillQuestion($index)">Agregar opción</a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12 text-center">
+                <button class="btn btn-danger" ng-click="removeFillQuestion($index)">Eliminar pregunta</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>

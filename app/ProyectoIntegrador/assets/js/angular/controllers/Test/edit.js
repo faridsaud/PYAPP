@@ -1,4 +1,4 @@
-app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
+app.controller('editTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
   if(!$rootScope.loggedUser){
     $location.path('/home');
 
@@ -460,5 +460,33 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }, function error(response){
       console.log(response);
     })
+
+    /*Load test*/
+    $http({
+      method:'POST',
+      url:globalVariables.url+'/test/getTestById',
+      data:{
+        user:{
+          email:$rootScope.loggedUser.email
+        },
+        test:{
+          id:$rootScope.activeCourse.id
+        }
+
+      }
+    }).then(function success(response){
+      console.log(response);
+      $scope.test=response.data.test;
+      $scope.multipleChoiceQuestions=$scope.test.multipleChoiceQuestions;
+      $scope.fillQuestions=$scope.test.fillQuestions;
+      $scope.trueFalseQuestions=$scope.test.trueFalseQuestions;
+      $scope.test.startDateTime=new Date($scope.test.startDateTime);
+      $scope.test.finishDateTime=new Date($scope.test.finishDateTime);;
+      console.log($scope.test);
+      console.log($scope.courses);
+    }, function error(response){
+      console.log(response);
+    })
+
   }
 }]);
