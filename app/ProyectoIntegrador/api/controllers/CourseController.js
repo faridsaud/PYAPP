@@ -90,7 +90,7 @@ module.exports = {
 			if(req.body.user.email){
 				var email=req.body.user.email;
 				var status="t";
-				sails.models.usrcou.query('SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',[status, email], function(err, results) {
+				sails.models.usrcou.query('SELECT C.NAMECOURSE,C.DESCRIPTIONCOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',[status, email], function(err, results) {
 					if (err){
 						console.log("Estamos aqui en ERR");
 						return res.json(512,{msg:"error en la query"});
@@ -107,7 +107,7 @@ module.exports = {
 			if(req.body.user.email){
 				var email=req.body.user.email;
 				var status="s";
-				sails.models.usrcou.query('SELECT C.NAMECOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',[status, email], function(err, results) {
+				sails.models.usrcou.query('SELECT C.NAMECOURSE,C.DESCRIPTIONCOURSE, C.IDCOURSE FROM USR_COU U, COURSE C WHERE U.STATUSUSRCOU=? AND U.EMAIL=? AND C.IDCOURSE=U.IDCOURSE',[status, email], function(err, results) {
 					if (err){
 						console.log("Estamos aqui en ERR");
 						return res.json(512,{msg:"error en la query"});

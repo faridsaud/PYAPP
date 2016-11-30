@@ -36,18 +36,22 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
       })
 
 
-      $scope.openCourse=function(courseName, courseId){
+      $scope.openCourse=function(courseName, courseId, courseDescription){
         $rootScope.activeCourse={};
         $rootScope.activeCourse.name=courseName;
         $rootScope.activeCourse.id=courseId;
+        $rootScope.activeCourse.description=courseDescription;
         $location.path('/teacher/course/home');
       }
+
 
       $scope.editCourse=function(courseId){
         $rootScope.activeCourse={};
         $rootScope.activeCourse.id=courseId;
         $location.path('/course/edit');
       }
+
+
       $scope.deleteCourse=function(courseId){
         console.log("Deleting course");
         $http({
@@ -67,6 +71,35 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
           $location.path('/home');
         }, function error(response){
           toastr.error("Error al eliminar el curso","Error");
+          console.log(response);
+        })
+      }
+
+
+      $scope.editTest=function(testId){
+        $rootScope.activeCourse={};
+        $rootScope.activeCourse.id=courseId;
+        $location.path('/course/edit');
+      }
+
+      $scope.deleteTest=function(testId){
+        $http({
+          method:'POST',
+          url:globalVariables.url+'/test/delete',
+          data:{
+            user:{
+              email:$rootScope.loggedUser.email
+            },
+            test:{
+              id:testId
+            }
+          }
+        }).then(function success(response){
+          console.log(response);
+          toastr.success("Prueba eliminada con éxito","Success");
+          $location.path('/home');
+        }, function error(response){
+          toastr.error("Error al eliminar la prueba","Error");
           console.log(response);
         })
       }

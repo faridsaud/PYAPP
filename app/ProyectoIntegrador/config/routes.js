@@ -52,7 +52,8 @@ module.exports.routes = {
   'post /promise2':'PruebaController.testPromises2',
   'post /course/delete':'CourseController.deleteCourse',
   'post /course/getById':'CourseController.getCourseById',
-  'post /course/update':'CourseController.editCourse'
+  'post /course/update':'CourseController.editCourse',
+  'post /test/delete':'TestController.deleteTest'
 
 
 

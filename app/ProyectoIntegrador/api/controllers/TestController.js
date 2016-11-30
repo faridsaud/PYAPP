@@ -621,19 +621,46 @@ module.exports = {
 		}else{
 			var email=null;
 		}
-		sails.models.test.query(
-			'SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',
-			[email]
-			, function(err, results) {
-				if (err){
-					console.log(err);
-					return res.json(512,{msg:"Error"});
-				}else{
-					var tests=sails.controllers.test.checkStatus(results);
-					return res.json(200,{msg:"OK", tests:tests});
-				}
-			});
+		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
+			if (err){
+				console.log(err);
+				return res.json(512,{msg:"Error"});
+			}else{
+				var tests=sails.controllers.test.checkStatus(results);
+				return res.json(200,{msg:"OK", tests:tests});
+			}
+		});
+	},
+
+	deleteTest:function(req,res){
+		if(req.body.user.email){
+			var email=req.body.user.email;
+		}else{
+			return res.json(400,{msg:"No email send"});
 		}
+		if(req.body.test.id){
+			var testId=req.body.test.id;
+		}else{
+			return res.json(400,{msg:"No test send"});
+		}
+		sails.models.usrtes.findOne({idTest:testId ,email:email, status:'t'}).exec(function(error, finded){
+			if(error){
+				return res.json(500,{msg:"Error deleting the test"});
+			}else{
+				if(finded){
+					sails.models.test.destroy({id:testId}).exec(function(error){
+						if(error){
+							return res.json(500,{msg:"Error deleting the test"});
+						}else{
+							return res.json(200,{msg:"Test deleted"});
+						}
+					})
+				}else{
+					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+				}
+			}
+		});
+	},
 
 
-	};
+};

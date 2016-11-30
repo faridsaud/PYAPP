@@ -19,7 +19,7 @@
             <li class="list-group-item" ng-repeat="course in courses" >
               <div class="row">
                 <div class="col-md-9">
-                  <a ng-click="openCourse(course.NAMECOURSE,course.IDCOURSE)">{{course.NAMECOURSE}}</a>
+                  <a ng-click="openCourse(course.NAMECOURSE,course.IDCOURSE, course.DESCRIPTIONCOURSE)">{{course.NAMECOURSE}}</a>
                 </div>
                 <div class="col-md-3">
                   <div class="btn-group btn-group-xs pull-right">
@@ -51,29 +51,32 @@
           </div>
         </div>
         <div class="panel-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Nota promedio</th>
-                <th>Acción</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='c'">
-                <td>{{test.title}}</td>
-                <td>NA</td>
-                <td>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="editTest(test.id)">
-                    <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-                  </button>
-                  <button type="button" class="btn btn-default btn-xs" ng-click="deleteTest(test.id)">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+
+          <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Nota promedio</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='c'">
+                  <td>{{test.title}}</td>
+                  <td>NA</td>
+                  <td>
+                    <button type="button" class="btn btn-default btn-xs" ng-click="editTest(test.id)">
+                      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-xs" ng-click="deleteTest(test.id)">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -83,22 +86,30 @@
           <h3 class="panel-title">Pruebas en ejecución</h3>
         </div>
         <div class="panel-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Nota promedio</th>
-                <th title="La fecha y hora de finalización mostradas estan transformadas de la hora del servidor a la hora de su navegador (PC)">Fecha y hora de finalización </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'">
-                <td>{{test.title}}</td>
-                <td>{{test.averageScore}}</td>
-                <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Nota promedio</th>
+                  <th title="La fecha y hora de finalización mostradas estan transformadas de la hora del servidor a la hora de su navegador (PC)">Fecha y hora de finalización </th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'">
+                  <td>{{test.title}}</td>
+                  <td>{{test.averageScore}}</td>
+                  <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
+                  <td>
+                    <button type="button" class="btn btn-default btn-xs" ng-click="deleteTest(test.id)">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
       <div class="panel panel-success">
@@ -107,20 +118,28 @@
         </div>
 
         <div class="panel-body">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Título</th>
-                <th>Nota promedio</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr ng-repeat="test in tests track by $index" ng-if="test.status=='f'">
-                <td>{{test.title}}</td>
-                <td>{{test.averageScore}}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div class="table-responsive">
+            <table class="table table-hover table-condensed">
+              <thead>
+                <tr>
+                  <th>Título</th>
+                  <th>Nota promedio</th>
+                  <th>Acción</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='f'">
+                  <td>{{test.title}}</td>
+                  <td>{{test.averageScore}}</td>
+                  <td>
+                    <button type="button" class="btn btn-default btn-xs" ng-click="deleteTest(test.id)">
+                      <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

@@ -4,7 +4,8 @@ app.controller('courseHomeStudentController',['$scope','$http','$location','toas
       console.log("home teacher controller");
       $scope.course={
         id:$rootScope.activeCourse.id,
-        name:$rootScope.activeCourse.name
+        name:$rootScope.activeCourse.name,
+        description:$rootScope.activeCourse.description
       }
 
 

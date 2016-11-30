@@ -1,6 +1,7 @@
 app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
   if(!$rootScope.loggedUser){
     $location.path('/home');
+
   }else{
     $scope.test={};
     $scope.imprimir=function(){
@@ -434,6 +435,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         }).then(function success(response){
           console.log(response);
           toastr.success("Prueba registrada con éxito","Success");
+          $location.path('/home');
         }, function error(response){
           console.log(response);
           toastr.error("Error al registrar la prueba","Success");

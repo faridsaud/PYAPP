@@ -36,10 +36,12 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
       })
 
 
-      $scope.openCourse=function(courseName, courseId){
+      $scope.openCourse=function(courseName, courseId, courseDescription){
+        console.log(courseDescription);
         $rootScope.activeCourse={};
         $rootScope.activeCourse.name=courseName;
         $rootScope.activeCourse.id=courseId;
+        $rootScope.activeCourse.description=courseDescription;
         $location.path('/student/course/home');
       }
     }else{
