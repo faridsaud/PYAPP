@@ -81,27 +81,23 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
 
 
     $scope.checkData=function(){
+      var errorCheckingData=false;
       var errorMultipleChoice=$scope.checkMultipleChoiceQuestions();
       if(errorMultipleChoice.error==true){
-        console.log("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
-      }else{
-        console.log("No error checking multipleChoiceQuestions");
+        toastr.error("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.multipleChoiceQuestions);
       var errorTrueFalse=$scope.checkTrueFalseQuestions();
       if(errorTrueFalse.error==true){
-        console.log("Error checking trueFalseQuestions" + errorTrueFalse.msg);
-      }else{
-        console.log("No error checking trueFalseQuestions");
+        toastr.error("Error checking trueFalseQuestions" + errorTrueFalse.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.trueFalseQuestions);
       var errorFillQuestion=$scope.checkFillQuestions();
       if(errorFillQuestion.error==true){
-        console.log("Error checking fillQuestions" + errorFillQuestion.msg);
-      }else{
-        console.log("No error checking fillQuestions");
+        toastr.error("Error checking fillQuestions" + errorFillQuestion.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.fillQuestions);
+      return errorCheckingData;
     }
 
 
@@ -141,7 +137,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
           }
         }
         if($scope.trueFalseQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.trueFalseQuestions[i].weighing);
           if(res==false){
             $scope.trueFalseQuestions[i].weighing=1;
@@ -175,7 +171,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       for(var i=0;i<$scope.multipleChoiceQuestions.length;i++){
         /*check weighing*/
         if($scope.multipleChoiceQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.multipleChoiceQuestions[i].weighing);
           if(res==false){
             $scope.multipleChoiceQuestions[i].weighing=1;
@@ -295,7 +291,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
     $scope.checkFillQuestions=function(){
       for(var i=0;i<$scope.fillQuestions.length;i++){
         if($scope.fillQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.fillQuestions[i].weighing);
           if(res==false){
             $scope.fillQuestions[i].weighing=1;
@@ -409,17 +405,20 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
         msg:"not error found"
       }
     }
-    $scope.register=function(){
+    $scope.update=function(){
       if($scope.test.startDateTime>$scope.test.finishDateTime){
         toastr.error("La fecha de inicio de la prueba debe ser antes que la fecha de finalizacion", "Error");
       }else{
-
-        console.log(Date.parse($scope.test.startDateTime));
+        var error=$scope.checkData();
+        if(error==true){
+          return;
+        }
         $http({
           method:'POST',
-          url:globalVariables.url+'/test/register',
+          url:globalVariables.url+'/test/update',
           data:{
             test:{
+              id:$rootScope.activeTest.id,
               createdBy:$rootScope.loggedUser.email,
               title:$scope.test.title,
               description:$scope.test.description,
@@ -470,7 +469,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
           email:$rootScope.loggedUser.email
         },
         test:{
-          id:$rootScope.activeCourse.id
+          id:$rootScope.activeTest.id
         }
 
       }
@@ -482,11 +481,41 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       $scope.trueFalseQuestions=$scope.test.trueFalseQuestions;
       $scope.test.startDateTime=new Date($scope.test.startDateTime);
       $scope.test.finishDateTime=new Date($scope.test.finishDateTime);;
+      $scope.formatTrueFalseQuestionsServerToAngular();
+      $scope.formatFillQuestionsServerToAngular();
       console.log($scope.test);
       console.log($scope.courses);
     }, function error(response){
       console.log(response);
     })
+
+
+    $scope.formatTrueFalseQuestionsServerToAngular=function(){
+      for(var i=0;i<$scope.trueFalseQuestions.length;i++){
+        for(var j=0; j<$scope.trueFalseQuestions[i].options.length;j++){
+          if(($scope.trueFalseQuestions[i].options[j].text=="verdadero")&&($scope.trueFalseQuestions[i].options[j].isCorrect==true)){
+            $scope.trueFalseQuestions[i].option="true";
+          }
+          if(($scope.trueFalseQuestions[i].options[j].text=="falso")&&($scope.trueFalseQuestions[i].options[j].isCorrect==true)){
+            $scope.trueFalseQuestions[i].option="false";
+          }
+          if($scope.trueFalseQuestions[i].options[j].justification.length>1){
+            $scope.trueFalseQuestions[i].justification=$scope.trueFalseQuestions[i].options[j].justification;
+          }
+        }
+      }
+    }
+
+    $scope.formatFillQuestionsServerToAngular=function(){
+      for(var i=0; i<$scope.fillQuestions.length;i++){
+        var statements=$scope.fillQuestions[i].text.split(".espacio en blanco.");
+        $scope.fillQuestions[i].statements=[];
+        for(var j=0;j<statements.length;j++ ){
+          $scope.fillQuestions[i].statements.push({text:statements[j]});
+        }
+      }
+    }
+
 
   }
 }]);

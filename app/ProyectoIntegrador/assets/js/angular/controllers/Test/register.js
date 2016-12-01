@@ -81,27 +81,23 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
 
     $scope.checkData=function(){
+      var errorCheckingData=false;
       var errorMultipleChoice=$scope.checkMultipleChoiceQuestions();
       if(errorMultipleChoice.error==true){
-        console.log("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
-      }else{
-        console.log("No error checking multipleChoiceQuestions");
+        toastr.error("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.multipleChoiceQuestions);
       var errorTrueFalse=$scope.checkTrueFalseQuestions();
       if(errorTrueFalse.error==true){
-        console.log("Error checking trueFalseQuestions" + errorTrueFalse.msg);
-      }else{
-        console.log("No error checking trueFalseQuestions");
+        toastr.error("Error checking trueFalseQuestions" + errorTrueFalse.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.trueFalseQuestions);
       var errorFillQuestion=$scope.checkFillQuestions();
       if(errorFillQuestion.error==true){
-        console.log("Error checking fillQuestions" + errorFillQuestion.msg);
-      }else{
-        console.log("No error checking fillQuestions");
+        toastr.error("Error checking fillQuestions" + errorFillQuestion.msg);
+        errorCheckingData=true;
       }
-      console.log($scope.fillQuestions);
+      return errorCheckingData;
     }
 
 
@@ -141,7 +137,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           }
         }
         if($scope.trueFalseQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.trueFalseQuestions[i].weighing);
           if(res==false){
             $scope.trueFalseQuestions[i].weighing=1;
@@ -175,7 +171,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       for(var i=0;i<$scope.multipleChoiceQuestions.length;i++){
         /*check weighing*/
         if($scope.multipleChoiceQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.multipleChoiceQuestions[i].weighing);
           if(res==false){
             $scope.multipleChoiceQuestions[i].weighing=1;
@@ -295,7 +291,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     $scope.checkFillQuestions=function(){
       for(var i=0;i<$scope.fillQuestions.length;i++){
         if($scope.fillQuestions[i].weighing){
-          var patt = new RegExp("^\d{1,1}$");
+          var patt = /^\d{1,1}$/;
           var res = patt.test($scope.fillQuestions[i].weighing);
           if(res==false){
             $scope.fillQuestions[i].weighing=1;
@@ -413,7 +409,10 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       if($scope.test.startDateTime>$scope.test.finishDateTime){
         toastr.error("La fecha de inicio de la prueba debe ser antes que la fecha de finalizacion", "Error");
       }else{
-
+        var error=$scope.checkData();
+        if(error==true){
+          return;
+        }
         console.log(Date.parse($scope.test.startDateTime));
         $http({
           method:'POST',

@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-        <form role="form" ng-submit="register()">
+        <form role="form" ng-submit="update()">
           <div class="form-group">
             <label class="control-label" for="curso">Curso:</label>
             <select class="form-control" id="curso" ng-model="test.course">
@@ -48,7 +48,7 @@
       <div class="col-md-12">
         <div class="text-center">
 
-                    <button type="button" class="btn btn-primary" ng-click="imprimir()">Imprimir</button>
+          <button type="button" class="btn btn-primary" ng-click="imprimir()">Imprimir</button>
           <button type="button" class="btn btn-primary" ng-click="checkData()">Verificar</button>
           <button type="button" class="btn btn-primary" ng-click="addMultipleChoiceQuestion()">Opción Múltiple</button>
           <button type="button" class="btn btn-primary" ng-click="addTrueFalseQuestion()">Verdadero/Falso</button>
@@ -157,11 +157,11 @@
               <label for="comment">Opcion correcta:</label>
               <div class="radio">
                 <label>
-                  <input type="radio" name="optradio" ng-value="'true'" ng-model="trueFalseQuestion.option" checked>Verdadero</label>
+                  <input type="radio" name="optradio{{$index}}" ng-value="'true'" ng-model="trueFalseQuestion.option" >Verdadero</label>
                 </div>
                 <div class="radio">
                   <label>
-                    <input type="radio" name="optradio" ng-value="'false'" ng-model="trueFalseQuestion.option">Falso</label>
+                    <input type="radio" name="optradio{{$index}}" ng-value="'false'" ng-model="trueFalseQuestion.option">Falso</label>
                   </div>
                 </div>
               </div>

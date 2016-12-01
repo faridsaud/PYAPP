@@ -225,7 +225,7 @@ module.exports = {
 				}
 			}
 			if(req.body.trueFalseQuestions[i].weighing){
-				var patt = new RegExp("^\d{1,1}$");
+				var patt = /^\d{1,1}$/;
 				var res = patt.test(req.body.trueFalseQuestions[i].weighing);
 				if(res==false){
 					req.body.trueFalseQuestions[i].weighing=1;
@@ -254,7 +254,7 @@ module.exports = {
 		for(var i=0;i<req.body.multipleChoiceQuestions.length;i++){
 			/*check weighing*/
 			if(req.body.multipleChoiceQuestions[i].weighing){
-				var patt = new RegExp("^\d{1,1}$");
+				var patt = /^\d{1,1}$/;
 				var res = patt.test(req.body.multipleChoiceQuestions[i].weighing);
 				if(res==false){
 					req.body.multipleChoiceQuestions[i].weighing=1;
@@ -366,7 +366,7 @@ module.exports = {
 		/*Check Fill Questions*/
 		for(var i=0;i<req.body.fillQuestions.length;i++){
 			if(req.body.fillQuestions[i].weighing){
-				var patt = new RegExp("^\d{1,1}$");
+				var patt = /^\d{1,1}$/
 				var res = patt.test(req.body.fillQuestions[i].weighing);
 				if(res==false){
 					req.body.fillQuestions[i].weighing=1;
@@ -726,6 +726,232 @@ module.exports = {
 		})
 
 	},
+
+	edit: function (req, res) {
+		if(req.body.test){
+			var newTest=req.body.test;
+		}else{
+			return res.json(400,{msg: 'Error updating the test, there is no test data'});
+
+		}
+		if(req.body.test.title){
+			var title=req.body.test.title;
+		}else{
+			return res.json(400,{msg: 'Error creating the test, there is no title'});
+		}
+		if(req.body.test.description){
+			var description=req.body.test.description;
+		}else{
+			var description=null;
+		}
+		if(req.body.test.createdBy){
+			var createdBy=req.body.test.createdBy;
+		}else{
+			return res.json(400,{msg: 'Error creating the test, there is no owner'});
+		}
+		if(req.body.test.status){
+			var status=req.body.test.status;
+		}else{
+			var status=null;
+		}
+		if(req.body.test.startDateTime){
+			var startDateTime=req.body.test.startDateTime;
+		}else{
+			return res.json(400,{msg: 'Error creating the test, there should be an start date-time'});
+		}
+		if(req.body.test.finishDateTime){
+			var finishDateTime=req.body.test.finishDateTime;
+		}else{
+			return res.json(400,{msg: 'Error creating the test, there should be an finish date-time'});
+		}
+		if(req.body.test.course){
+			var idCourse=req.body.test.course;
+		}else{
+			return res.json(400,{msg: 'Error creating the test, there should be a course'});
+		}
+		//return res.json(201,{msg: 'Test created'});
+		var errorCheckingTest=sails.controllers.test.checkTestData(req);
+		if(errorCheckingTest.error==true){
+			console.log(errorCheckingTest.msg);
+			return res.json(400, {msg:"Error creating the test, wrong test format send"});
+		}
+		/*Get questions*/
+		var multipleChoiceQuestions=req.body.multipleChoiceQuestions;
+		var fillQuestions=req.body.fillQuestions;
+		var trueFalseQuestions=req.body.trueFalseQuestions;
+		/*Format questions*/
+		sails.controllers.question.formatMultipleChoiceQuestionsAngularToServer(multipleChoiceQuestions);
+		sails.controllers.question.formatFillQuestionsAngularToServer(fillQuestions);
+		sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
+		var questionsPromises=[];
+		var optionsPromises=[];
+		console.log(multipleChoiceQuestions[0]);
+		/*Separte questions in questions to be created and questions to be updated*/
+		var multipleChoiceQuestionsToBeCreated=[];
+		var multipleChoiceQuestionsToBeUpdated=[];
+		var fillQuestionsToBeCreated=[];
+		var fillQuestionsToBeUpdated=[];
+		var trueFalseQuestionsToBeCreated=[];
+		var trueFalseQuestionsToBeUpdated=[];
+		sails.controllers.question.separateQuestionByAction(multipleChoiceQuestions,multipleChoiceQuestionsToBeCreated,multipleChoiceQuestionsToBeUpdated);
+		sails.controllers.question.separateQuestionByAction(fillQuestions,fillQuestionsToBeCreated,fillQuestionsToBeUpdated);
+		sails.controllers.question.separateQuestionByAction(trueFalseQuestions,trueFalseQuestionsToBeCreated,trueFalseQuestionsToBeUpdated);
+		console.log("Multiple choice questions to be created")
+		console.log(multipleChoiceQuestionsToBeCreated);
+		console.log("Multiple choice questions to be updated")
+		console.log(multipleChoiceQuestionsToBeUpdated);
+		console.log("TF questions to be created")
+		console.log(trueFalseQuestionsToBeCreated);
+		console.log("TF questions to be updated")
+		console.log(trueFalseQuestionsToBeUpdated);
+		console.log("fill questions to be created")
+		console.log(fillQuestionsToBeCreated);
+		console.log("fill questions to be updated")
+		console.log(fillQuestionsToBeUpdated);
+
+		/*Register mc questions*/
+		for (var i=0;i<multipleChoiceQuestionsToBeCreated.length;i++){
+			var questionPromise=sails.controllers.question.register(multipleChoiceQuestionsToBeCreated[i],newTest)
+			.then(function(questionCreated){
+				for(var k=0;k<multipleChoiceQuestionsToBeCreated.length;k++){
+					if(multipleChoiceQuestionsToBeCreated[k].text==questionCreated.text){
+						console.log("Se hizo match");
+						multipleChoiceQuestionsToBeCreated[k].id=questionCreated.id;
+					}
+				}
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(512,{msg: 'Error creating the test'});
+			})
+			questionsPromises.push(questionPromise);
+		}
+
+		/*Register fill questions*/
+		for (var i=0;i<fillQuestionsToBeCreated.length;i++){
+			var questionPromise=sails.controllers.question.register(fillQuestionsToBeCreated[i],newTest)
+			.then(function(questionCreated){
+				for(var k=0;k<fillQuestionsToBeCreated.length;k++){
+					if(fillQuestionsToBeCreated[k].text==questionCreated.text){
+						fillQuestionsToBeCreated[k].id=questionCreated.id;
+					}
+				}
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(512,{msg: 'Error creating the test'});
+			})
+			questionsPromises.push(questionPromise);
+		}
+
+		/*Register true false questions*/
+		for (var i=0;i<trueFalseQuestionsToBeCreated.length;i++){
+			var questionPromise=sails.controllers.question.register(trueFalseQuestionsToBeCreated[i],newTest)
+			.then(function(questionCreated){
+				for(var k=0;k<trueFalseQuestionsToBeCreated.length;k++){
+					if(trueFalseQuestionsToBeCreated[k].text==questionCreated.text){
+						trueFalseQuestionsToBeCreated[k].id=questionCreated.id;
+					}
+				}
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(512,{msg: 'Error creating the test'});
+			})
+			questionsPromises.push(questionPromise);
+		}
+
+		/*Update multiple choice questions*/
+		for (var i=0;i<multipleChoiceQuestionsToBeUpdated.length;i++){
+			var questionPromise=sails.controllers.question.update(multipleChoiceQuestionsToBeUpdated[i],newTest);
+			questionsPromises.push(questionPromise);
+		}
+
+		/*Update true false questions*/
+		for (var i=0;i<trueFalseQuestionsToBeUpdated.length;i++){
+			var questionPromise=sails.controllers.question.update(trueFalseQuestionsToBeUpdated[i],newTest);
+			questionsPromises.push(questionPromise);
+		}
+
+		/*Update fill questions*/
+		for (var i=0;i<fillQuestionsToBeUpdated.length;i++){
+			var questionPromise=sails.controllers.question.update(fillQuestionsToBeUpdated[i],newTest);
+			questionsPromises.push(questionPromise);
+		}
+
+		Promise.all(questionsPromises)
+		.then(function(){
+			/*Register options*/
+			for(var i=0;i<multipleChoiceQuestionsToBeCreated.length;i++){
+				for(var j=0;j<multipleChoiceQuestionsToBeCreated[i].options.length;j++){
+					var optionPromise=sails.controllers.option.register(multipleChoiceQuestionsToBeCreated[i].options[j],multipleChoiceQuestionsToBeCreated[i]);
+					optionsPromises.push(optionPromise);
+				}
+			}
+			for(var i=0;i<trueFalseQuestionsToBeCreated.length;i++){
+				for(var j=0;j<trueFalseQuestionsToBeCreated[i].options.length;j++){
+					var optionPromise=sails.controllers.option.register(trueFalseQuestionsToBeCreated[i].options[j],trueFalseQuestionsToBeCreated[i]);
+					optionsPromises.push(optionPromise);
+				}
+			}
+			for(var i=0;i<fillQuestionsToBeCreated.length;i++){
+				for(var j=0;j<fillQuestionsToBeCreated[i].options.length;j++){
+					var optionPromise=sails.controllers.option.register(fillQuestionsToBeCreated[i].options[j],fillQuestionsToBeCreated[i]);
+					optionsPromises.push(optionPromise);
+				}
+			}
+			/*Update options*/
+			sails.controllers.question.separateAllOptionsOfQuestionsByAction(multipleChoiceQuestionsToBeUpdated);
+			sails.controllers.question.separateAllOptionsOfQuestionsByAction(fillQuestionsToBeUpdated);
+			sails.controllers.question.separateAllOptionsOfQuestionsByAction(trueFalseQuestionsToBeUpdated);
+
+			/*Update multiple choice options*/
+			for(var i=0;i<multipleChoiceQuestionsToBeUpdated.length;i++){
+			  for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+			    var optionPromise=sails.controllers.option.update(multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated[j],multipleChoiceQuestionsToBeUpdated[i]);
+			    optionsPromises.push(optionPromise);
+			  }
+			  for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
+			    var optionPromise=sails.controllers.option.register(multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated[j],multipleChoiceQuestionsToBeUpdated[i]);
+			    optionsPromises.push(optionPromise);
+			  }
+			}
+			/*Update fill options*/
+			for(var i=0;i<fillQuestionsToBeUpdated.length;i++){
+			  for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+			    var optionPromise=sails.controllers.option.update(fillQuestionsToBeUpdated[i].optionsToBeUpdated[j],fillQuestionsToBeUpdated[i]);
+			    optionsPromises.push(optionPromise);
+			  }
+			  for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
+			    var optionPromise=sails.controllers.option.register(fillQuestionsToBeUpdated[i].optionsToBeCreated[j],fillQuestionsToBeUpdated[i]);
+			    optionsPromises.push(optionPromise);
+			  }
+			}
+			/*Update trueFalse options*/
+			for(var i=0;i<trueFalseQuestionsToBeUpdated.length;i++){
+			  for(var j=0;j<trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+					console.log("Linea 933");
+					console.log(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated);
+			    var optionPromise=sails.controllers.option.update(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated[j],trueFalseQuestionsToBeUpdated[i]);
+			    optionsPromises.push(optionPromise);
+			  }
+			}
+			Promise.all(optionsPromises)
+			.then(function(){
+				return res.json(200, {msg:"Test successfully updated"});
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(500, {msg:"Error updating the test"});
+			})
+		})
+		.catch(function(error){
+			console.log(error);
+			return res.json(500, {msg:"Error updating the test"});
+		})
+
+	},
+
 
 
 
