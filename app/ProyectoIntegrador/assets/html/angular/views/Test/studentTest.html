@@ -1,16 +1,16 @@
 <div class="section">
-  <div ng-repeat="pregunta in preguntas" >
+  <div ng-repeat="question in test.questions" >
     <div class="section">
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+            <h4 id="p{{question.index}}" tabindex="{{question.index}}">Pregunta {{$index+1}}: {{question.text}}</h4>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <ul class="list-group">
-              <li id="r{{respuesta.index}}" ng-repeat="respuesta in pregunta.respuestas" class="list-group-item" tabindex="{{respuesta.index}}">Opcion {{$index+1}}: {{respuesta.texto}}</li>
+              <li id="r{{option.index}}" ng-repeat="option in question.options" class="list-group-item" tabindex="{{option.index}}">Opcion {{$index+1}}: {{option.text}}</li>
             </ul>
           </div>
         </div>

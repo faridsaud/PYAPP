@@ -37,22 +37,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     }
 
 
-    /*Format test from server format to client format*/
 
-    $scope.formatTestToBeTaken=function(test){
-      for(var i=0;i<test.questions.length;i++){
-        test.questions[i].texto=test.questions[i].text;
-        test.questions[i].respuestas=[];
-        test.questions[i].respuestas=test.questions[i].options;
-
-        delete test.questions[i].options;
-        for(var j=0;j<test.questions[i].respuestas.length;j++){
-          test.questions[i].respuestas[j].texto=test.questions[i].respuestas[j].text;
-          test.questions[i].respuestas[j].correcta=test.questions[i].respuestas[j].isCorrect;
-          test.questions[i].respuestas[j].seleccionada=false;
-        }
-      }
-    },
 
 
 
@@ -60,28 +45,28 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
 
     //funcion generadora de index
-    $scope.generarIndex=function(){
-      $scope.mapeador=[];
+    $scope.generateIndex=function(){
+      $scope.mapper=[];
       var counter=0;
-      for(var i=0;i<$scope.preguntas.length;i++){
+      for(var i=0;i<$scope.test.questions.length;i++){
         counter++;
-        $scope.preguntas[i].index=counter;
+        $scope.test.questions[i].index=counter;
         var mapped={
-          idOriginal:$scope.preguntas[i].id,
-          index:$scope.preguntas[i].index
+          originalId:$scope.test.questions[i].id,
+          index:$scope.test.questions[i].index
         }
-        $scope.mapeador.push(mapped);
-        for(var j=0;j<$scope.preguntas[i].respuestas.length;j++){
+        $scope.mapper.push(mapped);
+        for(var j=0;j<$scope.test.questions[i].options.length;j++){
           counter++;
-          $scope.preguntas[i].respuestas[j].index=counter;
+          $scope.test.questions[i].options[j].index=counter;
           var mapped={
-            idOriginal:$scope.preguntas[i].respuestas[j].id,
-            index:$scope.preguntas[i].respuestas[j].index
+            originalId:$scope.test.questions[i].options[j].id,
+            index:$scope.test.questions[i].options[j].index
           }
-          $scope.mapeador.push(mapped);
+          $scope.mapper.push(mapped);
         }
       }
-      console.log($scope.mapeador);
+      console.log($scope.mapper);
       $scope.lastIndex=counter;
     }
 
@@ -90,19 +75,19 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
 
     //funcion buscar siguiente pregunta
-    $scope.buscarSigPregunta=function(indexPregunta){
-      var idOriginal=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
-      if(idOriginal){
-        for(var i=0;i<$scope.preguntas.length;i++){
-          if($scope.preguntas[i].id==idOriginal){
-            if(i<($scope.preguntas.length-1)){
-              var idSiguientePregunta=$scope.preguntas[i+1].id;
-              var indexSiguientePregunta=$scope.buscarIndexPreguntaByIdOriginal(idSiguientePregunta);
-              return indexSiguientePregunta;
+    $scope.findNextQuestion=function(questionIndex){
+      var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
+      if(originalId){
+        for(var i=0;i<$scope.test.questions.length;i++){
+          if($scope.test.questions[i].id==originalId){
+            if(i<($scope.test.questions.length-1)){
+              var nextQuestionId=$scope.test.questions[i+1].id;
+              var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
+              return indexNextQuestion;
             }else{
-              var idSiguientePregunta=$scope.preguntas[0].id;
-              var indexSiguientePregunta=$scope.buscarIndexPreguntaByIdOriginal(idSiguientePregunta);
-              return indexSiguientePregunta;
+              var nextQuestionId=$scope.test.questions[0].id;
+              var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
+              return indexNextQuestion;
             }
           }
         }
@@ -110,83 +95,83 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     }
 
     //funcion buscar anterior pregunta
-    $scope.buscarAntPregunta=function(indexPregunta){
-      var idOriginal=$scope.buscarIdOriginalPreguntaByIndex(indexPregunta);
-      if(idOriginal){
-        for(var i=0;i<$scope.preguntas.length;i++){
-          if($scope.preguntas[i].id==idOriginal){
+    $scope.findPreviousQuestion=function(questionIndex){
+      var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
+      if(originalId){
+        for(var i=0;i<$scope.test.questions.length;i++){
+          if($scope.test.questions[i].id==originalId){
             if(i>0){
-              var idSiguientePregunta=$scope.preguntas[i-1].id;
-              var indexSiguientePregunta=$scope.buscarIndexPreguntaByIdOriginal(idSiguientePregunta);
-              return indexSiguientePregunta;
+              var nextQuestionId=$scope.test.questions[i-1].id;
+              var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
+              return indexNextQuestion;
             }else{
-              var idSiguientePregunta=$scope.preguntas[$scope.preguntas.length-1].id;
-              var indexSiguientePregunta=$scope.buscarIndexPreguntaByIdOriginal(idSiguientePregunta);
-              return indexSiguientePregunta;
+              var nextQuestionId=$scope.test.questions[$scope.test.questions.length-1].id;
+              var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
+              return indexNextQuestion;
             }
           }
         }
       }
     }
 
-    //buscar IdOriginal Pregunta By Index, sirve tambien para respuestas
-    $scope.buscarIdOriginalPreguntaByIndex=function(indexPregunta){
-      for(var i=0;i<$scope.mapeador.length;i++){
-        if($scope.mapeador[i].index==indexPregunta){
-          var idOriginal=$scope.mapeador[i].idOriginal;
-          return idOriginal;
+    //buscar IdOriginal Pregunta By Index, sirve tambien para options
+    $scope.findQuestionOriginalIdByIndex=function(questionIndex){
+      for(var i=0;i<$scope.mapper.length;i++){
+        if($scope.mapper[i].index==questionIndex){
+          var originalId=$scope.mapper[i].originalId;
+          return originalId;
         }
       }
     }
 
 
-    //buscar index Pregunta By idOriginal, sirve tambien para respuestas
-    $scope.buscarIndexPreguntaByIdOriginal=function(idPregunta){
-      for(var i=0;i<$scope.mapeador.length;i++){
-        if($scope.mapeador[i].idOriginal==idPregunta){
-          var indexPregunta=$scope.mapeador[i].index;
-          return indexPregunta;
+    //buscar index Pregunta By originalId, sirve tambien para options
+    $scope.findQuestionIndexByOriginalId=function(questionId){
+      for(var i=0;i<$scope.mapper.length;i++){
+        if($scope.mapper[i].originalId==questionId){
+          var questionIndex=$scope.mapper[i].index;
+          return questionIndex;
         }
       }
     }
 
     //Buscar a que pregunta pertenece la respuesta
-    $scope.buscarPreguntaByRespuesta=function(idRespuesta){
-      for(var i=0;i<$scope.preguntas.length;i++){
-        for(var j=0;j<$scope.preguntas[i].respuestas.length;j++){
-          if($scope.preguntas[i].respuestas[j].id==idRespuesta){
-            var idPregunta=$scope.preguntas[i].id;
-            return idPregunta;
+    $scope.findQuestionByOption=function(optionId){
+      for(var i=0;i<$scope.test.questions.length;i++){
+        for(var j=0;j<$scope.test.questions[i].options.length;j++){
+          if($scope.test.questions[i].options[j].id==optionId){
+            var questionId=$scope.test.questions[i].id;
+            return questionId;
           }
         }
       }
     }
 
-    //Funcion para limpiar las respuestas seleccionadas de la pregunta
-    $scope.limpiarRespuestaSeleccionadaByPregunta=function(idPregunta){
-      for(var i=0;i<$scope.preguntas.length;i++){
-        if($scope.preguntas[i].id==idPregunta){
-          for(var j=0;j<$scope.preguntas[i].respuestas.length;j++){
-            $scope.preguntas[i].respuestas[j].seleccionada=false;
+    //Funcion para limpiar las options seleccionadas de la pregunta
+    $scope.limpiarRespuestaSeleccionadaByPregunta=function(questionId){
+      for(var i=0;i<$scope.test.questions.length;i++){
+        if($scope.test.questions[i].id==questionId){
+          for(var j=0;j<$scope.test.questions[i].options.length;j++){
+            $scope.test.questions[i].options[j].selected=false;
             //quitar estilo
-            document.getElementById("r"+$scope.preguntas[i].respuestas[j].index).classList.remove("seleccionada");
+            document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.remove("selected");
           }
         }
       }
     }
     //funcion seleccionar
-    $scope.seleccionarRespuesta=function(indexRespuesta){
-      var idRespuesta=$scope.buscarIdOriginalPreguntaByIndex(indexRespuesta);
-      var idPregunta=$scope.buscarPreguntaByRespuesta(idRespuesta);
-      if(idPregunta){
-        $scope.limpiarRespuestaSeleccionadaByPregunta(idPregunta);
+    $scope.seleccionarRespuesta=function(optionIndex){
+      var optionId=$scope.findQuestionOriginalIdByIndex(optionIndex);
+      var questionId=$scope.findQuestionByOption(optionId);
+      if(questionId){
+        $scope.limpiarRespuestaSeleccionadaByPregunta(questionId);
       }
-      if(idRespuesta && idPregunta){
-        for(var i=0;i<$scope.preguntas.length;i++){
-          for(var j=0;j<$scope.preguntas[i].respuestas.length;j++){
-            if($scope.preguntas[i].respuestas[j].id==idRespuesta){
-              $scope.preguntas[i].respuestas[j].seleccionada=true;
-              document.getElementById("r"+$scope.preguntas[i].respuestas[j].index).classList.add("seleccionada");
+      if(optionId && questionId){
+        for(var i=0;i<$scope.test.questions.length;i++){
+          for(var j=0;j<$scope.test.questions[i].options.length;j++){
+            if($scope.test.questions[i].options[j].id==optionId){
+              $scope.test.questions[i].options[j].selected=true;
+              document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.add("selected");
             }
           }
         }
@@ -194,13 +179,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     }
     //Dar efecto de selección
     $scope.efectoSeleccion=function(index){
-      var idRespuesta=$scope.buscarIdOriginalPreguntaByIndex(index);
+      var optionId=$scope.findQuestionOriginalIdByIndex(index);
     }
 
 
     //peticion http con los datos
     $scope.guardarDatos=function(){
-      var datosEnviar=JSON.parse(JSON.stringify($scope.preguntas));
+      var datosEnviar=JSON.parse(JSON.stringify($scope.test.questions));
       $http({
         method: 'POST',
         url: 'http://186.4.134.233:1337/testData',
@@ -224,8 +209,8 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         $rootScope.synth.cancel();
 
         document.getElementById("p1").focus();
-        $scope.elementoFocus="p1";
-        $scope.ultimaPregunta="p1";
+        $scope.focusedElement="p1";
+        $scope.lastQuestion="p1";
 
       }
 
@@ -235,16 +220,16 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         $rootScope.synth.cancel();
         console.log("Evento:");
         console.log(event);
-        var matchings=$scope.elementoFocus.match(/[p,r](\d*)/);
+        var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
         console.log("Match:");
         console.log(matchings);
-        var numero=Number(matchings[1])-1;
-        if(document.getElementById("r"+numero)){
-          document.getElementById("r"+numero).focus();
+        var number=Number(matchings[1])-1;
+        if(document.getElementById("r"+number)){
+          document.getElementById("r"+number).focus();
         }
-        if(document.getElementById("p"+numero)){
-          document.getElementById("p"+numero).focus();
-          $scope.ultimaPregunta="p"+numero;
+        if(document.getElementById("p"+number)){
+          document.getElementById("p"+number).focus();
+          $scope.lastQuestion="p"+number;
         }
 
 
@@ -255,39 +240,39 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         $rootScope.synth.cancel();
         console.log("Evento:");
         console.log(event);
-        var matchings=$scope.elementoFocus.match(/[p,r](\d*)/);
-        var numero=Number(matchings[1])+1;
-        if(document.getElementById("r"+numero)){
-          document.getElementById("r"+numero).focus();
+        var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+        var number=Number(matchings[1])+1;
+        if(document.getElementById("r"+number)){
+          document.getElementById("r"+number).focus();
         }
-        if(document.getElementById("p"+numero)){
-          document.getElementById("p"+numero).focus();
-          $scope.ultimaPregunta="p"+numero;
+        if(document.getElementById("p"+number)){
+          document.getElementById("p"+number).focus();
+          $scope.lastQuestion="p"+number;
         }
       }
       //derecha
       if(event.which==39){
         $rootScope.synth.cancel();
-        var matchings=$scope.ultimaPregunta.match(/p(\d*)/);
+        var matchings=$scope.lastQuestion.match(/p(\d*)/);
         console.log(matchings);
-        var numero=$scope.buscarSigPregunta(Number(matchings[1]));
-        console.log(numero);
-        if(document.getElementById("p"+numero)){
-          document.getElementById("p"+numero).focus();
-          $scope.ultimaPregunta="p"+numero;
+        var number=$scope.findNextQuestion(Number(matchings[1]));
+        console.log(number);
+        if(document.getElementById("p"+number)){
+          document.getElementById("p"+number).focus();
+          $scope.lastQuestion="p"+number;
         }
 
       }
       //izquierda
       if(event.which==37){
         $rootScope.synth.cancel();
-        var matchings=$scope.ultimaPregunta.match(/p(\d*)/);
+        var matchings=$scope.lastQuestion.match(/p(\d*)/);
         console.log(matchings);
-        var numero=$scope.buscarAntPregunta(Number(matchings[1]));
-        console.log(numero);
-        if(document.getElementById("p"+numero)){
-          document.getElementById("p"+numero).focus();
-          $scope.ultimaPregunta="p"+numero;
+        var number=$scope.findPreviousQuestion(Number(matchings[1]));
+        console.log(number);
+        if(document.getElementById("p"+number)){
+          document.getElementById("p"+number).focus();
+          $scope.lastQuestion="p"+number;
         }
 
       }
@@ -299,24 +284,24 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         console.log("Evento: Espacio");
         console.log(event);
         */
-        var matchings=$scope.elementoFocus.match(/[p,r](\d*)/);
-        var numero=Number(matchings[1]);
-        if(numero==($scope.lastIndex+1)){
+        var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+        var number=Number(matchings[1]);
+        if(number==($scope.lastIndex+1)){
           $scope.guardarDatos();
           $rootScope.msg.text="Evaluación enviada con éxito";
           $rootScope.synth.speak($rootScope.msg);
         }
-        if(document.getElementById("r"+numero)){
-          $scope.seleccionarRespuesta(numero);
+        if(document.getElementById("r"+number)){
+          $scope.seleccionarRespuesta(number);
           $rootScope.msg.text="Opción seleccionada con éxito";
           $rootScope.synth.speak($rootScope.msg);
         }
 
         console.log("preguntas a enviar")
-        console.log($scope.preguntas);
-        $rootScope.preguntasEnviadas=$scope.preguntas;
+        console.log($scope.test.questions);
+        $rootScope.sendQuestions=$scope.test.questions;
         console.log("imprimiendo preguntas enviadas");
-        console.log($rootScope.preguntasEnviadas);
+        console.log($rootScope.sendQuestions);
         $location.path('/student/test/review');
       }
     });
@@ -324,18 +309,17 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     $document.unbind('focusin').bind("focusin",function(event){
       console.log("se hizo focus");
       console.log(event.target.id);
-      $scope.elementoFocus=event.target.id;
-      console.log(document.getElementById($scope.elementoFocus));
+      $scope.focusedElement=event.target.id;
+      console.log(document.getElementById($scope.focusedElement));
       speakP();
 
     });
     function speakP(){
-      var textoP=document.getElementById($scope.elementoFocus).innerHTML;
+      var textoP=document.getElementById($scope.focusedElement).innerHTML;
       $rootScope.msg.text=textoP;
       $rootScope.synth.speak($rootScope.msg);
       console.log($rootScope.synth);
     }
-    $scope.preguntas=[];
     $http({
       method:'POST',
       url:globalVariables.url+'/test/getTestByIdForStudent',
@@ -351,12 +335,12 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     }).then(function success(response){
       console.log(response);
       $scope.test=response.data.test;
-      $scope.formatTestToBeTaken($scope.test);
-      $scope.preguntas=$scope.test.questions;
+      //$scope.formatTestToBeTaken($scope.test);
 
-      console.log($scope.preguntas);
-      $scope.generarIndex();
-      console.log($scope.preguntas);
+
+      console.log($scope.test.questions);
+      $scope.generateIndex();
+      console.log($scope.test.questions);
       console.log($scope.test);
     }, function error(response){
       console.log(response);
