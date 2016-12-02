@@ -727,6 +727,82 @@ module.exports = {
 
 	},
 
+	getTestByIdForStudent:function(req,res){
+
+
+		if(req.body.user.email){
+			var email=req.body.user.email;
+		}else{
+			return res.json(400,{msg:"No email send"});
+		}
+		if(req.body.test.id){
+			var testId=req.body.test.id;
+		}else{
+			return res.json(400,{msg:"No test send"});
+		}
+
+		console.log(email);
+		console.log(testId);
+		sails.models.usrtes.findOne({email:email, status:'s', idTest:testId}).exec(function(error, recordFinded){
+			if(error){
+				return res.json(500,{msg:"Error retrieving the test"});
+			}else{
+				if(recordFinded){
+					sails.models.test.findOne({id:testId}).exec(function(error, finded){
+						if(error){
+							return res.json(500,{msg:"Error retrieving the test"});
+						}else{
+							if(finded){
+								test={};
+								test.title=finded.title;
+								test.description=finded.description;
+								test.course=finded.idCourse;
+								test.startDateTime=finded.startDateTime;
+								test.finishDateTime=finded.finishDateTime;
+								test.multipleChoiceQuestions=[];
+								test.fillQuestions=[];
+								test.trueFalseQuestions=[];
+								test.questions=[];
+								var optionsPromises=[];
+								var questionsPromise=sails.controllers.question.getQuestionsByTest(testId)
+								.then(function(questions){
+									console.log("Se obtuvieron las preguntas");
+									test.questions=questions;
+									for(var i=0;i<test.questions.length;i++){
+										optionsPromises.push(sails.controllers.option.getOptionsByQuestion(test.questions[i]));
+									}
+									console.log("Esperando los datos")
+									Promise.all(optionsPromises).then(function(){
+										console.log("se obtuvieron los datos completos");
+										//console.log(test.questions);
+										//eliminar linea de abajo);
+										return res.json(200,{test:test, msg:"OK"});
+									})
+									.catch(function(error){
+										console.log(error);
+										return res.json(500,{msg:"Error retrieving the questions"});
+
+									})
+								})
+								.catch(function(error){
+									return res.json(500,{msg:"Error retrieving the questions"});
+								})
+								//get questions
+
+							}else{
+								return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+							}
+						}
+					})
+
+
+				}else{
+					return res.json(400,{msg:"The user is not authorized to take the test"});
+				}
+			}
+		})
+
+	},
 	edit: function (req, res) {
 		if(req.body.test){
 			var newTest=req.body.test;
@@ -907,34 +983,34 @@ module.exports = {
 
 			/*Update multiple choice options*/
 			for(var i=0;i<multipleChoiceQuestionsToBeUpdated.length;i++){
-			  for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
-			    var optionPromise=sails.controllers.option.update(multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated[j],multipleChoiceQuestionsToBeUpdated[i]);
-			    optionsPromises.push(optionPromise);
-			  }
-			  for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
-			    var optionPromise=sails.controllers.option.register(multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated[j],multipleChoiceQuestionsToBeUpdated[i]);
-			    optionsPromises.push(optionPromise);
-			  }
+				for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+					var optionPromise=sails.controllers.option.update(multipleChoiceQuestionsToBeUpdated[i].optionsToBeUpdated[j],multipleChoiceQuestionsToBeUpdated[i]);
+					optionsPromises.push(optionPromise);
+				}
+				for(var j=0;j<multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
+					var optionPromise=sails.controllers.option.register(multipleChoiceQuestionsToBeUpdated[i].optionsToBeCreated[j],multipleChoiceQuestionsToBeUpdated[i]);
+					optionsPromises.push(optionPromise);
+				}
 			}
 			/*Update fill options*/
 			for(var i=0;i<fillQuestionsToBeUpdated.length;i++){
-			  for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
-			    var optionPromise=sails.controllers.option.update(fillQuestionsToBeUpdated[i].optionsToBeUpdated[j],fillQuestionsToBeUpdated[i]);
-			    optionsPromises.push(optionPromise);
-			  }
-			  for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
-			    var optionPromise=sails.controllers.option.register(fillQuestionsToBeUpdated[i].optionsToBeCreated[j],fillQuestionsToBeUpdated[i]);
-			    optionsPromises.push(optionPromise);
-			  }
+				for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+					var optionPromise=sails.controllers.option.update(fillQuestionsToBeUpdated[i].optionsToBeUpdated[j],fillQuestionsToBeUpdated[i]);
+					optionsPromises.push(optionPromise);
+				}
+				for(var j=0;j<fillQuestionsToBeUpdated[i].optionsToBeCreated.length;j++){
+					var optionPromise=sails.controllers.option.register(fillQuestionsToBeUpdated[i].optionsToBeCreated[j],fillQuestionsToBeUpdated[i]);
+					optionsPromises.push(optionPromise);
+				}
 			}
 			/*Update trueFalse options*/
 			for(var i=0;i<trueFalseQuestionsToBeUpdated.length;i++){
-			  for(var j=0;j<trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
+				for(var j=0;j<trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
 					console.log("Linea 933");
 					console.log(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated);
-			    var optionPromise=sails.controllers.option.update(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated[j],trueFalseQuestionsToBeUpdated[i]);
-			    optionsPromises.push(optionPromise);
-			  }
+					var optionPromise=sails.controllers.option.update(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated[j],trueFalseQuestionsToBeUpdated[i]);
+					optionsPromises.push(optionPromise);
+				}
 			}
 			Promise.all(optionsPromises)
 			.then(function(){
@@ -951,8 +1027,6 @@ module.exports = {
 		})
 
 	},
-
-
 
 
 };
