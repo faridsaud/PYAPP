@@ -1,8 +1,8 @@
-app.controller("studentTestTakenController",["$scope","$document","$http","$location","$rootScope",'globalVariables',function($scope,$document,$http,$location,$rootScope, globalVariables){
+app.controller("studentTestTakenController",["$scope","$document","$http","$location","$rootScope",'globalVariables',"$state",function($scope,$document,$http,$location,$rootScope, globalVariables,$state){
   $rootScope.loggedUser={};
   $rootScope.activeTest={};
   $rootScope.loggedUser.email="test3@test.com";
-  $rootScope.activeTest.id=6;
+  $rootScope.activeTest.id=21;
   if(!$rootScope.loggedUser.email ||!$rootScope.activeTest.id){
     $location.path('/home');
   }else{
@@ -148,11 +148,11 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
     }
 
     //Funcion para limpiar las options seleccionadas de la pregunta
-    $scope.limpiarRespuestaSeleccionadaByPregunta=function(questionId){
+    $scope.cleanSelectedOptionByQuestion=function(questionId){
       for(var i=0;i<$scope.test.questions.length;i++){
         if($scope.test.questions[i].id==questionId){
           for(var j=0;j<$scope.test.questions[i].options.length;j++){
-            $scope.test.questions[i].options[j].selected=false;
+            $scope.test.questions[i].options[j].isSelected=false;
             //quitar estilo
             document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.remove("selected");
           }
@@ -160,17 +160,17 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       }
     }
     //funcion seleccionar
-    $scope.seleccionarRespuesta=function(optionIndex){
+    $scope.selectOption=function(optionIndex){
       var optionId=$scope.findQuestionOriginalIdByIndex(optionIndex);
       var questionId=$scope.findQuestionByOption(optionId);
       if(questionId){
-        $scope.limpiarRespuestaSeleccionadaByPregunta(questionId);
+        $scope.cleanSelectedOptionByQuestion(questionId);
       }
       if(optionId && questionId){
         for(var i=0;i<$scope.test.questions.length;i++){
           for(var j=0;j<$scope.test.questions[i].options.length;j++){
             if($scope.test.questions[i].options[j].id==optionId){
-              $scope.test.questions[i].options[j].selected=true;
+              $scope.test.questions[i].options[j].isSelected=true;
               document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.add("selected");
             }
           }
@@ -184,7 +184,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
 
     //peticion http con los datos
-    $scope.guardarDatos=function(){
+    $scope.saveData=function(){
       var datosEnviar=JSON.parse(JSON.stringify($scope.test.questions));
       $http({
         method: 'POST',
@@ -249,6 +249,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           document.getElementById("p"+number).focus();
           $scope.lastQuestion="p"+number;
         }
+        console.log($scope.test);
       }
       //derecha
       if(event.which==39){
@@ -287,22 +288,21 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
         var number=Number(matchings[1]);
         if(number==($scope.lastIndex+1)){
-          $scope.guardarDatos();
+          //$scope.saveData();
           $rootScope.msg.text="Evaluación enviada con éxito";
           $rootScope.synth.speak($rootScope.msg);
+          $rootScope.testSend=$scope.test;
+          console.log($rootScope.testSend);
+          console.log("Vamos cambiarnos de vista");
+          $state.go('studentReviewTest');
         }
         if(document.getElementById("r"+number)){
-          $scope.seleccionarRespuesta(number);
+          $scope.selectOption(number);
           $rootScope.msg.text="Opción seleccionada con éxito";
           $rootScope.synth.speak($rootScope.msg);
+          console.log($scope.test);
         }
 
-        console.log("preguntas a enviar")
-        console.log($scope.test.questions);
-        $rootScope.sendQuestions=$scope.test.questions;
-        console.log("imprimiendo preguntas enviadas");
-        console.log($rootScope.sendQuestions);
-        $location.path('/student/test/review');
       }
     });
     //al hacer focus
