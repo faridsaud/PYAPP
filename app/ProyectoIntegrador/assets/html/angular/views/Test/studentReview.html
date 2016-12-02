@@ -1,0 +1,90 @@
+<div class="section">
+  <div ng-repeat="pregunta in preguntas" >
+    <div class="section"  ng-if="pregunta.tipo=='opcionMultiple'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}} {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.seleccionada==true" tabindex="{{respuesta.index}}">Respuesta seleccionada: {{respuesta.texto}}</li>
+              </div>
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.correcta==true" tabindex="{{respuesta.index}}">Respuesta correcta: {{respuesta.texto}}</li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"  ng-if="pregunta.tipo=='verdaderoFalso'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.seleccionada==true" tabindex="{{respuesta.index}}">Respuesta seleccionada: {{respuesta.texto}}</li>
+              </div>
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.correcta==true" tabindex="{{respuesta.index}}">Respuesta correcta: {{respuesta.texto}}</li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section"  ng-if="pregunta.tipo=='completarSeleccionando'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.seleccionada==true" tabindex="{{respuesta.index}}">Respuesta seleccionada: {{respuesta.texto}}</li>
+              </div>
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.correcta==true" tabindex="{{respuesta.index}}">Respuesta correcta: {{respuesta.texto}}</li>
+              </div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section"  ng-if="pregunta.tipo=='completarHablando'">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <h4 id="p{{pregunta.index}}" tabindex="{{pregunta.index}}">Pregunta {{$index+1}}: {{pregunta.texto}}</h4>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="list-group">
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.seleccionada==true" tabindex="{{respuesta.index}}">Respuesta seleccionada: {{respuesta.texto}}</li>
+              </div>
+              <div ng-repeat="respuesta in pregunta.respuestas track by $index" >
+                <li id="r{{respuesta.index}}" class="list-group-item" ng-if="respuesta.correcta==true" tabindex="{{respuesta.index}}">Respuesta correcta: {{respuesta.texto}}</li>
+              </div>            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
