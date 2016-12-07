@@ -76,6 +76,10 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
     //funcion buscar siguiente pregunta
     $scope.findNextQuestion=function(questionIndex){
+      /*Button send*/
+      if(questionIndex==($scope.lastIndex+1)){
+        return 1;
+      }
       var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
       if(originalId){
         for(var i=0;i<$scope.test.questions.length;i++){
@@ -85,9 +89,12 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
               var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
               return indexNextQuestion;
             }else{
+              return $scope.lastIndex+1;
+              /*
               var nextQuestionId=$scope.test.questions[0].id;
               var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
               return indexNextQuestion;
+              */
             }
           }
         }
@@ -96,6 +103,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
     //funcion buscar anterior pregunta
     $scope.findPreviousQuestion=function(questionIndex){
+      /*button index*/
+      if(questionIndex==($scope.lastIndex+1)){
+        var questionsNumber=$scope.test.questions.length;
+        var indexPreviousQuestion=$scope.findQuestionIndexByOriginalId($scope.test.questions[questionsNumber-1].id);
+        console.log(indexPreviousQuestion);
+        return indexPreviousQuestion;
+      }
       var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
       if(originalId){
         for(var i=0;i<$scope.test.questions.length;i++){
@@ -105,9 +119,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
               var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
               return indexNextQuestion;
             }else{
+
+              return $scope.lastIndex+1;
+              /*
               var nextQuestionId=$scope.test.questions[$scope.test.questions.length-1].id;
               var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
               return indexNextQuestion;
+              */
             }
           }
         }
@@ -228,8 +246,10 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           document.getElementById("r"+number).focus();
         }
         if(document.getElementById("p"+number)){
-          document.getElementById("p"+number).focus();
-          $scope.lastQuestion="p"+number;
+          number=$scope.findNextQuestion(number)-1;
+          if(document.getElementById("r"+number)){
+            document.getElementById("r"+number).focus();
+          }
         }
 
 
@@ -246,8 +266,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           document.getElementById("r"+number).focus();
         }
         if(document.getElementById("p"+number)){
-          document.getElementById("p"+number).focus();
-          $scope.lastQuestion="p"+number;
+          matchings=$scope.lastQuestion.match(/p(\d*)/);
+          console.log(matchings);
+          number=Number(matchings[1])+1;
+          console.log(number);
+          if(document.getElementById("r"+number)){
+            document.getElementById("r"+number).focus();
+          }
         }
         console.log($scope.test);
       }

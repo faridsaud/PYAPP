@@ -15,3 +15,7 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 
 
 Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
+
+*Llevar un log de los cambios en la base de datos
+
+*Al clic seleccionar la respuesta
