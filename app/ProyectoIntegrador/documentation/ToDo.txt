@@ -14,8 +14,12 @@ f: finished
 cambio a los tipos de dato date por string con longitud 24 para almacenar la fecha en formato ISO 8601
 
 
-Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
 
+*Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
 *Llevar un log de los cambios en la base de datos
-
 *Al clic seleccionar la respuesta
+*Tiempo max de duracion de la prueba
+*Cambiar $location por $state
+*Hacer multilingue a la aplicacion
+*Try y catchs
+*Login e interfaz del usuario mas amigable a persona no vidente

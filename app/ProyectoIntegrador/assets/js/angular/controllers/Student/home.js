@@ -1,4 +1,4 @@
-app.controller('homeStudentController',['$scope','$http','$location','toastr','globalVariables','$rootScope',function($scope,$http,$location,toastr,globalVariables,$rootScope){
+app.controller('homeStudentController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$state',function($scope,$http,$location,toastr,globalVariables,$rootScope,$state){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="student"){
       console.log("home teacher controller");
@@ -44,6 +44,14 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
         $rootScope.activeCourse.description=courseDescription;
         $location.path('/student/course/home');
       }
+
+      $scope.openTest=function(testId){
+        console.log("abreidno test"+testId);
+        $rootScope.activeTest={};
+        $rootScope.activeTest.id=testId;
+        $state.go('studentTakeTest');
+      }
+
     }else{
       $location.path('/home');
     }
