@@ -21,7 +21,7 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Tiempo max de duracion de la prueba
 *Cambiar $location por $state
 *Hacer multilingue a la aplicacion
-*Try y catchs
+*Try y catchs]
 *Login e interfaz del usuario mas amigable a persona no vidente
 *Pregunta secreta para restablecer la contrasena
 *Copy y paste de una prueba
@@ -34,7 +34,8 @@ no tiempo
 *Multiples estudiantes a la vez a un curso
 *Actualizar vista profesor
 *Clonar curso
-*No actualiza fecha
+*No actualiza fecha (Arreglado)
 *retroalimentacion si selecciona respuesta correcta
 *Multilingue
 *boton atras
+*Controles en retroalimentacion

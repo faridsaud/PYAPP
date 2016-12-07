@@ -60,66 +60,75 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
       $scope.generateIndex=function(){
         $scope.mapper=[];
         var counter=0;
-        for(var i=0;i<$scope.test.questions.length;i++){
-          counter++;
-          $scope.test.questions[i].index=counter;
+        for(var i=0;i<$scope.questions.length;i++){
           var mapped={
-            originalId:$scope.test.questions[i].id,
-            index:$scope.test.questions[i].index
+            originalId:$scope.questions[i].id,
+            index:$scope.questions[i].index
           }
+          counter++;
           $scope.mapper.push(mapped);
-          for(var j=0;j<$scope.test.questions[i].options.length;j++){
-            counter++;
-            $scope.test.questions[i].options[j].index=counter;
+          for(var j=0;j<$scope.questions[i].options.length;j++){
             var mapped={
-              originalId:$scope.test.questions[i].options[j].id,
-              index:$scope.test.questions[i].options[j].index
+              originalId:$scope.questions[i].options[j].id,
+              index:$scope.questions[i].options[j].index
             }
+            counter++;
             $scope.mapper.push(mapped);
           }
+          console.log($scope.mapper);
         }
-        console.log($scope.mapper);
         $scope.lastIndex=counter;
       }
 
+      $scope.generateIndex();
 
 
 
 
       //funcion buscar siguiente pregunta
       $scope.findNextQuestion=function(questionIndex){
+        /*Button send*/
+
         var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
         if(originalId){
-          for(var i=0;i<$scope.test.questions.length;i++){
-            if($scope.test.questions[i].id==originalId){
-              if(i<($scope.test.questions.length-1)){
-                var nextQuestionId=$scope.test.questions[i+1].id;
+          for(var i=0;i<$scope.questions.length;i++){
+            if($scope.questions[i].id==originalId){
+              if(i<($scope.questions.length-1)){
+                var nextQuestionId=$scope.questions[i+1].id;
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
                 return indexNextQuestion;
               }else{
+                return 1;
+                /*
                 var nextQuestionId=$scope.test.questions[0].id;
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
                 return indexNextQuestion;
+                */
               }
             }
           }
         }
       }
-
       //funcion buscar anterior pregunta
       $scope.findPreviousQuestion=function(questionIndex){
+        /*button index*/
         var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
         if(originalId){
-          for(var i=0;i<$scope.test.questions.length;i++){
-            if($scope.test.questions[i].id==originalId){
+          for(var i=0;i<$scope.questions.length;i++){
+            if($scope.questions[i].id==originalId){
               if(i>0){
-                var nextQuestionId=$scope.test.questions[i-1].id;
+                var nextQuestionId=$scope.questions[i-1].id;
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
                 return indexNextQuestion;
               }else{
+                console.log($scope.lastIndex);
+                var lastQuestionIndex=$scope.questions[$scope.questions.length-1].index;
+                return lastQuestionIndex;
+                /*
                 var nextQuestionId=$scope.test.questions[$scope.test.questions.length-1].id;
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
                 return indexNextQuestion;
+                */
               }
             }
           }
@@ -149,50 +158,16 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
 
       //Buscar a que pregunta pertenece la respuesta
       $scope.findQuestionByOption=function(optionId){
-        for(var i=0;i<$scope.test.questions.length;i++){
-          for(var j=0;j<$scope.test.questions[i].options.length;j++){
-            if($scope.test.questions[i].options[j].id==optionId){
-              var questionId=$scope.test.questions[i].id;
+        for(var i=0;i<$scope.questions.length;i++){
+          for(var j=0;j<$scope.questions[i].options.length;j++){
+            if($scope.questions[i].options[j].id==optionId){
+              var questionId=$scope.questions[i].id;
               return questionId;
             }
           }
         }
       }
 
-      //Funcion para limpiar las options seleccionadas de la pregunta
-      $scope.cleanSelectedOptionByQuestion=function(questionId){
-        for(var i=0;i<$scope.test.questions.length;i++){
-          if($scope.test.questions[i].id==questionId){
-            for(var j=0;j<$scope.test.questions[i].options.length;j++){
-              $scope.test.questions[i].options[j].selected=false;
-              //quitar estilo
-              document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.remove("selected");
-            }
-          }
-        }
-      }
-      //funcion seleccionar
-      $scope.selectOption=function(optionIndex){
-        var optionId=$scope.findQuestionOriginalIdByIndex(optionIndex);
-        var questionId=$scope.findQuestionByOption(optionId);
-        if(questionId){
-          $scope.cleanSelectedOptionByQuestion(questionId);
-        }
-        if(optionId && questionId){
-          for(var i=0;i<$scope.test.questions.length;i++){
-            for(var j=0;j<$scope.test.questions[i].options.length;j++){
-              if($scope.test.questions[i].options[j].id==optionId){
-                $scope.test.questions[i].options[j].selected=true;
-                document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.add("selected");
-              }
-            }
-          }
-        }
-      }
-      //Dar efecto de selección
-      $scope.efectoSeleccion=function(index){
-        var optionId=$scope.findQuestionOriginalIdByIndex(index);
-      }
 
 
       //peticion http con los datos
@@ -240,14 +215,17 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
             document.getElementById("r"+number).focus();
           }
           if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
-            $scope.lastQuestion="p"+number;
+            number=$scope.findNextQuestion(number)-1;
+            if(document.getElementById("r"+number)){
+              document.getElementById("r"+number).focus();
+            }
           }
 
 
 
         }
         //abajo
+
         if(event.which==40){
           $rootScope.synth.cancel();
           console.log("Evento:");
@@ -258,9 +236,15 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
             document.getElementById("r"+number).focus();
           }
           if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
-            $scope.lastQuestion="p"+number;
+            matchings=$scope.lastQuestion.match(/p(\d*)/);
+            console.log(matchings);
+            number=Number(matchings[1])+1;
+            console.log(number);
+            if(document.getElementById("r"+number)){
+              document.getElementById("r"+number).focus();
+            }
           }
+          console.log($scope.test);
         }
         //derecha
         if(event.which==39){
@@ -289,22 +273,6 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
 
         }
 
-        //espacio
-        if(event.which==32){
-          $rootScope.synth.cancel();
-          /*
-          console.log("Evento: Espacio");
-          console.log(event);
-          */
-          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
-          var number=Number(matchings[1]);
-          if(number==($scope.lastIndex+1)){
-            $scope.saveData();
-            $rootScope.msg.text="Evaluación enviada con éxito";
-            $rootScope.synth.speak($rootScope.msg);
-            $location.path('/home');
-          }
-        }
       });
       //al hacer focus
       $document.unbind('focusin').bind("focusin",function(event){
