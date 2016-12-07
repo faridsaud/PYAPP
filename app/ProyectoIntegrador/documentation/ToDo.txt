@@ -15,7 +15,7 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 
 
 
-*Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
+/*Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
 *Llevar un log de los cambios en la base de datos
 *Al clic seleccionar la respuesta
 *Tiempo max de duracion de la prueba
@@ -23,3 +23,18 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Hacer multilingue a la aplicacion
 *Try y catchs
 *Login e interfaz del usuario mas amigable a persona no vidente
+*Pregunta secreta para restablecer la contrasena
+*Copy y paste de una prueba
+*Seguro que quiere eliminar
+*Administrador de institucion para ver
+*Numero de intentos
+no tiempo
++ al fnak
+*Clonar rpeguntas apartir de un banco de preguntas del curso
+*Multiples estudiantes a la vez a un curso
+*Actualizar vista profesor
+*Clonar curso
+*No actualiza fecha
+*retroalimentacion si selecciona respuesta correcta
+*Multilingue
+*boton atras

@@ -810,6 +810,13 @@ module.exports = {
 			return res.json(400,{msg: 'Error updating the test, there is no test data'});
 
 		}
+
+		if(req.body.test.id){
+			var idTest=req.body.test.id;
+		}else{
+			return res.json(400,{msg: 'Error updating the test, there is no test id'});
+		}
+
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
@@ -851,6 +858,14 @@ module.exports = {
 			console.log(errorCheckingTest.msg);
 			return res.json(400, {msg:"Error creating the test, wrong test format send"});
 		}
+		var promiseTest=sails.models.test.update({id:idTest},{
+			title:title,
+			description:description,
+			startDateTime:startDateTime,
+			finishDateTime:finishDateTime
+		}).catch(function(error){
+			return res.json(500, {msg:"Error updating the test, wrong test format send"});
+		})
 		/*Get questions*/
 		var multipleChoiceQuestions=req.body.multipleChoiceQuestions;
 		var fillQuestions=req.body.fillQuestions;

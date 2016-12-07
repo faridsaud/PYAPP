@@ -476,6 +476,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
     }).then(function success(response){
       console.log(response);
       $scope.test=response.data.test;
+      $scope.test.course=$scope.test.course.toString();
       $scope.multipleChoiceQuestions=$scope.test.multipleChoiceQuestions;
       $scope.fillQuestions=$scope.test.fillQuestions;
       $scope.trueFalseQuestions=$scope.test.trueFalseQuestions;
