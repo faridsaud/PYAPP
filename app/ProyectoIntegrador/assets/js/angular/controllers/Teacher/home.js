@@ -1,4 +1,4 @@
-app.controller('homeTeacherController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval){
+app.controller('homeTeacherController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="teacher"){
       console.log("home teacher controller");
@@ -53,26 +53,58 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
 
 
       $scope.deleteCourse=function(courseId){
-        console.log("Deleting course");
-        $http({
-          method:'POST',
-          url:globalVariables.url+'/course/delete',
-          data:{
-            user:{
-              email:$rootScope.loggedUser.email
-            },
-            course:{
-              id:courseId
+        ngDialog.openConfirm({
+          scope: $scope,
+
+          template:
+          /*
+          '<div class="ngdialog-message">' +
+          '  <h2 class="confirmation-title"><i class="fa fa-exclamation-triangle orange"></i> Are you sure?</h2>' +
+          '  <span>{{text}}</span>' +
+          '    <div class="ngdialog-buttons">' +
+          '      <button type="button" class="ngdialog-button" ng-click="confirm(confirmValue)">{{label}}</button>' +
+          '      <button type="button" class="ngdialog-button" ng-click="closeThisDialog()">Cancel</button>' +
+          '    </div>' +
+          '</div>',
+          */
+          '<div class="modal-dialog">'+
+          '<div class="modal-content">'+
+          '<div class="modal-header">'+
+          '<h4 class="modal-title">¿Seguro que desea eliminar el curso?</h4>'+
+          '</div>'+
+          '<div class="modal-footer">'+
+          '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+          '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+          '</div>'+
+          '</div><!-- /.modal-content -->'+
+          '</div><!-- /.modal-dialog -->'
+          ,
+          plain: true
+        }).then(function (confirm) {
+
+          console.log("Deleting course");
+          $http({
+            method:'POST',
+            url:globalVariables.url+'/course/delete',
+            data:{
+              user:{
+                email:$rootScope.loggedUser.email
+              },
+              course:{
+                id:courseId
+              }
             }
-          }
-        }).then(function success(response){
-          console.log(response);
-          toastr.success("Curso eliminado con éxito","Success");
-          $location.path('/home');
-        }, function error(response){
-          toastr.error("Error al eliminar el curso","Error");
-          console.log(response);
-        })
+          }).then(function success(response){
+            console.log(response);
+            toastr.success("Curso eliminado con éxito","Success");
+            $location.path('/home');
+          }, function error(response){
+            toastr.error("Error al eliminar el curso","Error");
+            console.log(response);
+          })
+        }, function(reject) {
+        });
+
       }
 
 
@@ -83,25 +115,56 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
       }
 
       $scope.deleteTest=function(testId){
-        $http({
-          method:'POST',
-          url:globalVariables.url+'/test/delete',
-          data:{
-            user:{
-              email:$rootScope.loggedUser.email
-            },
-            test:{
-              id:testId
+        ngDialog.openConfirm({
+          scope: $scope,
+
+          template:
+          /*
+          '<div class="ngdialog-message">' +
+          '  <h2 class="confirmation-title"><i class="fa fa-exclamation-triangle orange"></i> Are you sure?</h2>' +
+          '  <span>{{text}}</span>' +
+          '    <div class="ngdialog-buttons">' +
+          '      <button type="button" class="ngdialog-button" ng-click="confirm(confirmValue)">{{label}}</button>' +
+          '      <button type="button" class="ngdialog-button" ng-click="closeThisDialog()">Cancel</button>' +
+          '    </div>' +
+          '</div>',
+          */
+          '<div class="modal-dialog">'+
+          '<div class="modal-content">'+
+          '<div class="modal-header">'+
+          '<h4 class="modal-title">¿Seguro que desea eliminar la prueba?</h4>'+
+          '</div>'+
+          '<div class="modal-footer">'+
+          '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+          '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+          '</div>'+
+          '</div><!-- /.modal-content -->'+
+          '</div><!-- /.modal-dialog -->'
+          ,
+          plain: true
+        }).then(function (confirm) {
+
+          $http({
+            method:'POST',
+            url:globalVariables.url+'/test/delete',
+            data:{
+              user:{
+                email:$rootScope.loggedUser.email
+              },
+              test:{
+                id:testId
+              }
             }
-          }
-        }).then(function success(response){
-          console.log(response);
-          toastr.success("Prueba eliminada con éxito","Success");
-          $location.path('/home');
-        }, function error(response){
-          toastr.error("Error al eliminar la prueba","Error");
-          console.log(response);
-        })
+          }).then(function success(response){
+            console.log(response);
+            toastr.success("Prueba eliminada con éxito","Success");
+            $location.path('/home');
+          }, function error(response){
+            toastr.error("Error al eliminar la prueba","Error");
+            console.log(response);
+          })
+        }, function(reject) {
+        });
       }
 
     }else{
