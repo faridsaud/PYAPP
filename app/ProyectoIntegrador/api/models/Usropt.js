@@ -6,7 +6,7 @@
 */
 
 module.exports = {
-  tableName:'USR_TES',
+  tableName:'USR_OPT',
   autoPK: false,
 
 
@@ -16,24 +16,10 @@ module.exports = {
       columnName:'EMAIL',
       primaryKey:true
     },
-    idTest: {
+    idOption: {
       type:'integer',
-      columnName:'IDTEST',
+      columnName:'IDOPTION',
       primaryKey:true
-    },
-    status:{
-      type:'string',
-      columnName:'STATUSUSRTES',
-      size:1,
-      primaryKey:true
-    },
-    score:{
-      type:'float',
-      columnName: 'SCORE'
-    },
-    intentLeft: {
-      type:'integer',
-      columnName:'INTENTLEFT'
     }
   }
 };

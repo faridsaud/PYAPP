@@ -56,7 +56,9 @@ module.exports.routes = {
   'post /course/update':'CourseController.editCourse',
   'post /test/delete':'TestController.deleteTest',
   'post /test/getTestById':'TestController.getTestById',
-  'post /test/getTestByIdForStudent':'TestController.getTestByIdForStudent'
+  'post /test/getTestByIdForStudent':'TestController.getTestByIdForStudent',
+  'post /test/registerTakenTest':'TestController.registerTakenTest'
+
 
 
 

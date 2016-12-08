@@ -54,8 +54,11 @@ module.exports = {
     averageScore:{
       type:'float',
       columnName: 'AVERAGESCORE'
+    },
+    intents:{
+      type:'integer',
+      columnName: 'INTENTS'
     }
-
     /*
     usuarios:{
     collection:'usuario',

@@ -203,11 +203,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
       //peticion http con los datos
       $scope.saveData=function(){
-        var datosEnviar=JSON.parse(JSON.stringify($scope.test.questions));
         $http({
           method: 'POST',
-          url: 'http://186.4.134.233:1337/testData',
-          data:datosEnviar
+          url:globalVariables.url+'/test/registerTakenTest',
+          data:{
+            test:$scope.test,
+            user:$rootScope.loggedUser
+          }
         }).then(function successCallback(response) {
           // this callback will be called asynchronously
           // when the response is available
@@ -313,7 +315,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
           var number=Number(matchings[1]);
           if(number==($scope.lastIndex+1)){
-            //$scope.saveData();
+            $scope.saveData();
             $rootScope.msg.text="Evaluación enviada con éxito";
             $rootScope.synth.speak($rootScope.msg);
             $rootScope.testSend=$scope.test;
@@ -360,6 +362,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       }).then(function success(response){
         console.log(response);
         $scope.test=response.data.test;
+        $scope.test.id=$rootScope.activeTest.id
         //$scope.formatTestToBeTaken($scope.test);
 
 

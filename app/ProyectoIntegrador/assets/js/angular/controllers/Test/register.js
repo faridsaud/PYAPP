@@ -4,6 +4,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
   }else{
     $scope.test={};
+    $scope.test.intents=1;
     $scope.imprimir=function(){
       console.log($scope.test);
       if($scope.test.startDateTime<$scope.test.finishDateTime){
@@ -424,7 +425,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
               description:$scope.test.description,
               startDateTime:$scope.test.startDateTime.toISOString(),
               finishDateTime:$scope.test.finishDateTime.toISOString(),
-              course:$scope.test.course
+              course:$scope.test.course,
+              intents:$scope.test.intents
             },
             multipleChoiceQuestions:$scope.multipleChoiceQuestions,
             fillQuestions:$scope.fillQuestions,

@@ -24,6 +24,11 @@ module.exports = {
 		}else{
 			var description=null;
 		}
+		if(req.body.test.intents){
+			var intents=req.body.test.intents;
+		}else{
+			var intents=1;
+		}
 		if(req.body.test.createdBy){
 			var createdBy=req.body.test.createdBy;
 		}else{
@@ -57,7 +62,8 @@ module.exports = {
 			startDateTime:startDateTime,
 			finishDateTime:finishDateTime,
 			averageScore:0.0,
-			idCourse:idCourse
+			idCourse:idCourse,
+			intents:intents
 		}).exec(function (error, newTest){
 			if(error){
 				console.log(error);
@@ -68,7 +74,7 @@ module.exports = {
 						console.log(err);
 						return res.json(512, {msg:"Error creating the test"});
 					}else{
-						sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT U.EMAIL, ?, 's' FROM USER U, USR_COU UC WHERE U.EMAIL=UC.EMAIL AND UC.IDCOURSE=? AND U.EMAIL!=?",[newTest.id, idCourse, createdBy], function(error, callback){
+						sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES, INTENTLEFT) SELECT U.EMAIL, ?, 's',? FROM USER U, USR_COU UC WHERE U.EMAIL=UC.EMAIL AND UC.IDCOURSE=? AND U.EMAIL!=?",[newTest.id,intents, idCourse, createdBy], function(error, callback){
 							if(error){
 								console.log(error);
 								return res.json(512,{msg: 'Error creating the test'});
@@ -687,6 +693,7 @@ module.exports = {
 					test.title=finded.title;
 					test.description=finded.description;
 					test.course=finded.idCourse;
+					test.intents=finded.intents;
 					test.startDateTime=finded.startDateTime;
 					test.finishDateTime=finded.finishDateTime;
 					test.multipleChoiceQuestions=[];
@@ -817,6 +824,11 @@ module.exports = {
 			return res.json(400,{msg: 'Error updating the test, there is no test id'});
 		}
 
+		if(req.body.test.intents){
+			var intents=req.body.test.intents;
+		}else{
+			intents=1;
+		}
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
@@ -858,14 +870,30 @@ module.exports = {
 			console.log(errorCheckingTest.msg);
 			return res.json(400, {msg:"Error creating the test, wrong test format send"});
 		}
-		var promiseTest=sails.models.test.update({id:idTest},{
+		/*Update test data*/
+		sails.models.test.update({id:idTest},{
 			title:title,
 			description:description,
 			startDateTime:startDateTime,
-			finishDateTime:finishDateTime
-		}).catch(function(error){
+			finishDateTime:finishDateTime,
+			intents:intents
+		})
+		.then(function(){
+			/*Update intents left of all students*/
+			sails.models.usrtes.query('UPDATE USR_TES SET INTENTLEFT=? WHERE STATUSUSRTES="s" AND IDTEST=? ', [intents, idTest], function(error, results){
+				if(error){
+					console.log("error aqui lol");
+					console.log(error);
+					return res.json(500, {msg:"Error updating the test"});
+				}
+			})
+		})
+		.catch(function(error){
+			console.log("Error aca");
+			console.log(error);
 			return res.json(500, {msg:"Error updating the test, wrong test format send"});
 		})
+
 		/*Get questions*/
 		var multipleChoiceQuestions=req.body.multipleChoiceQuestions;
 		var fillQuestions=req.body.fillQuestions;
@@ -1040,6 +1068,175 @@ module.exports = {
 			console.log(error);
 			return res.json(500, {msg:"Error updating the test"});
 		})
+
+	},
+
+	registerTakenTest:function(req,res){
+
+		if(req.body.test){
+			var test=req.body.test;
+			if(!test.id){
+				return res.json(400,{msg: 'Error registering the taken test data, there is no test id'});
+			}
+		}else{
+			return res.json(400,{msg: 'Error registering the taken test data, there is no test data'});
+		}
+
+		if(req.body.user){
+			var user=req.body.user;
+			if(!user.email){
+				return res.json(400,{msg: 'Error registering the taken test data, there is no user email'});
+			}
+		}else{
+			return res.json(400,{msg: 'Error registering the taken test data, there is no user data'});
+		}
+
+		if(!test.questions){
+			return res.json(400,{msg: 'Error registering the taken test data, there is no question data'});
+		}else{
+			var allPromises=[];
+			console.log("linea 1097");
+			var totalWeighing=0;
+			var parcialScore=0;
+			for(var i=0;i<test.questions.length;i++){
+				var weighing=test.questions[i].weighing;
+				totalWeighing=weighing+totalWeighing;
+
+				for(var j=0;j<test.questions[i].options.length;j++){
+					if((test.questions[i].options[j].isCorrect==true)&&(test.questions[i].options[j].isSelected==true)){
+						parcialScore=parcialScore+weighing;
+						console.log("parcial score:"+parcialScore);
+					}
+				}
+			}
+			var score=parcialScore/totalWeighing;
+			console.log("score:"+score)
+			/*Find the student-test record*/
+			sails.models.usrtes.findOne({email:user.email, idTest:test.id, status:"s"})
+			.then(function(finded){
+				console.log("linea 1112")
+				console.log(finded);
+				if(finded.intentLeft==0){
+					return res.json(400,{msg: 'Error registering the taken test data, you exceed the intents for the test'});
+				}
+				/*If the new score is higher than the older one or if this is the first try*/
+				if(finded.score==null || finded.score<score){
+					console.log("Score of finded"+finded.score);
+					if(finded.score!=null){
+						var olderScore=finded.score;
+						console.log("Older score"+olderScore);
+					}
+					if(finded.score<score){
+						var queryPromise=Promise.promisify(sails.models.usropt.query);
+						var promise=queryPromise('DELETE FROM USR_OPT WHERE IDOPTION IN (SELECT IDOPTION FROM (SELECT UO.IDOPTION FROM USR_OPT UO, OPTIO O, QUESTION Q, TEST T WHERE UO.IDOPTION=O.IDOPTION AND O.IDQUESTION=Q.IDQUESTION AND Q.IDTEST=T.IDTEST AND T.IDTEST=? ) AS TEMPORALUSR_OPT) AND EMAIL=?', [test.id, user.email])
+						.then(function(){
+							for(var i=0;i<test.questions.length;i++){
+								for(var j=0;j<test.questions[i].options.length;j++){
+									if(test.questions[i].options[j].isSelected==true){
+										var insertPromise=sails.models.usropt.create({email:user.email, idOption:test.questions[i].options[j].id}).then(function(created){
+											console.log("Record created:");
+											console.log(created);
+										})
+										allPromises.push(insertPromise);
+									}
+								}
+							}
+						})
+						.catch(function(error){
+							console.log(error);
+						})
+						allPromises.push(promise);
+
+					}
+					if(finded.score==null){
+						for(var i=0;i<test.questions.length;i++){
+							for(var j=0;j<test.questions[i].options.length;j++){
+								if(test.questions[i].options[j].isSelected==true){
+									var insertPromise=sails.models.usropt.create({email:user.email, idOption:test.questions[i].options[j].id}).then(function(created){
+										console.log("Record created:");
+										console.log(created);
+									})
+									allPromises.push(insertPromise);
+								}
+							}
+						}
+					}
+					/*Update the student-test record*/
+					var updateTestPromise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{score:score,intentLeft:finded.intentLeft-1})
+					.then(function(){
+						console.log("linea 1120")
+						/*Find all the records of the students-test to calculate the new average score of the test*/
+						sails.models.usrtes.find({idTest:test.id, status:"s", score:{not:null}})
+						.then(function(finded){
+							console.log("linea 1122");
+							/*Its already counting the new record added*/
+							var testTaken=finded.length;
+							/*Find the test*/
+							sails.models.test.findOne({id:test.id})
+							.then(function(finded){
+								console.log("linea 1124")
+								/*TODO if new test average+1 if not average-1+1*/
+								if(olderScore!=null){
+									var averageScore=((finded.averageScore*testTaken)+score-olderScore)/(testTaken);
+									sails.models.test.update({id:test.id},{averageScore:averageScore})
+									.then(function(updated){
+										console.log("Records updated"+updated[0]);
+									})
+									.catch(function(error){
+										console.log(error);
+										return res.json(500,{msg: 'Error registering the taken test data'});
+									})
+								}else{
+									/*The new record added shouldnt be counted*/
+									testTaken=testTaken-1;
+									var averageScore=((finded.averageScore*testTaken)+score)/(testTaken+1);
+									sails.models.test.update({id:test.id},{averageScore:averageScore})
+									.then(function(updated){
+										console.log("Records updated"+updated[0]);
+									})
+									.catch(function(error){
+										console.log(error);
+										return res.json(500,{msg: 'Error registering the taken test data'});
+									})
+								}
+							})
+							.catch(function(error){
+								console.log(error);
+								return res.json(500,{msg: 'Error registering the taken test data'});
+							})
+						})
+						.catch(function(error){
+							console.log(error);
+							return res.json(500,{msg: 'Error registering the taken test data'});
+						})
+					})
+					.catch(function(error){
+						console.log(error);
+						return res.json(500,{msg: 'Error registering the taken test data'});
+					})
+					allPromises.push(updateTestPromise);
+				}else{
+					/*Score lower than before*/
+					console.log("nota inferior")
+					sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{intentLeft:finded.intentLeft-1})
+					.catch(function(error){
+						return res.json(500,{msg:'Error registering the taken test data'});
+					})
+				}
+			});
+			Promise.all(allPromises)
+			.then(function(){
+				return res.json(200,{msg: 'OK', score:score});
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(500,{msg:'Error registering the taken test data'});
+			})
+
+
+		}
+
+
 
 	},
 

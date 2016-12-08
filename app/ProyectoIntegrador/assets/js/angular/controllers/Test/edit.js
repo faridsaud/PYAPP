@@ -422,6 +422,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
               createdBy:$rootScope.loggedUser.email,
               title:$scope.test.title,
               description:$scope.test.description,
+              intents:$scope.test.intents,
               startDateTime:$scope.test.startDateTime.toISOString(),
               finishDateTime:$scope.test.finishDateTime.toISOString(),
               course:$scope.test.course
