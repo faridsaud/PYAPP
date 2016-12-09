@@ -18,7 +18,6 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 /*Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
 *Llevar un log de los cambios en la base de datos
 *Al clic seleccionar la respuesta
-*Tiempo max de duracion de la prueba
 *Cambiar $location por $state
 *Hacer multilingue a la aplicacion
 *Try y catchs]
@@ -27,15 +26,15 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Copy y paste de una prueba
 *Seguro que quiere eliminar
 *Administrador de institucion para ver
-*Numero de intentos
-no tiempo
-+ al fnak
+*Numero de intentos/hecho
+
++ al final /hecho
 *Clonar rpeguntas apartir de un banco de preguntas del curso
 *Multiples estudiantes a la vez a un curso
 *Actualizar vista profesor
 *Clonar curso
-*No actualiza fecha (Arreglado)
+*No actualiza fecha (Arreglado) /hecho
 *retroalimentacion si selecciona respuesta correcta
 *Multilingue
 *boton atras
-*Controles en retroalimentacion
+*Controles en retroalimentacion /hecho

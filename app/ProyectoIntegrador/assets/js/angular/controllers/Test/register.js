@@ -1,4 +1,4 @@
-app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
+app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state){
   if(!$rootScope.loggedUser){
     $location.path('/home');
 
@@ -442,6 +442,10 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           toastr.error("Error al registrar la prueba","Success");
         })
       }
+    }
+
+    $scope.cloneTest=function(){
+
     }
 
     /*Load course by teacher*/
