@@ -1,6 +1,8 @@
 app.controller('homeTeacherController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="teacher"){
+      /*In case there was a test to be cloned, undefine it*/
+      $rootScope.testToBeCloned=undefined;
       console.log("home teacher controller");
       $http({
         method:'POST',

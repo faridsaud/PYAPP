@@ -44,15 +44,14 @@ module.exports = {
 			name:name,
 			description:description,
 			createdBy:email
-		}).exec(function(error, newRecord){
+		})
+		.exec(function(error, newRecord){
 			if(error){
 				console.log(error);
 				return res.json(512, {msg:"Error creating the course"});
 			}else{
 				sails.models.usrcou.query(
-					'INSERT INTO USR_COU (EMAIL, IDCOURSE, STATUSUSRCOU) VALUES (?,?,?)',
-					[email, newRecord.id, status]
-					, function(err, results) {
+					'INSERT INTO USR_COU (EMAIL, IDCOURSE, STATUSUSRCOU) VALUES (?,?,?)',[email, newRecord.id, status], function(err, results) {
 						if (err){
 							console.log("Estamos aqui en ERR");
 							return res.json(512,{msg:"Error creating the course"});
@@ -62,7 +61,7 @@ module.exports = {
 						}
 					});
 				}
-			})
+			});
 
 
 		},

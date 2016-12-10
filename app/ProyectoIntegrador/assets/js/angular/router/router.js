@@ -91,7 +91,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
   })
   .state('testList', {
     url: '/teacher/test/all',
-    templateUrl: 'html/angular/views/Test/allTest.html',
+    templateUrl: 'html/angular/views/Test/listAll.html',
     controller: 'testListController'
   })
   /*

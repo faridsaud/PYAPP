@@ -3,6 +3,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     $location.path('/home');
 
   }else{
+
     $scope.test={};
     $scope.test.intents=1;
     $scope.imprimir=function(){
@@ -436,6 +437,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         }).then(function success(response){
           console.log(response);
           toastr.success("Prueba registrada con éxito","Success");
+          $rootScope.testToBeCloned=undefined;
           $location.path('/home');
         }, function error(response){
           console.log(response);
@@ -445,7 +447,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }
 
     $scope.cloneTest=function(){
-
+      $state.go("testList");
     }
 
     /*Load course by teacher*/
@@ -465,5 +467,64 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
     }, function error(response){
       console.log(response);
     })
+    /*If there is a test to be cloned, load it*/
+    if($rootScope.testToBeCloned){
+      /*Load test*/
+      $http({
+        method:'POST',
+        url:globalVariables.url+'/test/getTestById',
+        data:{
+          user:{
+            email:$rootScope.loggedUser.email
+          },
+          test:{
+            id:$rootScope.testToBeCloned
+          }
+
+        }
+      }).then(function success(response){
+        console.log(response);
+        $scope.test=response.data.test;
+        $scope.test.course=$scope.test.course.toString();
+        $scope.multipleChoiceQuestions=$scope.test.multipleChoiceQuestions;
+        $scope.fillQuestions=$scope.test.fillQuestions;
+        $scope.trueFalseQuestions=$scope.test.trueFalseQuestions;
+        $scope.test.startDateTime=new Date($scope.test.startDateTime);
+        $scope.test.finishDateTime=new Date($scope.test.finishDateTime);;
+        $scope.formatTrueFalseQuestionsServerToAngular();
+        $scope.formatFillQuestionsServerToAngular();
+        console.log($scope.test);
+        console.log($scope.courses);
+      }, function error(response){
+        console.log(response);
+      })
+    }
+
+    $scope.formatTrueFalseQuestionsServerToAngular=function(){
+      for(var i=0;i<$scope.trueFalseQuestions.length;i++){
+        for(var j=0; j<$scope.trueFalseQuestions[i].options.length;j++){
+          if(($scope.trueFalseQuestions[i].options[j].text=="verdadero")&&($scope.trueFalseQuestions[i].options[j].isCorrect==true)){
+            $scope.trueFalseQuestions[i].option="true";
+          }
+          if(($scope.trueFalseQuestions[i].options[j].text=="falso")&&($scope.trueFalseQuestions[i].options[j].isCorrect==true)){
+            $scope.trueFalseQuestions[i].option="false";
+          }
+          if($scope.trueFalseQuestions[i].options[j].justification.length>1){
+            $scope.trueFalseQuestions[i].justification=$scope.trueFalseQuestions[i].options[j].justification;
+          }
+        }
+      }
+    }
+
+    $scope.formatFillQuestionsServerToAngular=function(){
+      for(var i=0; i<$scope.fillQuestions.length;i++){
+        var statements=$scope.fillQuestions[i].text.split(".espacio en blanco.");
+        $scope.fillQuestions[i].statements=[];
+        for(var j=0;j<statements.length;j++ ){
+          $scope.fillQuestions[i].statements.push({text:statements[j]});
+        }
+      }
+    }
+
   }
 }]);
