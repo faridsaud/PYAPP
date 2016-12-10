@@ -2,7 +2,10 @@
   <div class="container">
     <div class="row">
       <div class="col-md-8 col-md-offset-2">
-        <input type="text" ng-model="search.course.name">
+        <div class="form-group">
+          <label>Curso:</label>
+          <input type="text" ng-model="search.course.name">
+        </div>
         <div class="table-responsive">
           <table class="table table-hover table-condensed">
             <thead>
@@ -14,7 +17,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="test in tests track by $index "  ng-click="cloneTest(test.id)">
+              <tr ng-repeat="test in tests | filter:search  track by $index"  ng-click="cloneTest(test.id)">
                 <td>{{test.course.name}}</td>
                 <td>{{test.title}}</td>
                 <td>{{test.description}}</td>
