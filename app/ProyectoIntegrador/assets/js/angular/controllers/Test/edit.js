@@ -1,4 +1,4 @@
-app.controller('editTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state){
+app.controller('editTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state','ngDialog', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state,ngDialog){
   if(!$rootScope.loggedUser){
     $location.path('/home');
 
@@ -38,9 +38,43 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
     }
 
     $scope.removeFillQuestion=function(index){
-      if (index > -1) {
-        $scope.fillQuestions.splice(index, 1);
-      }
+      ngDialog.openConfirm({
+        scope: $scope,
+        template:
+        '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+        '<div class="modal-header">'+
+        '<h4 class="modal-title">¿Seguro que desea eliminar la pregunta?</h4>'+
+        '</div>'+
+        '<div class="modal-footer">'+
+        '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+        '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+        '</div>'+
+        '</div><!-- /.modal-content -->'+
+        '</div><!-- /.modal-dialog -->'
+        ,
+        plain: true
+      }).then(function (confirm) {
+
+        if($scope.fillQuestions[index].id){
+
+          $http({
+            method:'POST',
+            url:globalVariables.url+'/question/delete',
+            data:{
+              id:$scope.fillQuestions[index].id
+            }
+          }).then(function success(response){
+            console.log(response);
+          }, function error(response){
+            console.log(response);
+          })
+        }
+        if (index > -1) {
+          $scope.fillQuestions.splice(index, 1);
+        }
+      }, function(reject) {
+      });
     }
 
     /*Multiple choice question scope*/
@@ -58,9 +92,42 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       console.log($scope.multipleChoiceQuestions[index].options);
     }
     $scope.removeMultipleChoiceQuestion=function(index){
-      if (index > -1) {
-        $scope.multipleChoiceQuestions.splice(index, 1);
-      }
+      ngDialog.openConfirm({
+        scope: $scope,
+        template:
+        '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+        '<div class="modal-header">'+
+        '<h4 class="modal-title">¿Seguro que desea eliminar la pregunta?</h4>'+
+        '</div>'+
+        '<div class="modal-footer">'+
+        '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+        '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+        '</div>'+
+        '</div><!-- /.modal-content -->'+
+        '</div><!-- /.modal-dialog -->'
+        ,
+        plain: true
+      }).then(function (confirm) {
+
+        if($scope.multipleChoiceQuestions[index].id){
+          $http({
+            method:'POST',
+            url:globalVariables.url+'/question/delete',
+            data:{
+              id:$scope.multipleChoiceQuestions[index].id
+            }
+          }).then(function success(response){
+            console.log(response);
+          }, function error(response){
+            console.log(response);
+          })
+        }
+        if (index > -1) {
+          $scope.multipleChoiceQuestions.splice(index, 1);
+        }
+      }, function(reject) {
+      });
     }
 
     /*True/False question scope*/
@@ -74,9 +141,43 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       $scope.trueFalseQuestions.push(trueFalseQuestion);
     }
     $scope.removeTrueFalseQuestion=function(index){
-      if (index > -1) {
-        $scope.trueFalseQuestions.splice(index, 1);
-      }
+      ngDialog.openConfirm({
+        scope: $scope,
+        template:
+        '<div class="modal-dialog">'+
+        '<div class="modal-content">'+
+        '<div class="modal-header">'+
+        '<h4 class="modal-title">¿Seguro que desea eliminar la pregunta?</h4>'+
+        '</div>'+
+        '<div class="modal-footer">'+
+        '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+        '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+        '</div>'+
+        '</div><!-- /.modal-content -->'+
+        '</div><!-- /.modal-dialog -->'
+        ,
+        plain: true
+      }).then(function (confirm) {
+
+        if($scope.trueFalseQuestions[index].id){
+
+          $http({
+            method:'POST',
+            url:globalVariables.url+'/question/delete',
+            data:{
+              id:$scope.trueFalseQuestions[index].id
+            }
+          }).then(function success(response){
+            console.log(response);
+          }, function error(response){
+            console.log(response);
+          })
+        }
+        if (index > -1) {
+          $scope.trueFalseQuestions.splice(index, 1);
+        }
+      }, function(reject) {
+      });
     }
 
 

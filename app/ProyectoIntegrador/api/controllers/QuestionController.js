@@ -103,4 +103,19 @@ module.exports = {
 
 	},
 
+	delete:function(req,res){
+		if(req.body.id){
+			var id=req.body.id;
+		}else{
+			return res.json(400, {msg:"Error deleting the question, no id send"});
+		}
+		sails.models.question.destroy({id:id})
+		.then(function(){
+			return res.json(200, {msg:"Question deleted successfully"});
+		})
+		.catch(function(error){
+			return res.json(500, {msg:"Error deleting the question, no id send"});
+		})
+	}
+
 };
