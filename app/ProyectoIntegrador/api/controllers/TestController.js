@@ -1240,5 +1240,83 @@ module.exports = {
 
 	},
 
+	cloneQuestion:function(req,res){
+		if(req.body.user){
+			var user=req.body.user;
+			if(!user.email){
+				return res.json(400,{msg: 'Error cloning the question, there is no user email send'});
+			}
+		}else{
+			return res.json(400,{msg: 'Error cloning the question, there is no user data send'});
+		}
+
+		if(req.body.test){
+			var test=req.body.test;
+			if(!test.id){
+				return res.json(400,{msg: 'Error cloning the question, there is no test id send'});
+			}
+		}else{
+			return res.json(400,{msg: 'Error cloning the question, there is no test data send'});
+		}
+
+		if(req.body.question){
+			var question=req.body.question;
+		}else{
+			return res.json(400,{msg: 'Error cloning the question, there is no question data send'});
+		}
+		/*Checking if the user is the owner of the test*/
+		sails.models.usrtes.findOne({email:user.email, idTest:test.id, status:'t'}).exec(function(error, finded){
+			if(error){
+				return res.json(500,{msg: 'Error cloning the question'});
+			}else{
+				if(finded){
+					if(question.type=="trueFalse"){
+						var trueFalseQuestions=[];
+						trueFalseQuestions.push(question);
+						sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
+						var questionPromise=sails.controllers.question.register(trueFalseQuestions[0],test)
+						var questions=trueFalseQuestions;
+					}
+					if(question.type=="fill"){
+						var fillQuestions=[];
+						fillQuestions.push(question);
+						sails.controllers.question.formatFillQuestionsAngularToServer(fillQuestions);
+						var questionPromise=sails.controllers.question.register(fillQuestions[0],test)
+						var questions=fillQuestions;
+					}
+					if(question.type=="multipleCh"){
+						var multipleChoiceQuestions=[];
+						multipleChoiceQuestions.push(question);
+						sails.controllers.question.formatMultipleChoiceQuestionsAngularToServer(multipleChoiceQuestions);
+						var questionPromise=sails.controllers.question.register(multipleChoiceQuestions[0],test);
+						var questions=multipleChoiceQuestions;
+					}
+					Promise.join(questionPromise, function(questionCreated){
+						var optionsPromises=[];
+						for(var j=0;j<questions[0].options.length;j++){
+							var optionPromise=sails.controllers.option.register(questions[0].options[j],questionCreated);
+							optionsPromises.push(optionPromise);
+						}
+						Promise.all(optionsPromises)
+						.then(function(){
+							return res.json(200,{msg: 'Question cloned successfully'});
+						})
+						.catch(function(error){
+							return res.json(500,{msg: 'Error cloning the question'});
+						})
+					})
+					.catch(function(error){
+						return res.json(500,{msg: 'Error cloning the question'});
+					})
+
+				}else{
+					return res.json(400,{msg: 'Error cloning the question, the user is not the owner of the test'});
+				}
+			}
+		});
+
+
+	},
+
 
 };

@@ -1,4 +1,4 @@
-app.controller('editTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
+app.controller('editTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state){
   if(!$rootScope.loggedUser){
     $location.path('/home');
 
@@ -516,6 +516,27 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
           $scope.fillQuestions[i].statements.push({text:statements[j]});
         }
       }
+    }
+
+    $scope.cloneMultipleChoiceQuestion=function(index){
+      var question = $scope.multipleChoiceQuestions[index];
+      $scope.cloneQuestion(question);
+    }
+
+    $scope.cloneTrueFalseQuestion=function(index){
+      var question = $scope.trueFalseQuestions[index];
+      $scope.cloneQuestion(question);
+    }
+
+    $scope.cloneFillQuestion=function(index){
+      var question = $scope.fillQuestions[index];
+      $scope.cloneQuestion(question);
+    }
+
+    $scope.cloneQuestion=function(question){
+      $rootScope.questionToBeCloned=question;
+      console.log($rootScope.questionToBeCloned);
+      $state.go("cloneQuestion");
     }
 
 

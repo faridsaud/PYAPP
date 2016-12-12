@@ -29,6 +29,7 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Numero de intentos/hecho
 
 + al final /hecho
+*Clonar prueba /hecho
 *Clonar rpeguntas apartir de un banco de preguntas del curso
 *Multiples estudiantes a la vez a un curso
 *Actualizar vista profesor
@@ -38,3 +39,4 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Multilingue
 *boton atras
 *Controles en retroalimentacion /hecho
+*Bug al eliminar preguntas cuando se edita una prueba, no se eliminan las preguntas
