@@ -39,4 +39,5 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Multilingue
 *boton atras
 *Controles en retroalimentacion /hecho
-*Bug al eliminar preguntas cuando se edita una prueba, no se eliminan las preguntas
+*Bug al eliminar preguntas cuando se edita una prueba, no se eliminan las preguntas /hecho
+*reroll en servicios   revisar: http://stackoverflow.com/questions/25079408/how-to-handle-async-concurrent-requests-correctly/25100188#25100188
