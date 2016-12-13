@@ -10,14 +10,17 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       /*Loading the test*/
       var instructionSpoken=false;
       //Narrador
-      $rootScope.msg = new SpeechSynthesisUtterance();
-      $rootScope.synth = window.speechSynthesis;
+      if(!$rootScope.msg & !$rootScope.synth){
+        $rootScope.msg = new SpeechSynthesisUtterance();
+        $rootScope.synth = window.speechSynthesis;
+        $rootScope.msg.rate =1.0;
+        $rootScope.msg.lang='es-US';
+      }
       $rootScope.synth.onvoiceschanged = function() {
         voices = $rootScope.synth.getVoices();
         console.log(voices);
-        $rootScope.msg.rate = 0.8;
+        console.log("Entrando a hablar");
         $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
-        $rootScope.msg.lang = 'es-US';
         if(instructionSpoken==false){
           $rootScope.synth.cancel();
           $rootScope.msg.text="Instrucciones: teclas arriba y abajo para moverse entre opciones y preguntas. Derecha e izquierda para moverse entre preguntas. Espacio para seleccionar la opción. Control para iniciar la prueba";
@@ -330,6 +333,34 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             console.log($scope.test);
           }
 
+        }
+
+        //+
+        if(event.which==107){
+          if($rootScope.msg){
+            if($rootScope.msg.rate){
+              if($rootScope.msg.rate<1.9){
+                $rootScope.msg.rate=$rootScope.msg.rate+0.1;
+                console.log($rootScope.msg.rate);
+                $rootScope.synth.cancel();
+                speakP();
+              }
+            }
+          }
+        }
+
+        //-
+        if(event.which==109){
+          if($rootScope.msg){
+            if($rootScope.msg.rate){
+              if($rootScope.msg.rate>0.1){
+                $rootScope.msg.rate=$rootScope.msg.rate-0.1;
+                console.log($rootScope.msg.rate);
+                $rootScope.synth.cancel();
+                speakP();
+              }
+            }
+          }
         }
       });
       //al hacer focus

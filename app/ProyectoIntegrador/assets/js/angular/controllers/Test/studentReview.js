@@ -3,6 +3,39 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
   if(!$rootScope.loggedUser.email ||!$rootScope.activeTest.id){
     $location.path('/home');
   }else{
+    /*Loading the test*/
+    var instructionSpoken=false;
+    //Narrador
+    if(!$rootScope.msg & !$rootScope.synth){
+      $rootScope.msg = new SpeechSynthesisUtterance();
+      $rootScope.synth = window.speechSynthesis;
+      $rootScope.msg.rate =1.0;
+      $rootScope.msg.lang='es-US';
+
+      $rootScope.synth.onvoiceschanged = function() {
+        voices = $rootScope.synth.getVoices();
+        console.log(voices);
+        $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
+
+        if(instructionSpoken==false){
+          $rootScope.synth.cancel();
+          $rootScope.msg.text="Instrucciones: teclas arriba y abajo para moverse entre opciones y preguntas. Derecha e izquierda para moverse entre preguntas. Espacio para seleccionar la opción. Control para iniciar la prueba";
+
+        }
+        $rootScope.synth.speak($rootScope.msg);
+        instructionSpoken=true;
+      }
+      var finishedSpeaking=false;
+      $rootScope.msg.onstart=function(event){
+        finishedSpeaking=false;
+        console.log("On start");
+      }
+      $rootScope.msg.onend=function(event){
+        finishedSpeaking=true;
+        console.log("On end");
+      }
+
+    }
     var correctAnswers=0;
     var instructionSpoken=false;
     $scope.focusedElement="p1";
@@ -273,6 +306,33 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
 
         }
 
+        //+
+        if(event.which==107){
+          if($rootScope.msg){
+            if($rootScope.msg.rate){
+              if($rootScope.msg.rate<1.9){
+                $rootScope.msg.rate=$rootScope.msg.rate+0.1;
+                console.log($rootScope.msg.rate);
+                $rootScope.synth.cancel();
+                speakP();
+              }
+            }
+          }
+        }
+
+        //-
+        if(event.which==109){
+          if($rootScope.msg){
+            if($rootScope.msg.rate){
+              if($rootScope.msg.rate>0.1){
+                $rootScope.msg.rate=$rootScope.msg.rate-0.1;
+                console.log($rootScope.msg.rate);
+                $rootScope.synth.cancel();
+                speakP();
+              }
+            }
+          }
+        }
       });
       //al hacer focus
       $document.unbind('focusin').bind("focusin",function(event){
