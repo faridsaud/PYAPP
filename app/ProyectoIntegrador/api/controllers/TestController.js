@@ -1318,5 +1318,13 @@ module.exports = {
 
 	},
 
+	createCloneTest:function(mappedTests, oldTest, courseId){
+		var createTestPromise=sails.models.test.create({idCourse:courseId, title:oldTest.title, description:oldTest.description, createdBy:oldTest.createdBy, status:oldTest.status, startDateTime:oldTest.startDateTime, finishDateTime:oldTest.finishDateTime, averageScore:0,intents:oldTest.intents})
+		.then(function(testCreated){
+			mappedTests.push({oldTest:oldTest, newTest:testCreated});
+		})
+		return createTestPromise;
+	},
+
 
 };

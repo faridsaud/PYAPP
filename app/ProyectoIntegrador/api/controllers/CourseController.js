@@ -320,69 +320,112 @@ module.exports = {
 						/*Create the new course*/
 						sails.models.course.create({description:courseFinded.description, name:courseFinded.name, createdBy:courseFinded.createdBy})
 						.then(function(courseCreated){
+
 							sails.models.usrcou.create({email:email, idCourse:courseCreated.id, status:'t'})
 							.catch(function(error){
 								console.log(error);
 								return res.json(500,{msg:"Error cloning the course"});
 							})
-							var queryPromisified=Promise.promisify(sails.models.test.query);
+							var mappedTests=[];
+							var testPromises=[];
 							/*Create all the test of the old course on the new one*/
-							var createTestsPromise=queryPromisified("INSERT INTO TEST (IDCOURSE, TITLE, DESCRIPTIONTEST, CREATEDBYTEST, STATUS, STARTDATETIME, FINISHDATETIME, AVERAGESCORE, INTENTS) SELECT ?, TITLE, DESCRIPTIONTEST, CREATEDBYTEST, STATUS, STARTDATETIME, FINISHDATETIME, 0, INTENTS FROM TEST WHERE IDCOURSE = ?",[courseCreated.id,courseId])
-							.then(function(){
-								sails.models.test.find({idCourse:courseCreated.id})
-								.then(function(tests){
-									var questionsPromises=[];
-									for(var i=0;i<tests.length;i++){
-										/*Create all the questions of the old tests on the new ones*/
-										var createQuestionPromise=queryPromisified("INSERT INTO QUESTION (IDTEST, TYPEQUESTION, TEXTQUESTION, WEIGHT) SELECT  ?, Q.TYPEQUESTION, Q.TEXTQUESTION, Q.WEIGHT FROM COURSE C, TEST T, QUESTION Q WHERE Q.IDTEST=T.IDTEST AND T.IDCOURSE=C.IDCOURSE AND C.IDCOURSE=?",[tests[i].id,courseId])
-										questionsPromises.push(createQuestionPromise);
+							/*Get all test of the course*/
+							var testQueryPromisified=Promise.promisify(sails.models.test.query);
+							var selectTestsPromise=testQueryPromisified("SELECT T.IDTEST AS id, T.IDCOURSE AS idCourse, T.TITLE AS title, T.DESCRIPTIONTEST AS description, T.CREATEDBYTEST AS createdBy, T.STATUS AS status, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, 0 AS averageScore, T.INTENTS AS intents  FROM TEST T WHERE  T.IDCOURSE=?",[courseId])
+							.then(function(oldTests){
+								/*Insert the old test in the new course as new tests*/
+
+								for(var i=0; i<oldTests.length;i++){
+									var oldTest=JSON.parse(JSON.stringify(oldTests[i]));
+									var createTestPromise=sails.controllers.test.createCloneTest(mappedTests, oldTest, courseCreated.id);
+									testPromises.push(createTestPromise);
+								}
+
+								Promise.all(testPromises)
+								.then(function(){
+									var setOldQuestionsPromises=[];
+									console.log("Mapped Tests");
+									console.log(mappedTests);
+									for(var i=0;i<mappedTests.length;i++){
+										var promiseQuestion=sails.controllers.question.setOldQuestionsClone(mappedTests[i].oldTest);
+										setOldQuestionsPromises.push(promiseQuestion);
 									}
-									Promise.all(questionsPromises)
+									Promise.all(setOldQuestionsPromises)
 									.then(function(){
-										/*Create all the options of the old questions in the new ones*/
-										var newQuestions=[];
-										console.log(courseCreated.id);
-										var getNewQuestionsPromise=queryPromisified("SELECT Q.IDQUESTION AS id, Q.TEXTQUESTION AS text FROM QUESTION Q, TEST T, COURSE C WHERE Q.IDTEST=T.IDTEST AND T.IDCOURSE=C.IDCOURSE AND C.IDCOURSE=?",[courseCreated.id	])
-										.then(function(questions){
-											newQuestions=questions;
-											var optionsPromises=[];
-											console.log(newQuestions);
-											for(var i=0; i<newQuestions.length;i++){
-												var createOptionPromise=queryPromisified("INSERT INTO OPTIO (IDQUESTION, JUSTIFICATION, ISCORRECT, TEXTOPTION) SELECT  ?, O.JUSTIFICATION, O.ISCORRECT, O.TEXTOPTION  FROM COURSE C, TEST T, QUESTION Q, OPTIO O WHERE O.IDQUESTION=Q.IDQUESTION AND Q.IDTEST=T.IDTEST AND T.IDCOURSE=C.IDCOURSE AND C.IDCOURSE=? AND Q.TEXTQUESTION=?",[newQuestions[i].id,courseId, newQuestions[i].text])
-												optionsPromises.push(createOptionPromise);
+										var createNewQuestionsPromises=[]
+										for(var i=0;i<mappedTests.length;i++){
+											mappedTests[i].newTest.questions=[];
+											for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
+												console.log("Entramos aca");
+												var promiseQuestion=sails.controllers.question.createNewQuestionClone(mappedTests[i].newTest, mappedTests[i].oldTest.questions[j]);
+												createNewQuestionsPromises.push(promiseQuestion);
 											}
-											Promise.all(optionsPromises)
+										}
+
+										Promise.all(createNewQuestionsPromises)
+										.then(function(){
+
+											var setOldOptionsPromises=[];
+											for(var i=0;i<mappedTests.length;i++){
+												for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
+													var promise=sails.controllers.option.setOldOptionsClone(mappedTests[i].oldTest.questions[j]);
+													setOldOptionsPromises.push(promise);
+												}
+											}
+											Promise.all(setOldOptionsPromises)
 											.then(function(){
-												return res.json(200,{msg:"Course cloned"});
+
+												var createNewOptionsPromises=[];
+												for(var i=0;i<mappedTests.length;i++){
+													for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
+														for(var k=0;k<mappedTests[i].oldTest.questions[j].options.length;k++){
+															var promise=sails.controllers.option.createNewOptionClone(mappedTests[i].newTest.questions[j],mappedTests[i].oldTest.questions[j].options[k]);
+															createNewOptionsPromises.push(promise);
+														}
+													}
+												}
+												Promise.all(createNewOptionsPromises)
+												.then(function(){
+													return res.json(200,{msg:"Course cloned successfully"});
+												})
+												.catch(function(error){
+													console.log(error);
+													return res.json(509,{msg:"Error cloning the course"});
+												})
 											})
 											.catch(function(error){
 												console.log(error);
-												return res.json(505,{msg:"Error cloning the course"});
+												return res.json(509,{msg:"Error cloning the course"});
 											})
 										})
 										.catch(function(error){
 											console.log(error);
-											return res.json(504,{msg:"Error cloning the course"});
+											return res.json(509,{msg:"Error cloning the course"});
 										})
-
 									})
 									.catch(function(error){
-										console.log("error");
-										return res.json(503,{msg:"Error cloning the course"});
+										console.log(error);
+										return res.json(506,{msg:"Error cloning the course"});
 									})
+
+
 								})
 								.catch(function(error){
-									console.log(error);
-									return res.json(502,{msg:"Error cloning the course"});
+									return res.json(503,{msg:"Error cloning the course"});
 								})
 
-								return null;
 							})
 							.catch(function(error){
-								return res.json(400,{msg:"Error cloning the course, no email send"});
+								return res.json(502,{msg:"Error cloning the course"});
 							})
+							console.log("Push the promesa select test");
+							/*Wait until tests' select and create promises finished*/
+
+
+
 						})
 						.catch(function(error){
+							console.log(error);
 							return res.json(501,{msg:"Error cloning the course"});
 						})
 

@@ -99,4 +99,21 @@ module.exports = {
 		}
 
 	},
+
+	setOldOptionsClone:function(oldQuestion){
+		oldQuestion.options=[];
+		var optionQueryPromisified=Promise.promisify(sails.models.option.query);
+		var selectOptionsPromise= optionQueryPromisified("SELECT IDOPTION AS id, IDQUESTION AS idQuestion, JUSTIFICATION AS justification, ISCORRECT AS isCorrect, TEXTOPTION AS text FROM OPTIO WHERE IDQUESTION=?",[oldQuestion.id])
+		.then(function(oldOptions){
+			for(var i=0;i<oldOptions.length;i++){
+				oldQuestion.options.push(oldOptions[i]);
+			}
+		})
+		return selectOptionsPromise;
+	},
+
+	createNewOptionClone:function(newQuestion, oldOption){
+			var createOptionPromise=sails.models.option.create({idQuestion:newQuestion.id, justification:oldOption.justification, isCorrect:oldOption.isCorrect,text:oldOption.text})
+			return createOptionPromise;
+	},
 };

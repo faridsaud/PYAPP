@@ -116,6 +116,33 @@ module.exports = {
 		.catch(function(error){
 			return res.json(500, {msg:"Error deleting the question, no id send"});
 		})
-	}
+	},
 
+	createCloneQuestion:function(oldQuestion, idTest, mappedTests){
+		var createQuestionPromise=sails.models.question.create({idTest:mappedTests[i].newTest.id, type:oldQuestions[j].type,text:oldQuestions[j].text, weighing:oldQuestions[j].weighing})
+
+	},
+
+	setOldQuestionsClone:function(oldTest){
+		oldTest.questions=[];
+		var questionQueryPromisified=Promise.promisify(sails.models.question.query);
+		var selectQuestionsPromise=questionQueryPromisified("SELECT Q.IDQUESTION AS id, Q.IDTEST AS idTest, Q.TYPEQUESTION AS type, Q.TEXTQUESTION AS text, Q.WEIGHT AS weighing FROM QUESTION Q WHERE Q.IDTEST=?",[oldTest.id])
+		.then(function(oldQuestions){
+			for(var i=0;i<oldQuestions.length;i++){
+				oldTest.questions.push(oldQuestions[i]);
+			}
+		})
+		return selectQuestionsPromise;
+	},
+
+	createNewQuestionClone:function(newTest, oldQuestion){
+			console.log("Se va a crear la pregunta");
+			console.log(oldQuestion);
+			var createQuestionPromise=sails.models.question.create({idTest:newTest.id, type:oldQuestion.type,text:oldQuestion.text, weighing:oldQuestion.weighing})
+			.then(function(questionCreated){
+				console.log("Question created");
+				newTest.questions.push(questionCreated);
+			})
+			return createQuestionPromise;
+	},
 };
