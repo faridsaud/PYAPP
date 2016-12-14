@@ -18,9 +18,9 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 /*Al momento de insertar ".espacio en blanco." en las preguntas de completar agregar un espacio en blanco luego del primeor punto
 *Llevar un log de los cambios en la base de datos
 *Al clic seleccionar la respuesta
-*Cambiar $location por $state
+*Cambiar $location por $state /en proceso
 *Hacer multilingue a la aplicacion
-*Try y catchs]
+*Try y catchs
 *Login e interfaz del usuario mas amigable a persona no vidente
 *Pregunta secreta para restablecer la contrasena
 *Copy y paste de una prueba
@@ -31,8 +31,8 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Clonar prueba /hecho
 *Clonar rpeguntas apartir de un banco de preguntas del curso
 *Multiples estudiantes a la vez a un curso
-*Actualizar vista profesor
-*Clonar curso
+*Actualizar vista profesor /hecho
+*Clonar curso /hecho
 *No actualiza fecha (Arreglado) /hecho
 *retroalimentacion si selecciona respuesta correcta
 *Multilingue
@@ -40,3 +40,4 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Controles en retroalimentacion /hecho
 *Bug al eliminar preguntas cuando se edita una prueba, no se eliminan las preguntas /hecho
 *reroll en servicios   revisar: http://stackoverflow.com/questions/25079408/how-to-handle-async-concurrent-requests-correctly/25100188#25100188
+*Profesor al dir click en una prueba finalizada debe ver la nota individual de cada estudiante

@@ -5,6 +5,16 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 var Promise = require("bluebird");
+Promise.config({
+    // Enable warnings
+    warnings: false,
+    // Enable long stack traces
+    longStackTraces: true,
+    // Enable cancellation
+    cancellation: true,
+    // Enable monitoring
+    monitoring: true
+});
 module.exports = {
 	register:function(req, res){
 		if(req.body.user.email){
@@ -341,52 +351,68 @@ module.exports = {
 									testPromises.push(createTestPromise);
 								}
 
+
 								Promise.all(testPromises)
 								.then(function(){
-									var setOldQuestionsPromises=[];
-									console.log("Mapped Tests");
-									console.log(mappedTests);
+									/*In table USR_TES insert the owner of the tests created*/
+									var testUserPromises=[]
 									for(var i=0;i<mappedTests.length;i++){
-										var promiseQuestion=sails.controllers.question.setOldQuestionsClone(mappedTests[i].oldTest);
-										setOldQuestionsPromises.push(promiseQuestion);
+										var testUserPromise=sails.models.usrtes.create({email:email, idTest:mappedTests[i].newTest.id, status:'t'});
+										testUserPromises.push(testUserPromise);
 									}
-									Promise.all(setOldQuestionsPromises)
+									Promise.all(testUserPromises)
 									.then(function(){
-										var createNewQuestionsPromises=[]
+
+
+										var setOldQuestionsPromises=[];
+										console.log("Mapped Tests");
+										console.log(mappedTests);
 										for(var i=0;i<mappedTests.length;i++){
-											mappedTests[i].newTest.questions=[];
-											for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
-												console.log("Entramos aca");
-												var promiseQuestion=sails.controllers.question.createNewQuestionClone(mappedTests[i].newTest, mappedTests[i].oldTest.questions[j]);
-												createNewQuestionsPromises.push(promiseQuestion);
-											}
+											var promiseQuestion=sails.controllers.question.setOldQuestionsClone(mappedTests[i].oldTest);
+											setOldQuestionsPromises.push(promiseQuestion);
 										}
-
-										Promise.all(createNewQuestionsPromises)
+										Promise.all(setOldQuestionsPromises)
 										.then(function(){
-
-											var setOldOptionsPromises=[];
+											var createNewQuestionsPromises=[]
 											for(var i=0;i<mappedTests.length;i++){
+												mappedTests[i].newTest.questions=[];
 												for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
-													var promise=sails.controllers.option.setOldOptionsClone(mappedTests[i].oldTest.questions[j]);
-													setOldOptionsPromises.push(promise);
+													console.log("Entramos aca");
+													var promiseQuestion=sails.controllers.question.createNewQuestionClone(mappedTests[i].newTest, mappedTests[i].oldTest.questions[j]);
+													createNewQuestionsPromises.push(promiseQuestion);
 												}
 											}
-											Promise.all(setOldOptionsPromises)
+
+											Promise.all(createNewQuestionsPromises)
 											.then(function(){
 
-												var createNewOptionsPromises=[];
+												var setOldOptionsPromises=[];
 												for(var i=0;i<mappedTests.length;i++){
 													for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
-														for(var k=0;k<mappedTests[i].oldTest.questions[j].options.length;k++){
-															var promise=sails.controllers.option.createNewOptionClone(mappedTests[i].newTest.questions[j],mappedTests[i].oldTest.questions[j].options[k]);
-															createNewOptionsPromises.push(promise);
-														}
+														var promise=sails.controllers.option.setOldOptionsClone(mappedTests[i].oldTest.questions[j]);
+														setOldOptionsPromises.push(promise);
 													}
 												}
-												Promise.all(createNewOptionsPromises)
+												Promise.all(setOldOptionsPromises)
 												.then(function(){
-													return res.json(200,{msg:"Course cloned successfully"});
+
+													var createNewOptionsPromises=[];
+													for(var i=0;i<mappedTests.length;i++){
+														for(var j=0;j<mappedTests[i].oldTest.questions.length;j++){
+															for(var k=0;k<mappedTests[i].oldTest.questions[j].options.length;k++){
+																var promise=sails.controllers.option.createNewOptionClone(mappedTests[i].newTest.questions[j],mappedTests[i].oldTest.questions[j].options[k]);
+																createNewOptionsPromises.push(promise);
+															}
+														}
+													}
+													Promise.all(createNewOptionsPromises)
+													.then(function(){
+														return res.json(200,{msg:"Course cloned successfully"});
+													})
+													.catch(function(error){
+														console.log(error);
+														return res.json(509,{msg:"Error cloning the course"});
+													})
 												})
 												.catch(function(error){
 													console.log(error);
@@ -400,14 +426,15 @@ module.exports = {
 										})
 										.catch(function(error){
 											console.log(error);
-											return res.json(509,{msg:"Error cloning the course"});
+											return res.json(506,{msg:"Error cloning the course"});
 										})
+
+
 									})
 									.catch(function(error){
 										console.log(error);
-										return res.json(506,{msg:"Error cloning the course"});
+										return res.json(509,{msg:"Error cloning the course"});
 									})
-
 
 								})
 								.catch(function(error){
