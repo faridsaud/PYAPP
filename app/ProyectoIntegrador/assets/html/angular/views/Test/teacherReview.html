@@ -1,0 +1,59 @@
+<div class="section">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div class="form-group">
+          <label for="pwd">Título:</label>
+          <input type="text" class="form-control" id="pwd" ng-model="test.title" readonly>
+        </div>
+        <div class="form-group">
+          <label for="name">Descripción:</label>
+          <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" readonly ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="name">Número de intentos:</label>
+          <input type="number" class="form-control"  ng-model="test.intents" readonly>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label >Fecha de inicio:</label>
+              <input type="datetime-local" class="form-control"  ng-model="test.startDateTime" readonly>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label >Fecha de finalizacion:</label>
+              <input type="datetime-local" class="form-control"  ng-model="test.finishDateTime" readonly>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+        <div class="form-group">
+          <label>Estudiante:</label>
+          <input type="text" ng-model="search" placeholder="Buscar por nombre, email o nota">
+        </div>
+        <div class="table-responsive">
+          <table class="table table-hover table-condensed">
+            <thead>
+              <tr>
+
+                <th>Nombre estudiante</th>
+                <th>Email</th>
+                <th>Nota</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="student in students | filter:search  track by $index"  ng-click="cloneQuestion(test.id)">
+                <td>{{student.name}}</td>
+                <td>{{student.email}}</td>
+                <td>{{student.score}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -95,5 +95,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Course/clone.html',
     controller: 'cloneCourseController'
   })
+  .state('teacherReviewTest', {
+    url: '/teacher/test/review',
+    templateUrl: 'html/angular/views/Test/teacherReview.html',
+    controller: 'teacherTestReviewController',
+    params: {
+      testToBeReviewed: undefined
+    }
+
+  })
 });
 console.log("router finished loading");

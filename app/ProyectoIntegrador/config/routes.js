@@ -60,7 +60,11 @@ module.exports.routes = {
   'post /test/registerTakenTest':'TestController.registerTakenTest',
   'post /test/question/clone':'TestController.cloneQuestion',
   'post /question/delete':'QuestionController.delete',
-  'post /course/clone':'CourseController.clone'
+  'post /course/clone':'CourseController.clone',
+  'post /test/getTestByIdWOQuestions':'TestController.getTestWOQuestionsById',
+  'post /test/getStudentsByTestId':'TestController.getStudentsByTest'
+
+
 
 
 

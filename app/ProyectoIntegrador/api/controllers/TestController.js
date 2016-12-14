@@ -734,6 +734,100 @@ module.exports = {
 
 	},
 
+	/*Without Questions*/
+	getTestWOQuestionsById:function(req,res){
+
+
+		if(req.body.user.email){
+			var email=req.body.user.email;
+		}else{
+			return res.json(400,{msg:"No email send"});
+		}
+		if(req.body.test.id){
+			var testId=req.body.test.id;
+		}else{
+			return res.json(400,{msg:"No test send"});
+		}
+		console.log(email);
+		console.log(testId);
+		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
+			if(error){
+				return res.json(500,{msg:"Error"});
+			}else{
+				if(finded){
+					test={};
+					test.title=finded.title;
+					test.description=finded.description;
+					test.course=finded.idCourse;
+					test.intents=finded.intents;
+					test.startDateTime=finded.startDateTime;
+					test.finishDateTime=finded.finishDateTime;
+					return res.json(200,{test:test, msg:"OK"});
+				}else{
+					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+				}
+			}
+		})
+
+	},
+
+	getStudentsByTest:function(req,res){
+
+
+		if(req.body.user.email){
+			var email=req.body.user.email;
+		}else{
+			return res.json(400,{msg:"No email send"});
+		}
+		if(req.body.test.id){
+			var testId=req.body.test.id;
+		}else{
+			return res.json(400,{msg:"No test send"});
+		}
+		console.log(email);
+		console.log(testId);
+		sails.models.usrtes.find({email:email, idTest:testId, status:'t'})
+		.then(function(recordsFinded){
+			if(recordsFinded.length==0){
+				return res.json(403,{msg:"The user is not the owner of the test"});
+			}
+			sails.models.usrtes.find({idTest:testId, status:'s'})
+			.then(function(recordsFinded){
+				var allPromises=[];
+				var students=[];
+				for(var i=0;i<recordsFinded.length;i++){
+					var promise=sails.controllers.user.getStudentDataWithScore(recordsFinded[i].email, recordsFinded[i].score, students)
+					.then(function(student){
+						console.log("Usuario luego de la promesa");
+						console.log(student);
+						students.push(student);
+					})
+					allPromises.push(promise);
+				}
+				console.log(students);
+				Promise.all(allPromises)
+				.then(function(){
+					return res.json(200,{msg:"List of user get successfully", students:students});
+				})
+				.catch(function(error){
+					return res.json(500,{msg:"The user is not the owner of the test"});
+				})
+
+
+
+			})
+			.catch(function(error){
+				console.log(error);
+				return res.json(500,{msg:"Error getting the students of the tests"});
+			})
+		})
+		.catch(function(error){
+			console.log(error);
+			return res.json(500,{msg:"Error getting the students of the tests"});
+		})
+	},
+
+
 	getTestByIdForStudent:function(req,res){
 
 

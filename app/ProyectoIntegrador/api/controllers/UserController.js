@@ -202,5 +202,20 @@ module.exports = {
 					}
 				});
 
-      }
+      },
+      getStudentDataWithScore:function(email, score){
+        var promise=sails.models.user.findOne({email:email}).
+        then(function(userFinded){
+          delete userFinded.password;
+          userFinded.name=userFinded.firstName+" "+userFinded.lastNames;
+          delete userFinded.firstName;
+          delete userFinded.lastNames;
+          userFinded.score=score;
+          console.log("Usuario en promesa");
+          console.log(userFinded);
+          return userFinded;
+        })
+        return promise;
+
+      },
     };

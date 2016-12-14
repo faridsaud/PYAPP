@@ -131,7 +131,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='f'">
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='f'" ng-click="reviewTest(test.id)">
                   <td>{{test.title}}</td>
                   <td>{{test.averageScore}}</td>
                   <td>

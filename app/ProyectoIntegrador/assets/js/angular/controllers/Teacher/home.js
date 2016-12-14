@@ -1,4 +1,4 @@
-app.controller('homeTeacherController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog){
+app.controller('homeTeacherController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog','$state',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog,$state){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="teacher"){
       /*In case there was a test to be cloned, undefine it*/
@@ -167,6 +167,14 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
         }, function(reject) {
         });
       }
+
+
+
+      $scope.reviewTest=function(testId){
+        $state.go('teacherReviewTest',{testToBeReviewed:testId});
+      }
+
+
 
     }else{
       $location.path('/home');
