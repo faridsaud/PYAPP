@@ -5,15 +5,16 @@
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 var Promise = require("bluebird");
+
 Promise.config({
-    // Enable warnings
-    warnings: false,
-    // Enable long stack traces
-    longStackTraces: true,
-    // Enable cancellation
-    cancellation: true,
-    // Enable monitoring
-    monitoring: true
+	// Enable warnings
+	warnings: false,
+	// Enable long stack traces
+	longStackTraces: true,
+	// Enable cancellation
+	cancellation: true,
+	// Enable monitoring
+	monitoring: true
 });
 module.exports = {
 	register:function(req, res){
@@ -304,7 +305,9 @@ module.exports = {
 		},
 
 		clone:function(req,res){
+			var responseSend=false;
 			if(!req.body.user){
+
 				return res.json(400,{msg:"Error cloning the course, no user send"});
 			}
 			if(!req.body.course){
@@ -334,7 +337,10 @@ module.exports = {
 							sails.models.usrcou.create({email:email, idCourse:courseCreated.id, status:'t'})
 							.catch(function(error){
 								console.log(error);
-								return res.json(500,{msg:"Error cloning the course"});
+								if(responseSend==false){
+									responseSend=true;
+									return res.json(500,{msg:"Error cloning the course"});
+								}
 							})
 							var mappedTests=[];
 							var testPromises=[];
@@ -407,43 +413,66 @@ module.exports = {
 													}
 													Promise.all(createNewOptionsPromises)
 													.then(function(){
-														return res.json(200,{msg:"Course cloned successfully"});
+														if(responseSend==false){
+															responseSend=true;
+															return res.json(200,{msg:"Course cloned successfully"});
+														}
 													})
 													.catch(function(error){
 														console.log(error);
-														return res.json(509,{msg:"Error cloning the course"});
+														if(responseSend==false){
+															responseSend=true;
+															return res.json(509,{msg:"Error cloning the course"});
+														}
 													})
 												})
 												.catch(function(error){
 													console.log(error);
-													return res.json(509,{msg:"Error cloning the course"});
+													if(responseSend==false){
+														responseSend=true;
+														return res.json(509,{msg:"Error cloning the course"});
+													}
 												})
 											})
 											.catch(function(error){
-												console.log(error);
-												return res.json(509,{msg:"Error cloning the course"});
+												if(responseSend==false){
+													responseSend=true;
+													return res.json(509,{msg:"Error cloning the course"});
+												}
 											})
 										})
 										.catch(function(error){
 											console.log(error);
-											return res.json(506,{msg:"Error cloning the course"});
+											if(responseSend==false){
+												responseSend=true;
+												return res.json(509,{msg:"Error cloning the course"});
+											}
 										})
 
 
 									})
 									.catch(function(error){
 										console.log(error);
-										return res.json(509,{msg:"Error cloning the course"});
+										if(responseSend==false){
+											responseSend=true;
+											return res.json(509,{msg:"Error cloning the course"});
+										}
 									})
 
 								})
 								.catch(function(error){
-									return res.json(503,{msg:"Error cloning the course"});
+									if(responseSend==false){
+										responseSend=true;
+										return res.json(509,{msg:"Error cloning the course"});
+									}
 								})
 
 							})
 							.catch(function(error){
-								return res.json(502,{msg:"Error cloning the course"});
+								if(responseSend==false){
+									responseSend=true;
+									return res.json(509,{msg:"Error cloning the course"});
+								}
 							})
 							console.log("Push the promesa select test");
 							/*Wait until tests' select and create promises finished*/
@@ -453,21 +482,33 @@ module.exports = {
 						})
 						.catch(function(error){
 							console.log(error);
-							return res.json(501,{msg:"Error cloning the course"});
+							if(responseSend==false){
+								responseSend=true;
+								return res.json(509,{msg:"Error cloning the course"});
+							}
 						})
 
 					})
 					.catch(function(error){
 
-						return res.json(500,{msg:"Error cloning the course"});
+						if(responseSend==false){
+							responseSend=true;
+							return res.json(509,{msg:"Error cloning the course"});
+						}
 					})
 
 				}else{
-					return res.json(400,{msg:"Error cloning the course, the user is not the owner of the course"});
+					if(responseSend==false){
+						responseSend=true;
+						return res.json(400,{msg:"Error cloning the course, the user is not the owner of the course"});
+					}
 				}
 			})
 			.catch(function(error){
-				return res.json(500,{msg:"Error cloning the course"});
+				if(responseSend==false){
+					responseSend=true;
+					return res.json(509,{msg:"Error cloning the course"});
+				}
 			})
 		},
 

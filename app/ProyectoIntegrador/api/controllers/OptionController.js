@@ -6,15 +6,16 @@
 */
 
 var Promise = require("bluebird");
+
 Promise.config({
-    // Enable warnings
-    warnings: false,
-    // Enable long stack traces
-    longStackTraces: true,
-    // Enable cancellation
-    cancellation: true,
-    // Enable monitoring
-    monitoring: true
+	// Enable warnings
+	warnings: false,
+	// Enable long stack traces
+	longStackTraces: true,
+	// Enable cancellation
+	cancellation: true,
+	// Enable monitoring
+	monitoring: true
 });
 module.exports = {
 
@@ -123,7 +124,7 @@ module.exports = {
 	},
 
 	createNewOptionClone:function(newQuestion, oldOption){
-			var createOptionPromise=sails.models.option.create({idQuestion:newQuestion.id, justification:oldOption.justification, isCorrect:oldOption.isCorrect,text:oldOption.text})
-			return createOptionPromise;
+		var createOptionPromise=sails.models.option.create({idQuestion:newQuestion.id, justification:oldOption.justification, isCorrect:oldOption.isCorrect,text:oldOption.text})
+		return createOptionPromise;
 	},
 };
