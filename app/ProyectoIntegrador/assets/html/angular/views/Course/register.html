@@ -10,7 +10,10 @@
         <textarea type="text" class="form-control" id="description" rows="5" ng-model="course.description" ></textarea>
       </div>
       <br>
-      <button type="submit" class="btn btn-primary pull-right">Registrar</button>
+      <div class="btn-group pull-right">
+        <button type="button" class="btn btn-info" ng-click="cloneCourse()"  title="Crear un curso a partir de la informacion de otro curso, se clonaran todas las pruebas de este">Clonar</button>        
+        <button type="submit" class="btn btn-primary ">Registrar</button>
+      </div>
     </form>
   </div>
 </div>

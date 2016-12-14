@@ -1,4 +1,4 @@
-app.controller('registerCourseController',['$scope','$http','toastr','$location','globalVariables','$rootScope', function($scope,$http, toastr,$location,globalVariables,$rootScope){
+app.controller('registerCourseController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state){
   $scope.user={
     email:$rootScope.loggedUser.email,
     role:$rootScope.loggedUser.role
@@ -29,5 +29,9 @@ app.controller('registerCourseController',['$scope','$http','toastr','$location'
         console.log(response);
       })
     }
+  }
+
+  $scope.cloneCourse=function(){
+    $state.go('cloneCourse');
   }
 }]);

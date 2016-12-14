@@ -84,5 +84,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Question/clone.html',
     controller: 'cloneQuestionController'
   })
+  .state('cloneCourse', {
+    url: '/teacher/course/clone',
+    templateUrl: 'html/angular/views/Course/clone.html',
+    controller: 'cloneCourseController'
+  })
 });
 console.log("router finished loading");
