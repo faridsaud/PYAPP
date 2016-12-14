@@ -43,8 +43,7 @@ app.controller('testListController',['$scope','$http','$location','toastr','glob
       })
 
       $scope.cloneTest=function(idTest){
-        $rootScope.testToBeCloned=idTest;
-        $state.go("registerTest");
+        $state.go("registerTest",{testToBeCloned:idTest});
       }
     }else{
       $location.path('/home');

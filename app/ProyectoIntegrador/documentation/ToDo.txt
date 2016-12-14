@@ -27,7 +27,6 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Seguro que quiere eliminar
 *Administrador de institucion para ver
 *Numero de intentos/hecho
-
 + al final /hecho
 *Clonar prueba /hecho
 *Clonar rpeguntas apartir de un banco de preguntas del curso

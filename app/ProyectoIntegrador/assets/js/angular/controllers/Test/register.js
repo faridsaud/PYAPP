@@ -1,4 +1,4 @@
-app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state','ngDialog', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state,ngDialog){
+app.controller('registerTestController',['$scope','$http','toastr','$location','globalVariables','$rootScope','$state','ngDialog','$stateParams', function($scope,$http, toastr,$location,globalVariables,$rootScope,$state,ngDialog,$stateParams){
   if(!$rootScope.loggedUser){
     $location.path('/home');
 
@@ -529,7 +529,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       console.log(response);
     })
     /*If there is a test to be cloned, load it*/
-    if($rootScope.testToBeCloned){
+    if($stateParams.testToBeCloned){
+      console.log($stateParams.testToBeCloned);
       /*Load test*/
       $http({
         method:'POST',
@@ -539,7 +540,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             email:$rootScope.loggedUser.email
           },
           test:{
-            id:$rootScope.testToBeCloned
+            id:$stateParams.testToBeCloned
           }
 
         }

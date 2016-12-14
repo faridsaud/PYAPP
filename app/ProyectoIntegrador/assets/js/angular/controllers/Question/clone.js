@@ -1,5 +1,5 @@
-app.controller('cloneQuestionController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog','$state',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog,$state){
-  if($rootScope.loggedUser && $rootScope.questionToBeCloned){
+app.controller('cloneQuestionController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$interval', 'ngDialog','$state','$stateParams',function($scope,$http,$location,toastr,globalVariables,$rootScope,$interval,ngDialog,$state,$stateParams){
+  if($rootScope.loggedUser && $stateParams.questionToBeCloned){
     if($rootScope.loggedUser.role=="teacher"){
       /*Load course data from id course*/
       $scope.loadCourseData=function(test){
@@ -43,8 +43,7 @@ app.controller('cloneQuestionController',['$scope','$http','$location','toastr',
       })
 
       $scope.cloneQuestion=function(testId){
-        var questionToBeCloned=$rootScope.questionToBeCloned;
-        delete $rootScope.questionToBeCloned;
+        var questionToBeCloned=$stateParams.questionToBeCloned;
         $http({
           method:'POST',
           url:globalVariables.url+'/test/question/clone',

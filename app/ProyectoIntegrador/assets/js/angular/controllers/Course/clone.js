@@ -24,11 +24,32 @@ app.controller('cloneCourseController',['$scope','$http','$location','toastr','g
 
       $scope.loadCourses();
 
+      $scope.cloneCourse=function(idCourse){
+        $http({
+          method:'POST',
+          url:globalVariables.url+'/course/clone',
+          data:{
+            user:{
+              email:$rootScope.loggedUser.email
+            },
+            course:{
+              id:idCourse
+            }
+          }
+        }).then(function success(response){
+          toastr.success("Curso clonado con éxito", "Success");
+          $state.go("home")
+        }, function error(response){
+          toastr.error("Error al clonar el curso", "Error");
+          console.log(response);
+        })
+      }
+
 
     }else{
-      $location.path('/home');
+      $state.go("home")
     }
   }else{
-    $location.path('/home');
+    $state.go("home")
   }
 }]);

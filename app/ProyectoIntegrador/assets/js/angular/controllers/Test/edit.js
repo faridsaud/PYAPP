@@ -635,9 +635,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
     }
 
     $scope.cloneQuestion=function(question){
-      $rootScope.questionToBeCloned=question;
-      console.log($rootScope.questionToBeCloned);
-      $state.go("cloneQuestion");
+      $state.go("cloneQuestion",{questionToBeCloned:question});
     }
 
 

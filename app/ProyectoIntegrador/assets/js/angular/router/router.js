@@ -25,7 +25,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
   .state('registerTest', {
     url: '/test/register',
     templateUrl: 'html/angular/views/Test/register.html',
-    controller: 'registerTestController'
+    controller: 'registerTestController',
+    params: {
+      testToBeCloned: undefined
+    }
   })
   .state('editTest', {
     url: '/test/edit',
@@ -82,7 +85,10 @@ app.config(function ($stateProvider, $urlRouterProvider) {
   .state('cloneQuestion', {
     url: '/teacher/test/question/clone',
     templateUrl: 'html/angular/views/Question/clone.html',
-    controller: 'cloneQuestionController'
+    controller: 'cloneQuestionController',
+    params: {
+      questionToBeCloned: undefined
+    }
   })
   .state('cloneCourse', {
     url: '/teacher/course/clone',
