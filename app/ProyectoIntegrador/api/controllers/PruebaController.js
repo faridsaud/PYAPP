@@ -6,7 +6,12 @@
 */
 
 var Promise = require("bluebird");
+var bcrypt=require('bcrypt-nodejs');
 module.exports = {
+
+	test:function(){
+
+	},
 	/*Testing promises*/
 /*
 	testPromises:function(req,res){

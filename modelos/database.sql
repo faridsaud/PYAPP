@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     12/14/2016 7:50:25 PM                        */
+/* Created on:     12/15/2016 12:52:15 PM                       */
 /*==============================================================*/
 
 
@@ -115,7 +115,7 @@ create table USER
    IDPASSPORT           varchar(15),
    COUNTRY              varchar(30),
    USERNAME             varchar(40),
-   PIN                  numeric(16,0),
+   PIN                  varchar(60),
    primary key (EMAIL)
 );
 

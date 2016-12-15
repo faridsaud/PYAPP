@@ -46,15 +46,8 @@ module.exports = {
       size:30,
       columnName:'COUNTRY'
     },
-    username:{
-      type:'string',
-      size:40,
-      unique: true,
-      columnName:'USERNAME'
-    },
     pin:{
-      type:'integer',
-      size:16,
+      type:'string',
       columnName:'PIN'
     },
     /*

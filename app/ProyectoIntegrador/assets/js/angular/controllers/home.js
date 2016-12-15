@@ -1,10 +1,16 @@
-app.controller('homeController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$document',function($scope,$http,$location,toastr,globalVariables,$rootScope,$document){
+app.controller('homeController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$document','$state',function($scope,$http,$location,toastr,globalVariables,$rootScope,$document,$state){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role){
       console.log("estamos aqui");
       $location.path('/'+$rootScope.loggedUser.role+'/home');
     }
   }else{
+    $scope.createUser=function(){
+      $rootScope.synth.cancel();
+      $document.unbind('keydown');
+      $state.go('registerUser');
+    }
+    $scope.user={};
     console.log("home controller");
     $scope.login=function(){
       $http({
@@ -14,7 +20,8 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
           user:{
             email:$scope.user.email,
             password:$scope.user.password,
-            role:$scope.user.role
+            role:$scope.user.role,
+            pin:$scope.user.pin
           }
         }
       }).then(function success(response){
@@ -23,7 +30,16 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
         $rootScope.loggedUser={};
         $rootScope.loggedUser.email=response.data.email;
         $rootScope.loggedUser.role=response.data.role;
-        $location.path('/'+response.data.role+'/home');
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="Login exitoso";
+        $rootScope.synth.speak($rootScope.msg);
+        $document.unbind('keydown');
+        if($rootScope.loggedUser.role=='student'){
+          $state.go('homeStudent');
+        }
+        if($rootScope.loggedUser.role=='teacher'){
+          $state.go('homeTeacher');
+        }
       }, function error(response){
         toastr.error(response.data.msg,"Error");
         console.log(response);
@@ -74,6 +90,8 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
           $rootScope.synth.cancel();
           $rootScope.msg.text="Pin a enviar: "+pinText;
           $rootScope.synth.speak($rootScope.msg);
+          $scope.user.pin=pinNumber;
+          $scope.login();
         }else{
 
           $rootScope.synth.cancel();
@@ -83,7 +101,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       }
       //espacio
       if(event.which==32){
-          $rootScope.synth.cancel();
+        $rootScope.synth.cancel();
         console.log("here");
         if (recognizing) {
           recognition.stop();

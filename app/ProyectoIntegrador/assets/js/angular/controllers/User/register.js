@@ -46,5 +46,5 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
         console.log(response);
       })
     }
-    };
+  };
 }]);
