@@ -95,6 +95,12 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Course/clone.html',
     controller: 'cloneCourseController'
   })
+
+  .state('prueba', {
+    url: '/prueba',
+    templateUrl: 'html/angular/views/Test/prueba.html',
+    controller: 'pruebaController'
+  })
   .state('teacherReviewTest', {
     url: '/teacher/test/review',
     templateUrl: 'html/angular/views/Test/teacherReview.html',

@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     11/29/2016 11:22:18 PM                       */
+/* Created on:     12/14/2016 7:50:25 PM                        */
 /*==============================================================*/
 
 
@@ -20,7 +20,7 @@ drop table if exists USER;
 
 drop table if exists USR_COU;
 
-drop table if exists USR_OPC;
+drop table if exists USR_OPT;
 
 drop table if exists USR_ROL;
 
@@ -59,9 +59,7 @@ create table OPTIO
    IDQUESTION           bigint,
    JUSTIFICATION        text,
    ISCORRECT            bool,
-   TYPEOPTION           varchar(10),
    TEXTOPTION           text,
-   ISSELECTED           bool,
    primary key (IDOPTION)
 );
 
@@ -101,6 +99,7 @@ create table TEST
    STARTDATETIME        varchar(24),
    FINISHDATETIME       varchar(24),
    AVERAGESCORE         decimal(4,2),
+   INTENTS              int,
    primary key (IDTEST)
 );
 
@@ -116,6 +115,7 @@ create table USER
    IDPASSPORT           varchar(15),
    COUNTRY              varchar(30),
    USERNAME             varchar(40),
+   PIN                  numeric(16,0),
    primary key (EMAIL)
 );
 
@@ -131,9 +131,9 @@ create table USR_COU
 );
 
 /*==============================================================*/
-/* Table: USR_OPC                                               */
+/* Table: USR_OPT                                               */
 /*==============================================================*/
-create table USR_OPC
+create table USR_OPT
 (
    EMAIL                varchar(254) not null,
    IDOPTION             bigint not null,
@@ -159,6 +159,7 @@ create table USR_TES
    IDTEST               bigint not null,
    SCORE                decimal(4,2),
    STATUSUSRTES         varchar(1) not null,
+   INTENTLEFT           int,
    primary key (EMAIL, IDTEST, STATUSUSRTES)
 );
 
@@ -180,10 +181,10 @@ alter table USR_COU add constraint FK_USR_COU foreign key (EMAIL)
 alter table USR_COU add constraint FK_USR_COU2 foreign key (IDCOURSE)
       references COURSE (IDCOURSE) on delete restrict on update restrict;
 
-alter table USR_OPC add constraint FK_USR_OPC foreign key (EMAIL)
+alter table USR_OPT add constraint FK_USR_OPT foreign key (EMAIL)
       references USER (EMAIL) on delete restrict on update restrict;
 
-alter table USR_OPC add constraint FK_USR_OPC2 foreign key (IDOPTION)
+alter table USR_OPT add constraint FK_USR_OPT2 foreign key (IDOPTION)
       references OPTIO (IDOPTION) on delete restrict on update restrict;
 
 alter table USR_ROL add constraint FK_USR_ROL foreign key (EMAIL)

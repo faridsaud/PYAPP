@@ -52,6 +52,11 @@ module.exports = {
       unique: true,
       columnName:'USERNAME'
     },
+    pin:{
+      type:'integer',
+      size:16,
+      columnName:'PIN'
+    },
     /*
     pruebas:{
       collection:'prueba',

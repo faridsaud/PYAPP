@@ -2,13 +2,26 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
   console.log("Register user controller");
   $scope.user={};
   $scope.error=false;
+  $scope.user.roleStudent=true;
+  $scope.user.roleTeacher=false;
+  $scope.user.roles=[];
   $scope.register=function(){
+    $scope.user.roles=[];
     if($scope.user.password!=$scope.user.confirmPassword){
       toastr.error("Claves ingresadas no son iguales","Error");
       $scope.error=true;
     }
-    $scope.user.username=$scope.user.username.toLowerCase();
-    if($scope.user.email && $scope.user.username && $scope.user.password && $scope.user.confirmPassword && $scope.error==false){
+    if($scope.user.roleStudent==true){
+      $scope.user.roles.push('student');
+    }
+
+    if($scope.user.roleTeacher==true){
+      $scope.user.roles.push('teacher');
+    }
+    if($scope.user.roles.length==0){
+      $scope.error=true;
+    }
+    if($scope.user.email && $scope.user.password && $scope.user.confirmPassword && $scope.error==false){
       console.log($scope.user);
       $http({
         method:'POST',
@@ -20,9 +33,8 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
             name:$scope.user.name,
             lastName:$scope.user.lastName,
             passport:$scope.user.passportId,
-            username:$scope.user.username,
             country:$scope.user.country,
-            role:$scope.user.role
+            roles:$scope.user.roles
           }
         }
       }).then(function success(response){
