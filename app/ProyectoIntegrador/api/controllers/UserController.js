@@ -20,6 +20,24 @@ module.exports = {
     }else{
       return res.json(400,{msg: 'Error creating the user, no password send'});
     }
+
+    if(req.body.user.securityQuestion1){
+      var securityQuestion1=req.body.user.securityQuestion1;
+      if(!securityQuestion1.question || !securityQuestion1.answer){
+        return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+      }
+    }else{
+      return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+    }
+
+    if(req.body.user.securityQuestion2){
+      var securityQuestion2=req.body.user.securityQuestion2;
+      if(!securityQuestion2.question || !securityQuestion2.answer){
+        return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+      }
+    }else{
+      return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+    }
     if(req.body.user.passport){
       var passport=req.body.user.passport;
     }else{
@@ -62,7 +80,7 @@ module.exports = {
     }).exec(function (error, newRecord){
       if(error){
         console.log(error);
-        return res.json(512, {msg:error})
+        return res.json(512, {msg:"Error creating the user, maybe the user email is already in use"})
       }else{
         var queryPromisified=Promise.promisify(sails.models.usrrol.query);
         var promises=[];
@@ -73,13 +91,17 @@ module.exports = {
           var promise=queryPromisified('INSERT INTO USR_ROL (NAME, EMAIL) VALUES (?,?)',[roles[i],email ]);
           promises.push(promise);
         }
+        var promiseSQuestion1=sails.models.usrsqu.create({email:email,idSecurityQuestion:securityQuestion1.question, answerText:securityQuestion1.answer});
+        var promiseSQuestion2=sails.models.usrsqu.create({email:email,idSecurityQuestion:securityQuestion2.question, answerText:securityQuestion2.answer});
+        promises.push(promiseSQuestion1);
+        promises.push(promiseSQuestion2);
         Promise.all(promises)
         .then(function(){
+          newRecord.pin=pin;
           return res.json(201,{msg: 'User created',user:newRecord});
         })
         .catch(function(error){
           console.log(error);
-          newRecord.pin=pin;
           return res.json(500,{msg: 'Error creating the user'});
         })
       }

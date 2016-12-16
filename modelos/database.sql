@@ -1,18 +1,18 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     12/15/2016 12:52:15 PM                       */
+/* Created on:     12/15/2016 9:53:54 PM                        */
 /*==============================================================*/
 
 
 drop table if exists COURSE;
-
-drop table if exists INSTITUTION;
 
 drop table if exists OPTIO;
 
 drop table if exists QUESTION;
 
 drop table if exists ROLE;
+
+drop table if exists SECURITYQUESTION;
 
 drop table if exists TEST;
 
@@ -23,6 +23,8 @@ drop table if exists USR_COU;
 drop table if exists USR_OPT;
 
 drop table if exists USR_ROL;
+
+drop table if exists USR_SQU;
 
 drop table if exists USR_TES;
 
@@ -36,18 +38,6 @@ create table COURSE
    CREATEDBYCOURSE      varchar(254),
    NAMECOURSE           varchar(40),
    primary key (IDCOURSE)
-);
-
-/*==============================================================*/
-/* Table: INSTITUTION                                           */
-/*==============================================================*/
-create table INSTITUTION
-(
-   IDINSTITUTION        int not null,
-   EMAIL                varchar(254),
-   NAMEINSTITUTION      varchar(30),
-   CREATEDBYINSTITUTION char(10),
-   primary key (IDINSTITUTION)
 );
 
 /*==============================================================*/
@@ -86,6 +76,16 @@ create table ROLE
 );
 
 /*==============================================================*/
+/* Table: SECURITYQUESTION                                      */
+/*==============================================================*/
+create table SECURITYQUESTION
+(
+   TEXTSECURITYQUESTION varchar(300),
+   IDSECURITYQUESTION   int not null auto_increment,
+   primary key (IDSECURITYQUESTION)
+);
+
+/*==============================================================*/
 /* Table: TEST                                                  */
 /*==============================================================*/
 create table TEST
@@ -114,7 +114,6 @@ create table USER
    LASTNAME             varchar(30),
    IDPASSPORT           varchar(15),
    COUNTRY              varchar(30),
-   USERNAME             varchar(40),
    PIN                  varchar(60),
    primary key (EMAIL)
 );
@@ -151,6 +150,17 @@ create table USR_ROL
 );
 
 /*==============================================================*/
+/* Table: USR_SQU                                               */
+/*==============================================================*/
+create table USR_SQU
+(
+   EMAIL                varchar(254) not null,
+   IDSECURITYQUESTION   int not null,
+   ANSWERSELECTED       varchar(300),
+   primary key (EMAIL, IDSECURITYQUESTION)
+);
+
+/*==============================================================*/
 /* Table: USR_TES                                               */
 /*==============================================================*/
 create table USR_TES
@@ -162,9 +172,6 @@ create table USR_TES
    INTENTLEFT           int,
    primary key (EMAIL, IDTEST, STATUSUSRTES)
 );
-
-alter table INSTITUTION add constraint FK_USR_INS foreign key (EMAIL)
-      references USER (EMAIL) on delete restrict on update restrict;
 
 alter table OPTIO add constraint FK_HAVE_QUE_OPT foreign key (IDQUESTION)
       references QUESTION (IDQUESTION) on delete restrict on update restrict;
@@ -192,6 +199,12 @@ alter table USR_ROL add constraint FK_USR_ROL foreign key (EMAIL)
 
 alter table USR_ROL add constraint FK_USR_ROL2 foreign key (NAME)
       references ROLE (NAME) on delete restrict on update restrict;
+
+alter table USR_SQU add constraint FK_USR_SQU foreign key (EMAIL)
+      references USER (EMAIL) on delete restrict on update restrict;
+
+alter table USR_SQU add constraint FK_USR_SQU2 foreign key (IDSECURITYQUESTION)
+      references SECURITYQUESTION (IDSECURITYQUESTION) on delete restrict on update restrict;
 
 alter table USR_TES add constraint FK_USR_TES foreign key (EMAIL)
       references USER (EMAIL) on delete restrict on update restrict;

@@ -291,6 +291,20 @@
           <label><input type="checkbox" ng-value="true" ng-model="user.roleTeacher">Profesor</label>
         </div>
       </div>
+      <div class="form-group">
+        <label for="">Pregunta de seguridad 1:</label>
+        <select class="form-control" ng-model="securityQuestion1.question" required>
+          <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
+        </select>
+        <input type="text" class="form-control" ng-model="securityQuestion1.answer" required >
+      </div>
+      <div class="form-group">
+        <label for="">Pregunta de seguridad 2:</label>
+        <select class="form-control" ng-model="securityQuestion2.question" required>
+          <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
+        </select>
+        <input type="text" class="form-control" ng-model="securityQuestion2.answer" required >
+      </div>
       <br>
       <button type="submit" class="btn btn-primary pull-right">Registrar</button>
     </form>

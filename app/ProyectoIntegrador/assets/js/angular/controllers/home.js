@@ -31,7 +31,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
         $rootScope.loggedUser.email=response.data.email;
         $rootScope.loggedUser.role=response.data.role;
         $rootScope.synth.cancel();
-        $rootScope.msg.text="Login exitoso";
+        $rootScope.msg.text="Sesión iniciada con éxito";
         $rootScope.synth.speak($rootScope.msg);
         $document.unbind('keydown');
         if($rootScope.loggedUser.role=='student'){
@@ -42,6 +42,9 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
         }
       }, function error(response){
         toastr.error(response.data.msg,"Error");
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="Error al iniciar sesión";
+        $rootScope.synth.speak($rootScope.msg);
         console.log(response);
       })
     }
@@ -61,7 +64,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
       if(instructionSpoken==false){
         $rootScope.synth.cancel();
-        $rootScope.msg.text="Ventana de login. Presione la tecla espacio. Dicte su pin. Presione la tecla espacio nuevamente para terminar de capturar el audio. Y finalmente presione la tecla alt";
+        $rootScope.msg.text="Ventana de login. Presione la tecla espacio para iniciar la captura de audio. Dicte su pin. Presione la tecla espacio nuevamente para terminar de capturar el audio. Y finalmente presione la tecla alt";
       }
       $rootScope.synth.speak($rootScope.msg);
       instructionSpoken=true;

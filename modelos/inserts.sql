@@ -1,0 +1,11 @@
+INSERT INTO `proyectoIntegrador`.`ROLE` (`NAME`) VALUES ('student');
+INSERT INTO `proyectoIntegrador`.`ROLE` (`NAME`) VALUES ('teacher');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Nombre de una mascota');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Lugar de nacimiento de la madre');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Lugar de nacimiento del padre');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Lugar de nacimiento de un abuelo');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Color favorito');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Nombre de un profesor');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Película favorita');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Serie de tv favorita');
+INSERT INTO `proyectoIntegrador`.`SECURITYQUESTION` (`TEXTSECURITYQUESTION`) VALUES ('Marca de autos preferida');
