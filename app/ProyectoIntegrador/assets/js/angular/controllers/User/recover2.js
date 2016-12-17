@@ -43,7 +43,8 @@ app.controller('recoverPassword2Controller',['$scope','$http','toastr','$locatio
           password:$scope.password
         }
       }).then(function success(response){
-        toastr.success("Información de seguridad actualizada con éxito","Success")
+        toastr.success("Información de seguridad actualizada con éxito","Success");
+        $scope.pinGenerated=response.data.pinGenerated;
         if($scope.generatePin==true){
           ngDialog.openConfirm({
             scope: $scope,

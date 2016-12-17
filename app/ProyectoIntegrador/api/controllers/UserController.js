@@ -326,25 +326,23 @@ module.exports = {
       var securityQuestion1=req.body.securityQuestion1;
       if(!securityQuestion1.question || !securityQuestion1.answer){
         securityQuetionsSend=false;
-        return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
       }
     }else{
       securityQuetionsSend=false;
-      return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
     }
 
     if(req.body.securityQuestion2){
       var securityQuestion2=req.body.securityQuestion2;
       if(!securityQuestion2.question || !securityQuestion2.answer){
         securityQuetionsSend=false;
-        return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
       }
     }else{
       securityQuetionsSend=false;
-      return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
     }
-    if(securityQuestion1.question==securityQuestion2.question){
-      return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+    if(securityQuetionsSend==true){
+      if(securityQuestion1.question==securityQuestion2.question){
+        return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+      }
     }
     if(req.body.generatePin){
       var generatePin=req.body.generatePin;
@@ -380,17 +378,19 @@ module.exports = {
     Promise.all(promises)
     .then(function(results){
       console.log(results);
-      Promisa.all(results[results.length-1])
+      Promise.all(results[results.length-1])
       .then(function(){
-        return res.json(200,{msg: 'Security info updated successfully'});
+        return res.json(200,{msg: 'Security info updated successfully',pinGenerated:pin});
       })
 
       .catch(function(error){
+        console.log(error);
         return res.json(500,{msg: 'Error updating the security info'});
       })
 
     })
     .catch(function(error){
+      console.log(error);
       return res.json(500,{msg: 'Error updating the security info'});
     })
 
