@@ -38,6 +38,9 @@ module.exports = {
     }else{
       return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
     }
+    if(securityQuestion1.question==securityQuestion2.question){
+      return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+    }
     if(req.body.user.passport){
       var passport=req.body.user.passport;
     }else{
@@ -298,11 +301,97 @@ module.exports = {
       if(correctChoices==true){
         return res.json(200,{msg:"OK"});
       }else{
-        return res.json(500,{msg:"Error checking the user"});
+        return res.json(400,{msg:"Error checking the user"});
       }
     })
     .catch(function(error){
       return res.json(500,{msg:"Error checking the user"});
+    })
+
+  },
+
+  updateSecurityInfo:function(req, res){
+    if(req.body.email){
+      var email=req.body.email;
+    }else{
+      return res.json(400,{msg:"Error updating security info, no email send"});
+    }
+    if(req.body.password){
+      var password=req.body.password;
+    }else{
+      return res.json(400,{msg:"Error updating security info, no password send"});
+    }
+    var securityQuetionsSend=true;
+    if(req.body.securityQuestion1){
+      var securityQuestion1=req.body.securityQuestion1;
+      if(!securityQuestion1.question || !securityQuestion1.answer){
+        securityQuetionsSend=false;
+        return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+      }
+    }else{
+      securityQuetionsSend=false;
+      return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+    }
+
+    if(req.body.securityQuestion2){
+      var securityQuestion2=req.body.securityQuestion2;
+      if(!securityQuestion2.question || !securityQuestion2.answer){
+        securityQuetionsSend=false;
+        return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+      }
+    }else{
+      securityQuetionsSend=false;
+      return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+    }
+    if(securityQuestion1.question==securityQuestion2.question){
+      return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+    }
+    if(req.body.generatePin){
+      var generatePin=req.body.generatePin;
+    }else{
+      var generatePin=false;
+    }
+    var promises=[];
+    var passwordEncrypted = bcrypt.hashSync(password, bcrypt.genSaltSync());
+    var promiseUpdatePassword=sails.models.user.update({email:email}, {password:passwordEncrypted});
+    promises.push(promiseUpdatePassword);
+
+    if(generatePin==true){
+      var pin=sails.controllers.user.generatePin();
+      var pinEncrypted = bcrypt.hashSync(pin, bcrypt.genSaltSync());
+      var promiseUpdatePin=sails.models.user.update({email:email}, {pin:pinEncrypted});
+      promises.push(promiseUpdatePin);
+    }
+
+    if(securityQuetionsSend==true){
+      var promiseDeleteSecurityQuestions=sails.models.usrsqu.destroy({email:email})
+      .then(function(){
+        var promiseCreateSecurityQuestion1=sails.models.usrsqu.create({email:email, idSecurityQuestion:securityQuestion1.question, answerText:securityQuestion1.answer});
+        var promiseCreateSecurityQuestion2=sails.models.usrsqu.create({email:email, idSecurityQuestion:securityQuestion2.question, answerText:securityQuestion2.answer});
+        var updatePromisesSecurityQuestions=[];
+        updatePromisesSecurityQuestions.push(promiseCreateSecurityQuestion1);
+        updatePromisesSecurityQuestions.push(promiseCreateSecurityQuestion2);
+        return updatePromisesSecurityQuestions;
+      })
+      promises.push(promiseDeleteSecurityQuestions);
+
+    }
+
+    Promise.all(promises)
+    .then(function(results){
+      console.log(results);
+      Promisa.all(results[results.length-1])
+      .then(function(){
+        return res.json(200,{msg: 'Security info updated successfully'});
+      })
+
+      .catch(function(error){
+        return res.json(500,{msg: 'Error updating the security info'});
+      })
+
+    })
+    .catch(function(error){
+      return res.json(500,{msg: 'Error updating the security info'});
     })
 
   }

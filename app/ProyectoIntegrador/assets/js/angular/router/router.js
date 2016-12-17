@@ -106,6 +106,14 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/User/recover.html',
     controller: 'recoverPasswordController'
   })
+  .state('recoverPassword2', {
+    url: '/recover2',
+    templateUrl: 'html/angular/views/User/recover2.html',
+    controller: 'recoverPassword2Controller',
+    params: {
+      emailVerified: undefined
+    }
+  })
   .state('teacherReviewTest', {
     url: '/teacher/test/review',
     templateUrl: 'html/angular/views/Test/teacherReview.html',

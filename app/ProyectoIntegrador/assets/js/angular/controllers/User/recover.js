@@ -1,4 +1,4 @@
-app.controller('recoverPasswordController',['$scope','$http','toastr','$location','globalVariables','ngDialog','$stateParams', function($scope,$http, toastr,$location,globalVariables,ngDialog,$stateParams){
+app.controller('recoverPasswordController',['$scope','$http','toastr','$location','globalVariables','ngDialog','$stateParams','$state', function($scope,$http, toastr,$location,globalVariables,ngDialog,$stateParams,$state){
   $scope.error=false;
   $scope.securityQuestions=[];
   /*Load security questions*/

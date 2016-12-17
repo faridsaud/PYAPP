@@ -8,7 +8,7 @@
 module.exports = {
   tableName:'USR_SQU',
   autoPK: false,
-
+  autoUpdate:false,
 
   attributes: {
     email:{

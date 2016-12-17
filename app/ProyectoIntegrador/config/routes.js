@@ -64,7 +64,10 @@ module.exports.routes = {
   'post /test/getTestByIdWOQuestions':'TestController.getTestWOQuestionsById',
   'post /test/getStudentsByTestId':'TestController.getStudentsByTest',
   'get /securityQuestion/getAll':'SecurityQuestionController.getAll',
-  'post /user/checkUser':'UserController.check'
+  'post /user/checkUser':'UserController.check',
+  'post /user/updateSecurityInfo':'UserController.updateSecurityInfo'
+
+
 
 
 
