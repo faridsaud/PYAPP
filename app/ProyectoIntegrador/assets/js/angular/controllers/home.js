@@ -10,6 +10,11 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       $document.unbind('keydown');
       $state.go('registerUser');
     }
+    $scope.recoverPassword=function(){
+      $rootScope.synth.cancel();
+      $document.unbind('keydown');
+      $state.go('recoverPassword');
+    }
     $scope.user={};
     console.log("home controller");
     $scope.login=function(){

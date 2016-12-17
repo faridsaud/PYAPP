@@ -1,43 +1,53 @@
 
-      <div class="row">
-        <div class="hidden-xs col-md-7">
-          <div class="jumbotron">
-            <h2>Proyecto de Titulación - Prototipo!</h2>
-            <p>Generador de pruebas para personas no videntes.</p>
-            <p>
-              <a class="btn btn-primary btn-large" href="#">Learn more</a>
-            </p>
+<div class="row">
+  <div class="hidden-xs col-md-7">
+    <div class="jumbotron">
+      <h2>Proyecto de Titulación - Prototipo!</h2>
+      <p>Generador de pruebas para personas no videntes.</p>
+      <p>
+        <a class="btn btn-primary btn-large" href="#">Learn more</a>
+      </p>
+    </div>
+  </div>
+  <div class="col-md-4 col-md-offset-1">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <h3>Iniciar Sesión</h3>
+        <form role="form" ng-submit="login()">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="text" class="form-control" id="email" ng-model="user.email" required>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputPassword1">Clave</label>
+            <input type="password" class="form-control" id="exampleInputPassword1" ng-model="user.password" required>
+          </div>
+          <div class="form-group">
+            <label for="">Rol <a href="" title="Estudiante para rendir pruebas. Profesor para crear pruebas y cursos. Admin Institución para administar un conjunto de profesores y pruebas">?</a></label>
+            <select class="form-control" ng-model="user.role">
+              <option value="student" selected>Estudiante</option>
+              <option value="teacher">Profesor</option>
+              <option value="admInstitution">Administrador de institución</option>
+            </select>
+          </div>
+          <br>
+          <a ng-click="createUser()" class="btn btn-default pull-left" title="Crear una nueva cuenta">
+            Crear cuenta
+          </a>
+          <button type="submit" class="btn btn-primary pull-right">Iniciar sesión</button>
+        </form>
+        <br>
+        <br>
+        <div class="row">
+          <div class="col-md-12">
+            <a ng-click="recoverPassword()" title="Recuperar contreseña o pin">
+              He olvidado mi contraseña o pin
+            </a>
           </div>
         </div>
-        <div class="col-md-4 col-md-offset-1">
-          <div class="panel panel-default">
-            <div class="panel-body">
-              <h3>Iniciar Sesión</h3>
-              <form role="form" ng-submit="login()">
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="text" class="form-control" id="email" ng-model="user.email" required>
-                </div>
-                <div class="form-group">
-                  <label for="exampleInputPassword1">Clave</label>
-                  <input type="password" class="form-control" id="exampleInputPassword1" ng-model="user.password" required>
-                </div>
-                <div class="form-group">
-                  <label for="">Rol <a href="" title="Estudiante para rendir pruebas. Profesor para crear pruebas y cursos. Admin Institución para administar un conjunto de profesores y pruebas">?</a></label>
-                  <select class="form-control" ng-model="user.role">
-                    <option value="student" selected>Estudiante</option>
-                    <option value="teacher">Profesor</option>
-                    <option value="admInstitution">Administrador de institución</option>
-                  </select>
-                </div>
-                <br>
-                <a ng-click="createUser()" class="btn btn-default pull-left" title="Crear una nueva cuenta">
-                  Crear cuenta
-                </a>
-                <button type="submit" class="btn btn-primary pull-right">Iniciar sesión</button>
-              </form>
-            </div>
-          </div>
-        </div>
+
       </div>
-    <!-- -->
+    </div>
+  </div>
+</div>
+<!-- -->

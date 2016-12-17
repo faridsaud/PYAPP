@@ -262,5 +262,48 @@ module.exports = {
       }
     })
     return promise;
+  },
+
+  check:function(req,res){
+    if(req.body.email){
+      var email=req.body.email;
+    }else{
+      return res.json(400,{msg:"Error checking the user, no email send"});
+    }
+    if(req.body.securityQuestion1){
+      var securityQuestion1=req.body.securityQuestion1;
+    }else{
+      return res.json(400,{msg:"Error checking the user, no security question send"});
+    }
+    if(req.body.securityQuestion2){
+      var securityQuestion2=req.body.securityQuestion2;
+    }else{
+      return res.json(400,{msg:"Error checking the user, no security question send"});
+    }
+    var correctChoices=true;
+    var promise1=sails.models.usrsqu.findOne({email:email,idSecurityQuestion:securityQuestion1.question,answerText:securityQuestion1.answer})
+    .then(function(finded){
+      if(!finded){
+        correctChoices=false;
+      }
+    })
+    var promise2=sails.models.usrsqu.findOne({email:email,idSecurityQuestion:securityQuestion2.question,answerText:securityQuestion2.answer})
+    .then(function(finded){
+      if(!finded){
+        correctChoices=false;
+      }
+    })
+    Promise.join(promise1, promise2)
+    .then(function(){
+      if(correctChoices==true){
+        return res.json(200,{msg:"OK"});
+      }else{
+        return res.json(500,{msg:"Error checking the user"});
+      }
+    })
+    .catch(function(error){
+      return res.json(500,{msg:"Error checking the user"});
+    })
+
   }
 };

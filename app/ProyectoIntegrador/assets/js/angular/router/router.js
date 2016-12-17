@@ -101,6 +101,11 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     templateUrl: 'html/angular/views/Test/prueba.html',
     controller: 'pruebaController'
   })
+  .state('recoverPassword', {
+    url: '/recover',
+    templateUrl: 'html/angular/views/User/recover.html',
+    controller: 'recoverPasswordController'
+  })
   .state('teacherReviewTest', {
     url: '/teacher/test/review',
     templateUrl: 'html/angular/views/Test/teacherReview.html',
