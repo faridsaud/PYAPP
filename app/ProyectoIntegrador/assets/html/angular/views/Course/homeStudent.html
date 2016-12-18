@@ -4,13 +4,8 @@
       <div class="panel panel-primary">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
               <h3 class="panel-title">Curso</h3>
-            </div>
-            <div class="col-md-6">
-              <a href="#/course/register" class="btn btn-default btn-xs pull-right" title="Agregar nuevo curso">
-                <span class="glyphicon glyphicon-plus"> </span>
-              </a>
             </div>
           </div>
         </div>
@@ -30,13 +25,8 @@
       <div class="panel panel-danger">
         <div class="panel-heading">
           <div class="row">
-            <div class="col-md-6">
-              <h3 class="panel-title">Pruebas pendientes</h3>
-            </div>
-            <div class="col-md-6">
-              <a href="#/test/register" class="btn btn-default btn-xs pull-right" title="Agregar nueva prueba">
-                <span class="glyphicon glyphicon-plus"> </span>
-              </a>
+            <div class="col-md-12">
+              <h3 class="panel-title" id="p1" tabindex="1">Pruebas pendientes</h3>
             </div>
           </div>
         </div>
@@ -51,7 +41,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'">
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)" id="r{{$index+2}}" tabindex="{{$index+2}}" data-idTest='{{test.id}}'>
                   <td>{{test.title}}</td>
                   <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
                 </tr>

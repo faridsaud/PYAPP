@@ -21,12 +21,11 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Cambiar $location por $state /en proceso
 *Hacer multilingue a la aplicacion
 *Try y catchs
-*Login e interfaz del usuario mas amigable a persona no vidente
-*Pregunta secreta para restablecer la contrasena
-*Copy y paste de una prueba
-*Seguro que quiere eliminar
-*Administrador de institucion para ver
-*Numero de intentos/hecho
+*Login e interfaz del usuario mas amigable a persona no vidente /casi finalizado
+*Pregunta secreta para restablecer la contrasena /hecho
+*Copy y paste de una prueba /hecho
+*Seguro que quiere eliminar /hecho
+*Numero de intentos /hecho
 + al final /hecho
 *Clonar prueba /hecho
 *Clonar rpeguntas apartir de un banco de preguntas del curso
