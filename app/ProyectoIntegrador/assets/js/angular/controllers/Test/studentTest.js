@@ -56,7 +56,8 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           $scope.test.questions[i].index=counter;
           var mapped={
             originalId:$scope.test.questions[i].id,
-            index:$scope.test.questions[i].index
+            index:$scope.test.questions[i].index,
+            options:[]
           }
           $scope.mapper.push(mapped);
           for(var j=0;j<$scope.test.questions[i].options.length;j++){
@@ -66,7 +67,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
               originalId:$scope.test.questions[i].options[j].id,
               index:$scope.test.questions[i].options[j].index
             }
-            $scope.mapper.push(mapped);
+            $scope.mapper[i].options.push(mapped);
           }
         }
         console.log($scope.mapper);
@@ -93,11 +94,6 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
                 return indexNextQuestion;
               }else{
                 return $scope.lastIndex+1;
-                /*
-                var nextQuestionId=$scope.test.questions[0].id;
-                var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
-                return indexNextQuestion;
-                */
               }
             }
           }
@@ -124,18 +120,13 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
               }else{
 
                 return $scope.lastIndex+1;
-                /*
-                var nextQuestionId=$scope.test.questions[$scope.test.questions.length-1].id;
-                var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
-                return indexNextQuestion;
-                */
               }
             }
           }
         }
       }
 
-      //buscar IdOriginal Pregunta By Index, sirve tambien para options
+      //buscar IdOriginal Pregunta By Index
       $scope.findQuestionOriginalIdByIndex=function(questionIndex){
         for(var i=0;i<$scope.mapper.length;i++){
           if($scope.mapper[i].index==questionIndex){
@@ -145,8 +136,19 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         }
       }
 
+      //buscar IdOriginal option By Index
+      $scope.findOptionOriginalIdByIndex=function(optionIndex){
+        for(var i=0;i<$scope.mapper.length;i++){
+          for(var j=0;j<$scope.mapper[i].options.length;j++){
+            if($scope.mapper[i].options[j].index==optionIndex){
+              var originalId=$scope.mapper[i].options[j].originalId;
+              return originalId;
+            }
+          }
+        }
+      }
 
-      //buscar index Pregunta By originalId, sirve tambien para options
+      //buscar index Pregunta By originalId
       $scope.findQuestionIndexByOriginalId=function(questionId){
         for(var i=0;i<$scope.mapper.length;i++){
           if($scope.mapper[i].originalId==questionId){
@@ -182,7 +184,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       }
       //funcion seleccionar
       $scope.selectOption=function(optionIndex){
-        var optionId=$scope.findQuestionOriginalIdByIndex(optionIndex);
+        var optionId=$scope.findOptionOriginalIdByIndex(optionIndex);
         var questionId=$scope.findQuestionByOption(optionId);
         if(questionId){
           $scope.cleanSelectedOptionByQuestion(questionId);
@@ -197,10 +199,6 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             }
           }
         }
-      }
-      //Dar efecto de selección
-      $scope.efectoSeleccion=function(index){
-        var optionId=$scope.findQuestionOriginalIdByIndex(index);
       }
 
 
@@ -301,6 +299,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           console.log(matchings);
           var number=$scope.findPreviousQuestion(Number(matchings[1]));
           console.log(number);
+          console.log($scope.mapper);
           if(document.getElementById("p"+number)){
             document.getElementById("p"+number).focus();
             $scope.lastQuestion="p"+number;

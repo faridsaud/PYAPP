@@ -22,7 +22,7 @@
         <div class="panel-heading">
           <div class="row">
             <div class="col-md-12">
-              <h3 class="panel-title">Pruebas pendientes</h3>
+              <h3 class="panel-title"  id="p1" tabindex="1">Pruebas pendientes</h3>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)">
+                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)" id="r{{$index+2}}" tabindex="{{$index+2}}" data-idTest='{{test.id}}'>
                   <td>{{test.title}}</td>
                   <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
                 </tr>

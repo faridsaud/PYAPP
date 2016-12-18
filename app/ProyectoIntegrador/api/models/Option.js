@@ -30,15 +30,6 @@ module.exports = {
       type:'boolean',
       columnName: 'ISCORRECT'
     },
-    isSelected:{
-      type:'boolean',
-      columnName: 'ISSELECTED'
-    },
-    type:{
-      type:'string',
-      size:10,
-      columnName: 'TYPEOPTION'
-    },
     text:{
       type:'text',
       size:800,
