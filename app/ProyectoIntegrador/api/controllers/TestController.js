@@ -566,12 +566,12 @@ module.exports = {
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			var email=null;
+			return res.json(400,{msg:"Error getting the tests, there is not an email send"});
 		}
 		if(req.body.course.id){
 			var idCourse=req.body.course.id;
 		}else{
-			var idCourse=null;
+			return res.json(400,{msg:"Error getting the tests, there is not a course send"});
 		}
 
 		sails.models.usrcou.findOne({email:email, status:'s', idCourse:idCourse}).exec(function(err, result){
@@ -581,7 +581,7 @@ module.exports = {
 			}else{
 				if(result){
 					var status='s';
-					sails.models.test.find({idCourse:idCourse}).exec(function (error, records){
+					sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status, UT.INTENTLEFT as intentsLeft, T.INTENTS as intents FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND T.IDCOURSE=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email,idCourse], function(error, records) {
 						if(error){
 							return res.json(400,{
 								msg: 'Bad request'
@@ -626,9 +626,10 @@ module.exports = {
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			var email=null;
+
+			return res.json(400,{msg:"Error getting the tests, there is not an email send", tests:tests});
 		}
-		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
+		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status, UT.INTENTLEFT as intentsLeft, T.INTENTS as intents FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
 			if (err){
 				console.log(err);
 				return res.json(512,{msg:"Error"});

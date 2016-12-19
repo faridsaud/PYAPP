@@ -188,7 +188,7 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
 
         }else{
           console.log($scope.focusedNumber);
-          var textoP="Prueba "+$scope.focusedNumber+ ". "+document.getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent;
+          var textoP="Prueba "+$scope.focusedNumber+ ". "+document.getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent+". Intentos restantes "+document.getElementById($scope.focusedElement).getElementsByTagName( 'td' )[1].textContent;
         }
         $rootScope.msg.text=textoP;
         $rootScope.synth.speak($rootScope.msg);

@@ -80,14 +80,71 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
           }
         }
       }
-      $scope.generateStatementsReview();
+
+      $scope.generateQuestionsFormatted=function(){
+        $scope.questions=[];
+        var counter=0;
+        for(var i=0;i<$scope.test.questions.length;i++){
+          counter++;
+          $scope.questions.push({text:$scope.test.questions[i].text, id:counter, index:counter});
+          $scope.questions[i].options=[];
+          var indexCorrectAnswer=undefined;
+          var indexSelectedAnswer=undefined;
+          for(var j=0;j<$scope.test.questions[i].options.length;j++){
+            if($scope.test.questions[i].options[j].isCorrect==true){
+              console.log("Respuesta correcta"+j);
+              var indexCorrectAnswer=j;
+            }
+            if($scope.test.questions[i].options[j].isSelected==true){
+              console.log("Respuesta seleccionada"+j);
+              var indexSelectedAnswer=j;
+            }
+          }
+          /*There is no answer selected*/
+          if(indexSelectedAnswer==null){
+            counter++;
+            $scope.questions[i].options.push({text:"No se selecciono respuesta alguna",id:counter, index:counter});
+            if(indexCorrectAnswer!=null){
+              counter++;
+              $scope.questions[i].options.push({text:"Respuesta correcta: "+$scope.test.questions[i].options[indexCorrectAnswer].text,id:counter, index:counter});
+              if($scope.test.questions[i].options[indexCorrectAnswer].justification!=""){
+                counter++;
+                $scope.questions[i].options.push({text:"Justificación respuesta correcta: "+$scope.test.questions[i].options[indexCorrectAnswer].justification,id:counter, index:counter});
+              }
+            }
+          }
+          if(indexSelectedAnswer!=null){
+            if(indexCorrectAnswer!=null){
+              /*Answer selected = correct answer*/
+              if(indexSelectedAnswer==indexCorrectAnswer){
+                counter++;
+                $scope.questions[i].options.push({text:"Respuesta seleccionada correcta: "+$scope.test.questions[i].options[indexCorrectAnswer].text,id:counter, index:counter});
+                if($scope.test.questions[i].options[indexCorrectAnswer].justification!=""){
+                  counter++;
+                  $scope.questions[i].options.push({text:"Justificación: "+$scope.test.questions[i].options[indexCorrectAnswer].justification,id:counter, index:counter});
+                }
+              }else{
+                counter++;
+                $scope.questions[i].options.push({text:"Respuesta seleccionada: "+$scope.test.questions[i].options[indexSelectedAnswer].text,id:counter, index:counter});
+                if($scope.test.questions[i].options[indexSelectedAnswer].justification!="") {
+                  counter++;
+                  $scope.questions[i].options.push({text:"Justificación respuesta seleccionada: "+$scope.test.questions[i].options[indexSelectedAnswer].justification,id:counter, index:counter});
+                }
+                counter++;
+                $scope.questions[i].options.push({text:"Respuesta correcta: "+$scope.test.questions[i].options[indexCorrectAnswer].text,id:counter, index:counter});
+                if($scope.test.questions[i].options[indexCorrectAnswer].justification!=""){
+                  counter++;
+                  $scope.questions[i].options.push({text:"Justificación respuesta correcta: "+$scope.test.questions[i].options[indexCorrectAnswer].justification,id:counter, index:counter});
+                }
+              }
+            }
+          }
+        }
+      }
+
+
+      $scope.generateQuestionsFormatted();
       console.log($scope.questions);
-
-
-
-
-
-
 
       //funcion generadora de index
       $scope.generateIndex=function(){

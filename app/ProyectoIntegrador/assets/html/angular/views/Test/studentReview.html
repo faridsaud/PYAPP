@@ -4,17 +4,14 @@
       <div class="container">
         <div class="row">
           <div class="col-md-12">
-            <h4 id="p{{question.index}}" tabindex="{{question.index}}">Pregunta {{$index+1}} {{question.text}}</h4>
+            <h4 id="p{{question.index}}" tabindex="{{question.index}}">Pregunta {{$index+1}}: {{question.text}}</h4>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
             <ul class="list-group">
               <div ng-repeat="option in question.options track by $index" >
-                <li id="r{{option.index}}" tabindex="{{option.index}}"  class="list-group-item" ng-if="$index==0" >Respuesta seleccionada: {{option.text}}</li>
-                <li  id="r{{option.index}}" tabindex="{{option.index}}" class="list-group-item" ng-if="$index==1" >Justificacion de respuesta seleccionada: {{option.text}}</li>
-                <li  id="r{{option.index}}" tabindex="{{option.index}}"  class="list-group-item" ng-if="$index==2" >Respuesta correcta: {{option.text}}</li>
-                <li  id="r{{option.index}}" tabindex="{{option.index}}" class="list-group-item" ng-if="$index==3" >Justificacion de respuesta correcta: {{option.text}}</li>
+                <li id="r{{option.index}}" tabindex="{{option.index}}"  class="list-group-item"  >{{option.text}}</li>
               </div>
             </ul>
           </div>
