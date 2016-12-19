@@ -178,7 +178,7 @@ module.exports = {
 											return res.json(500,{msg:"Error registering the student"});
 										}else{
 											/*Asignacion de las pruebas del curso al cual acaba de ser registrado el estudiante*/
-											sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES) SELECT ?, T.IDTEST, 's' FROM TEST T WHERE T.IDCOURSE=? ",[studentEmail, idCourse], function(error, callback){
+											sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES,INTENTLEFT) SELECT ?, T.IDTEST, 's', T.INTENTS FROM TEST T WHERE T.IDCOURSE=? ",[studentEmail, idCourse], function(error, callback){
 												if(error){
 													console.log(error);
 													return res.json(512,{msg: 'Error registering the student'});
@@ -189,7 +189,7 @@ module.exports = {
 										}
 									});
 								}else{
-									return res.json(400,{msg:"There is not an student with that email"});
+									return res.json(201,{msg:"There is not an student with that email"});
 								}
 							}
 						});

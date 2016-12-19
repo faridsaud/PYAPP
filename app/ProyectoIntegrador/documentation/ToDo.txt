@@ -33,7 +33,7 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Actualizar vista profesor /hecho
 *Clonar curso /hecho
 *No actualiza fecha (Arreglado) /hecho
-*retroalimentacion si selecciona respuesta correcta
+*retroalimentacion si selecciona respuesta correcta /hecho
 *Multilingue
 *boton atras
 *Controles en retroalimentacion /hecho
@@ -43,3 +43,4 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Revisar hilos de promesas usadas!!!! (Urgentes)
 *Cambiar console.log por sails.log revisar sails doc
 *Cambiar el numero de intentos restantes al momento de abrir la prueba no de finalizar
+*Cambiar categoria de prueba si fue rendida pero le quedan intentos
