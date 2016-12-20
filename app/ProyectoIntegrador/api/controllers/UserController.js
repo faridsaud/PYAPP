@@ -118,7 +118,7 @@ module.exports = {
       return res.json(400,{msg: 'Error login in the user, no user send'});
     }
     /*Find user by pin*/
-    if(req.body.user.pin){
+    if(req.body.user.pin && !req.body.user.password){
       var pin=req.body.user.pin.toString();
       console.log(pin);
       var findPromise=sails.controllers.user.findUserByPin(pin);

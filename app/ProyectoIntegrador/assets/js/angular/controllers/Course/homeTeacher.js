@@ -1,4 +1,4 @@
-app.controller('courseHomeTeacherController',['$scope','$http','toastr','$location','globalVariables','$rootScope','ngDialog', function($scope,$http, toastr,$location,globalVariables,$rootScope,ngDialog){
+app.controller('courseHomeTeacherController',['$scope','$http','toastr','$location','globalVariables','$rootScope','ngDialog','$state', function($scope,$http, toastr,$location,globalVariables,$rootScope,ngDialog,$state){
 
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="teacher"){
@@ -50,7 +50,44 @@ app.controller('courseHomeTeacherController',['$scope','$http','toastr','$locati
           $rootScope.activeTest.id=testId;
           $location.path('/test/edit');
         }
+        $scope.deleteStudent=function(studentEmail){
+          ngDialog.openConfirm({
+            scope: $scope,
+            template:
+            '<div class="modal-dialog">'+
+            '<div class="modal-content">'+
+            '<div class="modal-header">'+
+            '<h4 class="modal-title">¿Seguro que desea eliminar al estudiante del curso?</h4>'+
+            '</div>'+
+            '<div class="modal-footer">'+
+            '<button type="button" class="btn btn-danger"  ng-click="closeThisDialog()">Cancelar</button>'+
+            '<button type="button" class="btn btn-primary" ng-click="confirm()">Confirmar</button>'+
+            '</div>'+
+            '</div><!-- /.modal-content -->'+
+            '</div><!-- /.modal-dialog -->'
+            ,
+            plain: true
+          }).then(function (confirm) {
 
+            $http({
+              method:'POST',
+              url:globalVariables.url+'/course/deleteStudent',
+              data:{
+                studentEmail:studentEmail,
+                teacherEmail:$rootScope.loggedUser.email,
+                idCourse:$scope.course.id
+              }
+            }).then(function success(response){
+              console.log(response);
+              toastr.success("Estudiante eliminado con éxito","Success");
+              $state.reload();
+            }, function error(response){
+              toastr.error("Error al eliminar el estudiante","Error");
+              console.log(response);
+            })
+          }, function(reject) {
+          });
+        }
         $scope.deleteTest=function(testId){
           ngDialog.openConfirm({
             scope: $scope,

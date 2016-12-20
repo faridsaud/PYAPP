@@ -512,4 +512,60 @@ module.exports = {
 			})
 		},
 
+		deleteStudent:function(req,res){
+			if(req.body.studentEmail){
+				var studentEmail=req.body.studentEmail;
+			}else{
+				return res.json(400,{msg:"Error deleting the user, no student email send"});
+			}
+			if(req.body.teacherEmail){
+				var teacherEmail=req.body.teacherEmail;
+			}else{
+				return res.json(400,{msg:"Error deleting the user, no teacher email send"});
+			}
+			if(req.body.idCourse){
+				var idCourse=req.body.idCourse;
+			}else{
+				return res.json(400,{msg:"Error deleting the user, no course send"});
+			}
+			var promises=[];
+			var promiseFindUC=sails.models.usrcou.findOne({email:teacherEmail, idCourse:idCourse, status:'t'})
+			.then(function(finded){
+				if(finded){
+					var promiseDestroyUC=sails.models.usrcou.destroy({email:studentEmail, status:'s', idCourse:idCourse});
+					promises.push(promiseDestroyUC);
+					var promiseFindTests=sails.models.test.find({idCourse:idCourse})
+					.then(function(tests){
+						var promises2=[];
+						for(var i=0;i<tests.length;i++){
+							var promiseDestroyUT=sails.models.usrtes.destroy({email:studentEmail, status:'s',idTest:tests[i].id});
+							promises2.push(promiseDestroyUT);
+							var queryPromisified=Promise.promisify(sails.models.test.query);
+							var promiseDestroyUO=queryPromisified("DELETE FROM USR_OPT WHERE EMAIL=? AND IDOPTION IN ( SELECT IDOPTION  FROM (SELECT O.IDOPTION FROM OPTIO O, QUESTION Q WHERE O.IDQUESTION=Q.IDQUESTION AND Q.IDTEST=?) AS TEMPORALOPT)",[studentEmail, tests[i].id])
+							promises2.push(promiseDestroyUO);
+						}
+						return promises2;
+					})
+					promises.push(promiseFindTests);
+					Promise.all(promises)
+					.then(function(inputs){
+						Promise.all(inputs[1])
+						.then(function(){
+							return res.json(200,{msg:"User deleted successfully"});
+						})
+						.catch(function(error){
+							console.log(error);
+							return res.json(501,{msg:"Error deleting the user"});
+						})
+					})
+					.catch(function(error){
+						console.log(error);
+						return res.json(500,{msg:"Error deleting the user"});
+					})
+				}
+			})
+
+
+		}
+
 	};

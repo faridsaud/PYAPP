@@ -13,15 +13,18 @@ module.exports = {
   attributes: {
     email:{
       type:'string',
-      columnName:'EMAIL'
+      columnName:'EMAIL',
+      primaryKey:true
     },
     idCourse: {
       type:'integer',
-      columnName:'IDCOURSE'
+      columnName:'IDCOURSE',
+      primaryKey:true
     },
     status:{
       type:'string',
       columnName:'STATUSUSRCOU',
+      primaryKey:true,
       size:1
     }
   }
