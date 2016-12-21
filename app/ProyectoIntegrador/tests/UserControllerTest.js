@@ -1,6 +1,7 @@
 var supertest = require("supertest");
 var url="http://localhost:1337";
-
+var fs=require('fs');
+fs.readFileSync(file[, options])
 // This agent refers to PORT where program is runninng.
 
 
@@ -124,98 +125,6 @@ describe('User login', function() {
         role:"teacher"
       }})
       .expect(400,{msg:"Non email or username send"}, done);
-    });
-  });
-});
-
-// Course http services tests
-
-describe('Course register', function() {
-
-  describe('Teacher register course with valid data', function() {
-    it('respond with status 201 : Course created', function(done) {
-      supertest(url)
-      .post('/course/register')
-      .send({
-        course:{
-          name:"Arquitectura Computadores",
-          description:"Curso 2016-B"
-        },
-        user:{
-          email:"test@test.com",
-          role:"teacher"
-        }
-      })
-      .expect(201,{msg:"Course created"}, done);
-    });
-  });
-
-  describe('Student register course with valid data', function() {
-    it('respond with status 201 : Course created', function(done) {
-      supertest(url)
-      .post('/course/register')
-      .send({
-        course:{
-          name:"Arquitectura Computadores",
-          description:"Curso 2016-B"
-        },
-        user:{
-          email:"test@test.com",
-          role:"student"
-        }
-      })
-      .expect(400,{msg:"Invalid role"}, done);
-    });
-  });
-
-  describe('Teacher without email register course with valid data', function() {
-    it('respond with status 201 : Course created', function(done) {
-      supertest(url)
-      .post('/course/register')
-      .send({
-        course:{
-          name:"Arquitectura Computadores",
-          description:"Curso 2016-B"
-        },
-        user:{
-          role:"teacher"
-        }
-      })
-      .expect(400,{msg:"No user's email send"}, done);
-    });
-  });
-
-  describe('Teacher without role register course with valid data', function() {
-    it('respond with status 201 : Course created', function(done) {
-      supertest(url)
-      .post('/course/register')
-      .send({
-        course:{
-          name:"Arquitectura Computadores",
-          description:"Curso 2016-B"
-        },
-        user:{
-          email:"test@test.com"
-        }
-      })
-      .expect(400,{msg:"Invalid role"}, done);
-    });
-  });
-
-  describe('Teacher register course without name', function() {
-    it('respond with status 201 : Course created', function(done) {
-      supertest(url)
-      .post('/course/register')
-      .send({
-        course:{
-          description:"Curso 2016-B"
-        },
-        user:{
-          email:"test@test.com",
-          role:"teacher"
-        }
-      })
-      .expect(400,{msg:"No course's name send"}, done);
     });
   });
 });

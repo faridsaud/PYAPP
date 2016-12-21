@@ -17,7 +17,7 @@ module.exports = {
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there is no title'});
+			return res.json(400,{code:1,msg: 'Error creating the test, there is no title'});
 		}
 		if(req.body.test.description){
 			var description=req.body.test.description;
@@ -32,7 +32,7 @@ module.exports = {
 		if(req.body.test.createdBy){
 			var createdBy=req.body.test.createdBy;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there is no owner'});
+			return res.json(400,{code:2,msg: 'Error creating the test, there is no owner'});
 		}
 		if(req.body.test.status){
 			var status=req.body.test.status;
@@ -42,17 +42,17 @@ module.exports = {
 		if(req.body.test.startDateTime){
 			var startDateTime=req.body.test.startDateTime;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be an start date-time'});
+			return res.json(400,{code:3,msg: 'Error creating the test, there should be an start date-time'});
 		}
 		if(req.body.test.finishDateTime){
 			var finishDateTime=req.body.test.finishDateTime;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be an finish date-time'});
+			return res.json(400,{code:4, msg: 'Error creating the test, there should be an finish date-time'});
 		}
 		if(req.body.test.course){
 			var idCourse=req.body.test.course;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be a course'});
+			return res.json(400,{code:5,msg: 'Error creating the test, there should be a course'});
 		}
 		sails.models.test.create({
 			title:title,
