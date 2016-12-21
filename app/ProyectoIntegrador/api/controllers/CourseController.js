@@ -22,7 +22,7 @@ module.exports = {
 			var email=req.body.user.email;
 		}else{
 			var email=null;
-			return res.json(400, {msg:"No user's email send"});
+			return res.json(400, {code:1,msg:"No user's email send"});
 		}
 		if(req.body.user.role){
 			var role=req.body.user.role;
@@ -32,17 +32,17 @@ module.exports = {
 				correctRole=true;
 			}
 			if(correctRole==false){
-				return res.json(400, {msg:"Invalid role"});
+				return res.json(403, {code:2,msg:"Invalid role"});
 			}
 		}else{
 			var role=null;
-			return res.json(400, {msg:"Invalid role"});
+			return res.json(403, {code:3, msg:"Invalid role"});
 		}
 		if(req.body.course.name){
 			var name=req.body.course.name;
 		}else{
 			var name=null;
-			return res.json(400, {msg:"No course's name send"});
+			return res.json(400, {code:4,msg:"No course's name send"});
 		}
 
 		if(req.body.course.description){
@@ -59,7 +59,7 @@ module.exports = {
 		.exec(function(error, newRecord){
 			if(error){
 				console.log(error);
-				return res.json(512, {msg:"Error creating the course"});
+				return res.json(500, {code:5,msg:"Error creating the course"});
 			}else{
 				sails.models.usrcou.query(
 					'INSERT INTO USR_COU (EMAIL, IDCOURSE, STATUSUSRCOU) VALUES (?,?,?)',[email, newRecord.id, status], function(err, results) {
@@ -68,7 +68,7 @@ module.exports = {
 							return res.json(512,{msg:"Error creating the course"});
 						}else{
 							console.log("Estamos en 201");
-							return res.json(201,{msg:"Course created"});
+							return res.json(201,{code:1,msg:"Course created", course:newRecord});
 						}
 					});
 				}
