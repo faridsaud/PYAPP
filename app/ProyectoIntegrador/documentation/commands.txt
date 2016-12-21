@@ -8,6 +8,10 @@ gcloud init
 //deploy app google cloud
 gcloud app deploy
 
+//Al momento de crear la instancia de la bdd cloud sql no olvidar Enable the Cloud SQL Administration API. info:https://cloud.google.com/sql/docs/app-engine-connect App Engine flexible environment to Second Generation
+
+
+
 //Enviroment variables
 set NODE_ENV=production&&node app.js
 set NODE_ENV=development&&node app.js

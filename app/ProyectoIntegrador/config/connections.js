@@ -43,31 +43,38 @@ module.exports.connections = {
 
 
   localServer: {
+    adapter: 'sails-mysql',
+    host: '192.168.216.131',
+    user: 'bases',
+    password: 'bases',
+    database: 'proyectoIntegrador'
+  },
+  gServer: {
+    adapter: 'sails-mysql',
+    host: '130.211.159.183',
+    user: 'root',
+    password: 'TUrion93!',
+    database: 'proyectoIntegrador'
+  },
+
+
+  gcloudServer: {
+    adapter: 'sails-mysql',
+    host:'localhost',
+    user: 'root',
+    password: 'TUrion93!',
+    database: 'proyectoIntegrador',
+    port: '/cloudsql/proyectointegrador-faridsaud:us-central1:bdd'
+  },
+
+  /*
+  someMysqlServer: {
   adapter: 'sails-mysql',
-  host: '192.168.216.131',
-  user: 'bases',
-  password: 'bases',
-  database: 'proyectoIntegrador'
-},
-
-
-gcloudServer: {
-  module: 'sails-mysql',
+  host: '146.148.68.213',
+  port:3306,
   user: 'root',
-  password: 'TUrion93!',
-  database: 'proyectoIntegrador',
-  debug:true,
-  socketPath: '/cloudsql/proyectointegrador-faridsaud:us-central1:bdd'
-},
-
-/*
-someMysqlServer: {
-adapter: 'sails-mysql',
-host: '146.148.68.213',
-port:3306,
-user: 'root',
-password: 'AmdR9295x!',
-database: 'proyectoIntegrador'
+  password: 'AmdR9295x!',
+  database: 'proyectoIntegrador'
 },
 */
 /***************************************************************************
