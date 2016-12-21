@@ -1,8 +1,13 @@
 //Test excecution
 node node_modules/mocha/bin/mocha ./tests/restTest.js --timeout 15000
+//configurar sdk google
+gcloud init
+1
+1
 
 //deploy app google cloud
 gcloud app deploy
 
 //Enviroment variables
 set NODE_ENV=production&&node app.js
+set NODE_ENV=development&&node app.js

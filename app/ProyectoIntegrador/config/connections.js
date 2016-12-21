@@ -54,10 +54,10 @@ module.exports.connections = {
 gcloudServer: {
   module: 'sails-mysql',
   user: 'root',
-  password: 'AmdR9295x!',
+  password: 'TUrion93!',
   database: 'proyectoIntegrador',
   debug:true,
-  socketPath: '/cloudsql/testtesispi2:us-central1:databasepi'
+  socketPath: '/cloudsql/proyectointegrador-faridsaud:us-central1:bdd'
 },
 
 /*

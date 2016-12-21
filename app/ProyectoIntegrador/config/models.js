@@ -17,7 +17,7 @@ module.exports.models = {
   * connections (see `config/connections.js`)                                *
   *                                                                          *
   ***************************************************************************/
-  connection:'localServer',
+  connection:'gcloudServer',
   autoPK:false,
   autoCreatedAt: false,
   autoUpdatedAt: false,
