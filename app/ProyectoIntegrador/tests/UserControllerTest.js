@@ -1,130 +1,471 @@
 var supertest = require("supertest");
-var url="http://localhost:1337";
 var fs=require('fs');
-fs.readFileSync(file[, options])
+var assert = require('assert');
+var contents=fs.readFileSync("./tests/config.txt",'utf8').toString();
+var matchings=contents.match(/url="(.{1,})"/);
+var url=matchings[1];
+
 // This agent refers to PORT where program is runninng.
 
 
 // User http services tests
 
 describe('User signup', function() {
-
-  describe('valid credentials', function() {
-    it('respond with status 201 : User created', function(done) {
+  describe('Without user', function() {
+    it('respond with status 400 code:1', function(done) {
       supertest(url)
       .post('/user/register')
-      .send({user:{
-        email:"test@test.com",
-        password:"test",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test",
-        role:"student"
-      }})
-      .expect(201,{msg:"User created"}, done);
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without email', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
     });
   });
 
-  describe('valid credentials without role', function() {
-    it('respond with status 400 : No role send', function(done) {
+  describe('Without password', function() {
+    it('respond with status 400 code:3', function(done) {
       supertest(url)
       .post('/user/register')
-      .send({user:{
-        email:"test4@test.com",
-        password:"test4",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test4"
-      }})
-      .expect(400,{msg:"No role send"}, done);
+      .send({
+        user:{
+          email:"test@test.com"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,3);
+        done();
+      });
     });
   });
 
-  describe('valid credentials without role', function() {
-    it('respond with status 400 : Invalid role', function(done) {
+  describe('Without security question 1', function() {
+    it('respond with status 400 code:4', function(done) {
       supertest(url)
       .post('/user/register')
-      .send({user:{
-        email:"test3@test.com",
-        password:"test3",
-        name:"test name",
-        lastName:"test last name",
-        passport:"1111111111",
-        country:"ECU",
-        username:"test3",
-        role:"studente"
-      }})
-      .expect(400,{msg:"Invalid role"}, done);
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,4);
+        done();
+      });
+    });
+  });
+
+  describe("Without secuity question 1's question or answer", function() {
+    it('respond with status 400 code:5', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          securityQuestion1:{
+          }
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,5);
+        done();
+      });
+    });
+  });
+
+  describe("Without secuity question 2", function() {
+    it('respond with status 400 code:6', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          securityQuestion1:{
+            question:1,
+            answer:"text"
+          }
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,6);
+        done();
+      });
+    });
+  });
+
+  describe("Without secuity question 2", function() {
+    it('respond with status 400 code:7', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          securityQuestion1:{
+            question:1,
+            answer:"text"
+          },
+          securityQuestion2:{
+
+          }
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,7);
+        done();
+      });
+    });
+  });
+
+  describe("With security question 1 equal security question 2", function() {
+    it('respond with status 400 code:8', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          securityQuestion1:{
+            question:1,
+            answer:"1"
+          },
+          securityQuestion2:{
+            question:1,
+            answer:"2"
+          }
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,8);
+        done();
+      });
+    });
+  });
+
+  describe("User register course with valid data", function() {
+    it('respond with status 201', function(done) {
+      supertest(url)
+      .post('/user/register')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          roles:["student", "teacher"],
+          securityQuestion1:{
+            question:1,
+            answer:"1"
+          },
+          securityQuestion2:{
+            question:2,
+            answer:"2"
+          }
+        }
+      })
+      .expect(201,done);
     });
   });
 });
 
 
 describe('User login', function() {
-  describe('valid credentials and role, login with email', function() {
-    it('respond with status 200 : Login successfull', function(done) {
+  describe('Without user', function() {
+    it('respond with status 400 code:1', function(done) {
       supertest(url)
       .post('/login')
-      .send({user:{
-        email:"test@test.com",
-        password:"test",
-        role:"student"
-      }})
-      .expect(200, done);
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without email', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/login')
+      .send({
+        user:{
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
     });
   });
 
-  describe('valid credentials and role, login with username', function() {
-    it('respond with status 200 : Login successfull', function(done) {
+  describe('Without password', function() {
+    it('respond with status 400 code:3', function(done) {
       supertest(url)
       .post('/login')
-      .send({user:{
-        email:"test",
-        password:"test",
-        role:"student"
-      }})
-      .expect(200, done);
-    });
-  });
-  describe('invalid credentials, non existent user', function() {
-    it('respond with status 400 : Not user finded with those credentials ', function(done) {
-      supertest(url)
-      .post('/login')
-      .send({user:{
-        email:"test@test.com",
-        password:"test2",
-        role:"student"
-      }})
-      .expect(400,{msg:"Not user finded with those credentials"}, done);
+      .send({
+        user:{
+          email:"test@test.com"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,3);
+        done();
+      });
     });
   });
 
-  describe('valid credentials, invalid role', function() {
-    it('respond with status 403 : The role is not associated with the user', function(done) {
+  describe('Invalid credentials', function() {
+    it('respond with status 400 code:4', function(done) {
       supertest(url)
       .post('/login')
-      .send({user:{
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"invalid"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,4);
+        done();
+      });
+    });
+  });
+  describe('Invalid credentials', function() {
+    it('respond with status 403', function(done) {
+      supertest(url)
+      .post('/login')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          role:"invalid"
+        }
+      })
+      .expect(403,done);
+    });
+  });
+  describe('Valid credentials', function() {
+    it('respond with status 200', function(done) {
+      supertest(url)
+      .post('/login')
+      .send({
+        user:{
+          email:"test@test.com",
+          password:"test",
+          role:"teacher"
+        }
+      })
+      .expect(200,done);
+    });
+  });
+});
+
+describe('Check user data for password and pin change', function() {
+  describe('Without email', function() {
+    it('respond with status 400 code:1', function(done) {
+      supertest(url)
+      .post('/user/checkUser')
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without security question 1', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/user/checkUser')
+      .send({
+        email:"test@test.com"
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
+    });
+  });
+  describe('Without security question 2', function() {
+    it('respond with status 400 code:3', function(done) {
+      supertest(url)
+      .post('/user/checkUser')
+      .send({
         email:"test@test.com",
-        password:"test",
-        role:"teacher"
-      }})
-      .expect(403,{msg:"The role is not associated with the user"}, done);
+        securityQuestion1:{
+          question:1,
+          answer:"1"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,3);
+        done();
+      });
     });
   });
 
-  describe('without username or email', function() {
-    it('respond with status 400 : Non email or username send', function(done) {
+
+  describe('Invalid data', function() {
+    it('respond with status 400 code:4', function(done) {
       supertest(url)
-      .post('/login')
-      .send({user:{
+      .post('/user/checkUser')
+      .send({
+        email:"test@test.com",
+        securityQuestion1:{
+          question:1,
+          answer:"2"
+        },
+        securityQuestion2:{
+          question:2,
+          answer:"1"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,4);
+        done();
+      });
+    });
+  });
+
+  describe('Valid data', function() {
+    it('respond with status 200', function(done) {
+      supertest(url)
+      .post('/user/checkUser')
+      .send({
+        email:"test@test.com",
+        securityQuestion1:{
+          question:1,
+          answer:"1"
+        },
+        securityQuestion2:{
+          question:2,
+          answer:"2"
+        }
+      })
+      .expect(200,done);
+    });
+  });
+});
+
+describe('Password and pin change', function() {
+  describe('Without email', function() {
+    it('respond with status 400 code:1', function(done) {
+      supertest(url)
+      .post('/user/updateSecurityInfo')
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without new password', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/user/updateSecurityInfo')
+      .send({
+        email:"test@test.com"
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
+    });
+  });
+  describe('With the new securoty questions being the same', function() {
+    it('respond with status 400 code 3', function(done) {
+      supertest(url)
+      .post('/user/updateSecurityInfo')
+      .send({
+        email:"test@test.com",
         password:"test",
-        role:"teacher"
-      }})
-      .expect(400,{msg:"Non email or username send"}, done);
+        securityQuestion1:{
+          question:1,
+          answer:"1"
+        },
+        securityQuestion2:{
+          question:1,
+          answer:"2"
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,3);
+        done();
+      });
+    });
+  });
+
+  describe('With the new securoty questions being the same', function() {
+    it('respond with status 400 code 3', function(done) {
+      supertest(url)
+      .post('/user/updateSecurityInfo')
+      .send({
+        email:"test@test.com",
+        password:"newTest",
+        securityQuestion1:{
+          question:1,
+          answer:"1"
+        },
+        securityQuestion2:{
+          question:2,
+          answer:"2"
+        }
+      })
+      .expect(200,done)
     });
   });
 });

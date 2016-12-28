@@ -46,3 +46,9 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Cambiar categoria de prueba si fue rendida pero le quedan intentos
 *Dictar el pin generado
 *Pruebas deben borrar el registro creado
+*Cambiar controles de flechas izquierda derecha por arriba y abajo y las anterioes de arriba y abajo tab
+*control por enter
+*Enter para seleccionar
+*Espacio para hablar
+*Arriba y abajo no solo para opciones
+*Definir pruebas a los servicios

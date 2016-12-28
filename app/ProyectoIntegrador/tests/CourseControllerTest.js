@@ -1,5 +1,6 @@
 var supertest = require("supertest");
 var fs=require('fs');
+var assert = require('assert');
 var contents=fs.readFileSync("./tests/config.txt",'utf8').toString();
 var matchings=contents.match(/url="(.{1,})"/);
 var url=matchings[1];
@@ -21,12 +22,17 @@ describe('Course register', function() {
           role:"teacher"
         }
       })
-      .expect(400, {code:1,msg:"No user's email send"}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
     });
   });
 
   describe('Student register course with valid data', function() {
-    it('respond with status 400 code:2', function(done) {
+    it('respond with status 403 code:2', function(done) {
       supertest(url)
       .post('/course/register')
       .send({
@@ -39,12 +45,17 @@ describe('Course register', function() {
           role:"student"
         }
       })
-      .expect(403,{code:2,msg:"Invalid role"}, done);
+      .expect(403)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
     });
   });
 
   describe('Teacher without role register course with valid data', function() {
-    it('respond with status 400 code:3', function(done) {
+    it('respond with status 403 code:3', function(done) {
       supertest(url)
       .post('/course/register')
       .send({
@@ -56,7 +67,12 @@ describe('Course register', function() {
           email:"test@test.com"
         }
       })
-      .expect(403,{code:3,msg:"Invalid role"}, done);
+      .expect(403)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,3);
+        done();
+      });
     });
   });
 
@@ -74,7 +90,12 @@ describe('Course register', function() {
           role:"teacher"
         }
       })
-      .expect(400,{code:4,msg:"No course's name send"}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,4);
+        done();
+      });
     });
   });
 
@@ -84,8 +105,8 @@ describe('Course register', function() {
       .post('/course/register')
       .send({
         course:{
-          name:"Arquitectura Computadores",
-          description:"Curso 2016-B"
+          name:"Test Course",
+          description:"Description test course"
         },
         user:{
           email:"test@test.com",
@@ -101,6 +122,142 @@ describe('Course register', function() {
       });
     });
   });
+});
 
+describe('Get courses created by user', function() {
+  describe('Without user', function() {
+    it('respond with status 400 code:1', function(done) {
+      supertest(url)
+      .post('/course/createdByUser')
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without user\'s email', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/course/createdByUser')
+      .send({
+        user:{
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
+    });
+  });
 
+  describe('Valid data', function() {
+    it('respond with status 200', function(done) {
+      supertest(url)
+      .post('/course/createdByUser')
+      .send({
+        user:{
+          email:"test@test.com"
+        }
+      })
+      .expect(200,done);
+    });
+  });
+});
+
+describe('Get courses by teacher', function() {
+  describe('Without user', function() {
+    it('respond with status 400 code:1', function(done) {
+      supertest(url)
+      .post('/course/byTeacher')
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without user\'s email', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/course/byTeacher')
+      .send({
+        user:{
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
+    });
+  });
+
+  describe('Valid data', function() {
+    it('respond with status 200', function(done) {
+      supertest(url)
+      .post('/course/byTeacher')
+      .send({
+        user:{
+          email:"test@test.com"
+        }
+      })
+      .expect(200,done);
+    });
+  });
+});
+
+describe('Get courses by student', function() {
+  describe('Without user', function() {
+    it('respond with status 400 code:1', function(done) {
+      supertest(url)
+      .post('/course/byStudent')
+      .send({
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,1);
+        done();
+      });
+    });
+  });
+  describe('Without user\'s email', function() {
+    it('respond with status 400 code:2', function(done) {
+      supertest(url)
+      .post('/course/byStudent')
+      .send({
+        user:{
+        }
+      })
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(res.body.code,2);
+        done();
+      });
+    });
+  });
+
+  describe('Valid data', function() {
+    it('respond with status 200', function(done) {
+      supertest(url)
+      .post('/course/byStudent')
+      .send({
+        user:{
+          email:"test@test.com"
+        }
+      })
+      .expect(200,done);
+    });
+  });
 });

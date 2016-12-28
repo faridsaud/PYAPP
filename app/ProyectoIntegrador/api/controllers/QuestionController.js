@@ -19,7 +19,7 @@ module.exports = {
 	},
 	formatMultipleChoiceQuestionsAngularToServer:function(questions){
 		for (var i=0;i<questions.length;i++){
-			questions[i].type="multipleChoice";
+			questions[i].type="multipleCh";
 			sails.controllers.option.formatMultipleChoiceOptionsAngularToServer(questions[i]);
 		}
 	},

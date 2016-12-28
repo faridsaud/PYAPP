@@ -10,36 +10,39 @@ module.exports = {
 
   register: function (req, res) {
     var error=false;
+    if(!req.body.user){
+      return res.json(400,{code:1, msg: 'Error creating the user, no user send'});
+    }
     if(req.body.user.email){
       var email=req.body.user.email;
     }else{
-      return res.json(400,{msg: 'Error creating the user, no email send'});
+      return res.json(400,{code:2, msg: 'Error creating the user, no email send'});
     }
     if(req.body.user.password){
       var password=req.body.user.password;
     }else{
-      return res.json(400,{msg: 'Error creating the user, no password send'});
+      return res.json(400,{code:3,msg: 'Error creating the user, no password send'});
     }
 
     if(req.body.user.securityQuestion1){
       var securityQuestion1=req.body.user.securityQuestion1;
       if(!securityQuestion1.question || !securityQuestion1.answer){
-        return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+        return res.json(400,{code:5,msg: 'Error creating the user, no security question 1 send'});
       }
     }else{
-      return res.json(400,{msg: 'Error creating the user, no security question 1 send'});
+      return res.json(400,{code:4,msg: 'Error creating the user, no security question 1 send'});
     }
 
     if(req.body.user.securityQuestion2){
       var securityQuestion2=req.body.user.securityQuestion2;
       if(!securityQuestion2.question || !securityQuestion2.answer){
-        return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+        return res.json(400,{code:7,msg: 'Error creating the user, no security question 2 send'});
       }
     }else{
-      return res.json(400,{msg: 'Error creating the user, no security question 2 send'});
+      return res.json(400,{code:6,msg: 'Error creating the user, no security question 2 send'});
     }
     if(securityQuestion1.question==securityQuestion2.question){
-      return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+      return res.json(400,{code:8,msg: 'Error creating the user, the security questions can not be the same'});
     }
     if(req.body.user.passport){
       var passport=req.body.user.passport;
@@ -115,7 +118,7 @@ module.exports = {
 
   login:function(req,res){
     if(!req.body.user){
-      return res.json(400,{msg: 'Error login in the user, no user send'});
+      return res.json(400,{code:1,msg: 'Error login in the user, no user send'});
     }
     /*Find user by pin*/
     if(req.body.user.pin && !req.body.user.password){
@@ -128,12 +131,12 @@ module.exports = {
       if(req.body.user.email){
         var email=req.body.user.email;
       }else{
-        return res.json(400,{msg: 'Error login in the user, no email send'});
+        return res.json(400,{code:2,msg: 'Error login in the user, no email send'});
       }
       if(req.body.user.password){
         var password=req.body.user.password;
       }else{
-        return res.json(400,{msg: 'Error login in the user, no password send'});
+        return res.json(400,{code:3,msg: 'Error login in the user, no password send'});
       }
       /*Find user by email and password*/
       var findPromise=sails.models.user.findOne({email:email})
@@ -151,7 +154,7 @@ module.exports = {
     }
     Promise.join(findPromise, function(userFinded){
       if(!userFinded){
-        return res.json(400,{msg: 'Error login in the user, no user with those credentials'});
+        return res.json(400,{code:4,msg: 'Error login in the user, no user with those credentials'});
       }else{
         if(req.body.user.role){
           var role=req.body.user.role;
@@ -271,17 +274,17 @@ module.exports = {
     if(req.body.email){
       var email=req.body.email;
     }else{
-      return res.json(400,{msg:"Error checking the user, no email send"});
+      return res.json(400,{code:1,msg:"Error checking the user, no email send"});
     }
     if(req.body.securityQuestion1){
       var securityQuestion1=req.body.securityQuestion1;
     }else{
-      return res.json(400,{msg:"Error checking the user, no security question send"});
+      return res.json(400,{code:2,msg:"Error checking the user, no security question send"});
     }
     if(req.body.securityQuestion2){
       var securityQuestion2=req.body.securityQuestion2;
     }else{
-      return res.json(400,{msg:"Error checking the user, no security question send"});
+      return res.json(400,{code:3,msg:"Error checking the user, no security question send"});
     }
     var correctChoices=true;
     var promise1=sails.models.usrsqu.findOne({email:email,idSecurityQuestion:securityQuestion1.question,answerText:securityQuestion1.answer})
@@ -301,7 +304,7 @@ module.exports = {
       if(correctChoices==true){
         return res.json(200,{msg:"OK"});
       }else{
-        return res.json(400,{msg:"Error checking the user"});
+        return res.json(400,{code:4,msg:"Error checking the user"});
       }
     })
     .catch(function(error){
@@ -314,12 +317,12 @@ module.exports = {
     if(req.body.email){
       var email=req.body.email;
     }else{
-      return res.json(400,{msg:"Error updating security info, no email send"});
+      return res.json(400,{code:1,msg:"Error updating security info, no email send"});
     }
     if(req.body.password){
       var password=req.body.password;
     }else{
-      return res.json(400,{msg:"Error updating security info, no password send"});
+      return res.json(400,{code:2,msg:"Error updating security info, no password send"});
     }
     var securityQuetionsSend=true;
     if(req.body.securityQuestion1){
@@ -341,7 +344,7 @@ module.exports = {
     }
     if(securityQuetionsSend==true){
       if(securityQuestion1.question==securityQuestion2.question){
-        return res.json(400,{msg: 'Error creating the user, the security questions can not be the same'});
+        return res.json(400,{code:3,msg: 'Error creating the user, the security questions can not be the same'});
       }
     }
     if(req.body.generatePin){
