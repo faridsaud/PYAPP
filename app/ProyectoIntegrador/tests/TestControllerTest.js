@@ -1,5 +1,6 @@
 var supertest = require("supertest");
 var fs=require('fs');
+var assert = require('assert');
 var contents=fs.readFileSync("./tests/config.txt",'utf8').toString();
 var matchings=contents.match(/url="(.{1,})"/);
 var url=matchings[1];
@@ -15,7 +16,12 @@ describe('Test register', function() {
         test:{
         }
       })
-      .expect(400,{code:1,msg: 'Error creating the test, there is no title'}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(1, res.body.code);
+        done();
+      });
     });
   });
   describe('Register a test without an owner', function() {
@@ -27,7 +33,12 @@ describe('Test register', function() {
           title:"test"
         }
       })
-      .expect(400,{code:2,msg: 'Error creating the test, there is no owner'}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(2, res.body.code);
+        done();
+      });
     });
   });
   describe('Register a test without a start date time', function() {
@@ -40,7 +51,12 @@ describe('Test register', function() {
           createdBy:"test@test.com"
         }
       })
-      .expect(400,{code:3,msg: 'Error creating the test, there should be an start date-time'}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(3, res.body.code);
+        done();
+      });
     });
   });
   describe('Register a test without a finish date time', function() {
@@ -56,7 +72,12 @@ describe('Test register', function() {
           startDateTime:startDateTime
         }
       })
-      .expect(400,{code:4,msg: 'Error creating the test, there should be an finish date-time'}, done);
+      .expect(400)
+      .end(function(err, res) {
+        if (err) return done(err);
+        assert.equal(4, res.body.code);
+        done();
+      });
     });
   });
 
@@ -76,9 +97,10 @@ describe('Test register', function() {
           finishDateTime:finishDateTime
         }
       })
-      .expect(400,{code:5,msg: 'Error creating the test, there should be a course'})
+      .expect(400)
       .end(function(err, res) {
         if (err) return done(err);
+        assert.equal(5, res.body.code);
         done();
       });
     });

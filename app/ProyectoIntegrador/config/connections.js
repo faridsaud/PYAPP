@@ -57,7 +57,7 @@ module.exports.connections = {
     database: 'proyectoIntegrador'
   },
 
-
+/*Usar este para google cloud*/
   gcloudServer: {
     adapter: 'sails-mysql',
     host:'localhost',
