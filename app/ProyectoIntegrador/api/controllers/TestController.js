@@ -54,6 +54,10 @@ module.exports = {
 		}else{
 			return res.json(400,{code:5,msg: 'Error creating the test, there should be a course'});
 		}
+		if(finishDateTime<=startDateTime){
+			return res.json(400,{code:6,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime'});
+
+		}
 		sails.models.test.create({
 			title:title,
 			description:description,
@@ -90,6 +94,7 @@ module.exports = {
 								var multipleChoiceQuestions=req.body.multipleChoiceQuestions;
 								var fillQuestions=req.body.fillQuestions;
 								var trueFalseQuestions=req.body.trueFalseQuestions;
+
 								/*Format questions*/
 								sails.controllers.question.formatMultipleChoiceQuestionsAngularToServer(multipleChoiceQuestions);
 								sails.controllers.question.formatFillQuestionsAngularToServer(fillQuestions);
@@ -196,6 +201,15 @@ module.exports = {
 
 	checkTestData:function(req){
 		/*Check True False questions*/
+		if(!req.body.trueFalseQuestions){
+			req.body.trueFalseQuestions=[];
+		}
+		if(!req.body.multipleChoiceQuestions){
+			req.body.multipleChoiceQuestions=[];
+		}
+		if(!req.body.fillQuestions){
+			req.body.fillQuestions=[];
+		}
 		for(var i=0;i<req.body.trueFalseQuestions.length;i++){
 			console.log("imprimiendo preguntas trufalse")
 			console.log(req.body.trueFalseQuestions);
@@ -523,15 +537,23 @@ module.exports = {
 	},
 
 	getTestsByCourseByTeacher:function(req, res){
+		if(!req.body.user){
+			return res.json(400,{code:1,msg: 'Error getting the tests, there is not user\'s data'});
+
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			var email=null;
+			return res.json(400,{code:2,msg: 'Error getting the tests, there is not email'});
+		}
+		if(!req.body.course){
+			return res.json(400,{code:3,msg: 'Error getting the tests, there is not course\'s data'});
 		}
 		if(req.body.course.id){
 			var idCourse=req.body.course.id;
 		}else{
-			var idCourse=null;
+			return res.json(400,{code:4,msg: 'Error getting the tests, there is not course\'s id'});
+
 		}
 
 		sails.models.usrcou.findOne({email:email, status:'t', idCourse:idCourse}).exec(function(err, result){
@@ -556,24 +578,31 @@ module.exports = {
 					})
 
 				}else{
-					return res.json(400,{msg:"The user is not the owner of the course"});
+					return res.json(403,{msg:"The user is not the owner of the course"});
 				}
 			}
 		});
 	},
 
 	getTestsByCourseByStudent:function(req, res){
+		if(!req.body.user){
+			return res.json(400,{code:1,msg: 'Error getting the tests, there is not user\'s data'});
+
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"Error getting the tests, there is not an email send"});
+			return res.json(400,{code:2,msg: 'Error getting the tests, there is not email'});
+		}
+		if(!req.body.course){
+			return res.json(400,{code:3,msg: 'Error getting the tests, there is not course\'s data'});
 		}
 		if(req.body.course.id){
 			var idCourse=req.body.course.id;
 		}else{
-			return res.json(400,{msg:"Error getting the tests, there is not a course send"});
-		}
+			return res.json(400,{code:4,msg: 'Error getting the tests, there is not course\'s id'});
 
+		}
 		sails.models.usrcou.findOne({email:email, status:'s', idCourse:idCourse}).exec(function(err, result){
 			if(err){
 				console.log(err);
@@ -596,7 +625,7 @@ module.exports = {
 					})
 
 				}else{
-					return res.json(400,{msg:"The user is not a student of the course"});
+					return res.json(403,{msg:"The user is not a student of the course"});
 				}
 			}
 		});

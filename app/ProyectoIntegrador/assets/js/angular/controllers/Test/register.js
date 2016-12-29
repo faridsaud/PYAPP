@@ -477,6 +477,9 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           return;
         }
         console.log(Date.parse($scope.test.startDateTime));
+        console.log($scope.multipleChoiceQuestions);
+        console.log($scope.fillQuestions);
+        console.log($scope.trueFalseQuestions);
         $http({
           method:'POST',
           url:globalVariables.url+'/test/register',

@@ -17,7 +17,7 @@ module.exports = {
     )
     .catch(function(error){
       console.log(error);
-      return res.json(400,{msg: 'Error getting the security questions'});
+      return res.json(500,{msg: 'Error getting the security questions'});
     })
   },
 
