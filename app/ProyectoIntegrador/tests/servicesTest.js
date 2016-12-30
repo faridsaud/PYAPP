@@ -394,7 +394,7 @@ describe('User controller services', function() {
     });
   });
 
-  describe('Password and pin change', function() {
+  describe('Change password and pin', function() {
     describe('Without email', function() {
       it('respond with status 400 code:1', function(done) {
         supertest(url)
@@ -1283,7 +1283,7 @@ describe('SecutiryQuestions controller services', function() {
 
 
 describe('Test controller services', function() {
-  describe('Test register', function() {
+  describe('Register test', function() {
     describe('Without a title', function() {
       it('respond with status:400 code:1', function(done) {
         supertest(url)
@@ -1404,6 +1404,22 @@ describe('Test controller services', function() {
         });
       });
     });
+    describe('Without test', function() {
+      it('respond with status:400 code:7', function(done) {
+        var startDateTime= new Date();
+        startDateTime=startDateTime.toISOString();
+        supertest(url)
+        .post('/test/register')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,7);
+          done();
+        });
+      });
+    });
     describe("Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question", function() {
       it('respond with status:200', function(done) {
         var startDateTime= new Date();
@@ -1426,7 +1442,12 @@ describe('Test controller services', function() {
           trueFalseQuestions:[{justification:'test',option:'true',text:'test',weighing:1}]
 
         })
-        .expect(200,done);
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          idTestCreated=res.body.test.id;
+          done();
+        });
       });
     });
   });
@@ -1634,6 +1655,711 @@ describe('Test controller services', function() {
     });
 
   });
+  describe('Get test by id', function() {
+    describe('Without user\'s data', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without user\'s email', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+          user:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s data', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+          user:{
+            email:'test@test.com'
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s id', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+
+    describe('Without the user being the owner of the test', function() {
+      it('respond with status:400 code:5', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+          user:{
+            email:'test2@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,5);
+          done();
+        });
+      });
+    });
+
+    describe('With valid data', function() {
+      it('respond with status:200', function(done) {
+        supertest(url)
+        .post('/test/getTestById')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(200,done);
+      });
+    });
+  });
+  describe('Get test without questions by id', function() {
+    describe('Without user\'s data', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without user\'s email', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+          user:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s data', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+          user:{
+            email:'test@test.com'
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s id', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+
+    describe('Without the user being the owner of the test', function() {
+      it('respond with status:400 code:5', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+          user:{
+            email:'test2@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,5);
+          done();
+        });
+      });
+    });
+
+    describe('With valid data', function() {
+      it('respond with status:200', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdWOQuestions')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(200,done);
+      });
+    });
+  });
+  describe('Get students by test id', function() {
+    describe('Without user\'s data', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without user\'s email', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+          user:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s data', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+          user:{
+            email:'test@test.com'
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s id', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+
+    describe('Without the user being the owner of the test', function() {
+      it('respond with status:403', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+          user:{
+            email:'test2@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(403,done);
+      });
+    });
+
+    describe('With valid data', function() {
+      it('respond with status:200', function(done) {
+        supertest(url)
+        .post('/test/getStudentsByTestId')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(200,done);
+      });
+    });
+
+  });
+  describe('Get test by id for student', function() {
+    describe('Without user\'s data', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without user\'s email', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+          user:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s data', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+          user:{
+            email:'test@test.com'
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+    describe('Without test\'s id', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+
+    describe('Without the user being a student of the test', function() {
+      it('respond with status:403', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+          user:{
+            email:'test@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(403,done);
+      });
+    });
+
+    describe('With valid data', function() {
+      it('respond with status:200', function(done) {
+        supertest(url)
+        .post('/test/getTestByIdForStudent')
+        .send({
+          user:{
+            email:'test2@test.com'
+          },
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(200,done);
+      });
+    });
+
+  });
+  describe('Update test', function() {
+    describe('Without a test', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/update')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without id', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without title', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+    describe('Without an owner', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test"
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+    describe('Without a start date time', function() {
+      it('respond with status:400 code:5', function(done) {
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test",
+            createdBy:"test@test.com"
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,5);
+          done();
+        });
+      });
+    });
+    describe('Without a finish date time', function() {
+      it('respond with status:400 code:6', function(done) {
+        var startDateTime= new Date();
+        startDateTime=startDateTime.toISOString();
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test",
+            createdBy:"test@test.com",
+            startDateTime:startDateTime
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,6);
+          done();
+        });
+      });
+    });
+
+    describe('Without a course', function() {
+      it('respond with status:400 code:7', function(done) {
+        var startDateTime= new Date();
+        startDateTime=startDateTime.toISOString();
+        var finishDateTime= new Date();
+        finishDateTime=finishDateTime.toISOString();
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test",
+            createdBy:"test@test.com",
+            startDateTime:startDateTime,
+            finishDateTime:finishDateTime
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,7);
+          done();
+        });
+      });
+    });
+    describe('With the startDateTime being greater than the finishDateTime', function() {
+      it('respond with status:400 code:8', function(done) {
+        var startDateTime= new Date();
+        startDateTime=startDateTime.toISOString();
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test",
+            createdBy:"test@test.com",
+            startDateTime:startDateTime,
+            finishDateTime:startDateTime,
+            course:idCourseCreated
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,8);
+          done();
+        });
+      });
+    });
+    describe("Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question", function() {
+      it('respond with status:200', function(done) {
+        var startDateTime= new Date();
+        startDateTime=startDateTime.toISOString();
+        var finishDateTime= new Date();
+        finishDateTime.setFullYear(finishDateTime.getFullYear()+1);
+        finishDateTime=finishDateTime.toISOString();
+        supertest(url)
+        .post('/test/update')
+        .send({
+          test:{
+            id:idTestCreated,
+            title:"test",
+            createdBy:"test@test.com",
+            startDateTime:startDateTime,
+            finishDateTime:finishDateTime,
+            course:idCourseCreated
+          },
+          multipleChoiceQuestions:[{text:"test",weighing:1,options:[{isCorrect:true,justification:"test",text:"test"}]}],
+          fillQuestions:[{weighing:1,statements:[{text:'test'}], options:[{isCorrect:true,justification:'test',text:'test'}]}],
+          trueFalseQuestions:[{justification:'test',option:'true',text:'test',weighing:1}]
+
+        })
+        .expect(200)
+        .end(function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+      });
+    });
+  });
+  describe('Register test taken', function() {
+    describe('Without a test', function() {
+      it('respond with status:400 code:1', function(done) {
+        supertest(url)
+        .post('/test/registerTakenTest')
+        .send({
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,1);
+          done();
+        });
+      });
+    });
+    describe('Without a test\'s id', function() {
+      it('respond with status:400 code:2', function(done) {
+        supertest(url)
+        .post('/test/registerTakenTest')
+        .send({
+          test:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,2);
+          done();
+        });
+      });
+    });
+    describe('Without user', function() {
+      it('respond with status:400 code:3', function(done) {
+        supertest(url)
+        .post('/test/registerTakenTest')
+        .send({
+          test:{
+            id:idTestCreated
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,3);
+          done();
+        });
+      });
+    });
+
+    describe('Without user\'s email', function() {
+      it('respond with status:400 code:4', function(done) {
+        supertest(url)
+        .post('/test/registerTakenTest')
+        .send({
+          test:{
+            id:idTestCreated
+          },
+          user:{
+
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,4);
+          done();
+        });
+      });
+    });
+
+
+    describe('Without test\'s questions', function() {
+      it('respond with status:400 code:5', function(done) {
+        supertest(url)
+        .post('/test/registerTakenTest')
+        .send({
+          test:{
+            id:idTestCreated
+          },
+          user:{
+            email:"test2@test.com"
+          }
+        })
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,5);
+          done();
+        });
+      });
+    });
+
+  });
+
+
+
 
 });
 

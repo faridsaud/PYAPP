@@ -49,8 +49,6 @@ module.exports.routes = {
   'post /course/byTeacher':'CourseController.getCoursesByTeacher',
   'post /test/byStudent':'TestController.getTestsByStudent',
   'post /test/byCourseByStudent':'TestController.getTestsByCourseByStudent',
-  'post /promise':'PruebaController.testPromises',
-  'post /promise2':'PruebaController.testPromises2',
   'post /course/delete':'CourseController.deleteCourse',
   'post /course/getById':'CourseController.getCourseById',
   'post /course/update':'CourseController.editCourse',

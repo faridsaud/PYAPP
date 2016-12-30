@@ -14,6 +14,9 @@ module.exports = {
 	* `TestController.insertar()`
 	*/
 	register: function (req, res) {
+		if(!req.body.test){
+			return res.json(400,{code:7,msg: 'Error creating the test, there is no title'});
+		}
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
@@ -180,7 +183,8 @@ module.exports = {
 									}
 									Promise.all(optionsPromises)
 									.then(function(){
-										return res.json(200,{msg: 'Test sucessfully created'});
+										console.log("Id test:"+newTest.id);
+										return res.json(200,{test:newTest,msg: 'Test sucessfully created'});
 									})
 									.catch(function(error){
 										console.log(error);
@@ -701,16 +705,21 @@ module.exports = {
 
 	getTestById:function(req,res){
 
-
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"No user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"No email send"});
+			return res.json(400,{code:2,msg:"No user\'s email send"});
+		}
+		if(!req.body.test){
+			return res.json(400,{code:3,msg:"No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{msg:"No test send"});
+			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
 		console.log(email);
 		console.log(testId);
@@ -757,7 +766,7 @@ module.exports = {
 					//get questions
 
 				}else{
-					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(400,{code:5,msg:"The user is not the owner of the test or there is no test with that ids"});
 				}
 			}
 		})
@@ -767,17 +776,23 @@ module.exports = {
 	/*Without Questions*/
 	getTestWOQuestionsById:function(req,res){
 
-
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"No user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"No email send"});
+			return res.json(400,{code:2,msg:"No user\'s email send"});
+		}
+		if(!req.body.test){
+			return res.json(400,{code:3,msg:"No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{msg:"No test send"});
+			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
+
 		console.log(email);
 		console.log(testId);
 		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
@@ -794,7 +809,7 @@ module.exports = {
 					test.finishDateTime=finded.finishDateTime;
 					return res.json(200,{test:test, msg:"OK"});
 				}else{
-					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(400,{code:5,msg:"The user is not the owner of the test or there is no test with that ids"});
 				}
 			}
 		})
@@ -804,16 +819,24 @@ module.exports = {
 	getStudentsByTest:function(req,res){
 
 
+
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"No user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"No email send"});
+			return res.json(400,{code:2,msg:"No user\'s email send"});
+		}
+		if(!req.body.test){
+			return res.json(400,{code:3,msg:"No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{msg:"No test send"});
+			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
+
 		console.log(email);
 		console.log(testId);
 		sails.models.usrtes.find({email:email, idTest:testId, status:'t'})
@@ -840,7 +863,7 @@ module.exports = {
 					return res.json(200,{msg:"List of user get successfully", students:students});
 				})
 				.catch(function(error){
-					return res.json(500,{msg:"The user is not the owner of the test"});
+					return res.json(500,{msg:"Error getting the students"});
 				})
 
 
@@ -860,16 +883,21 @@ module.exports = {
 
 	getTestByIdForStudent:function(req,res){
 
-
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"No user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"No email send"});
+			return res.json(400,{code:2,msg:"No user\'s email send"});
+		}
+		if(!req.body.test){
+			return res.json(400,{code:3,msg:"No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{msg:"No test send"});
+			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
 
 		console.log(email);
@@ -928,7 +956,7 @@ module.exports = {
 
 
 				}else{
-					return res.json(400,{msg:"The user is not authorized to take the test"});
+					return res.json(403,{msg:"The user is not authorized to take the test"});
 				}
 			}
 		})
@@ -938,14 +966,14 @@ module.exports = {
 		if(req.body.test){
 			var newTest=req.body.test;
 		}else{
-			return res.json(400,{msg: 'Error updating the test, there is no test data'});
+			return res.json(400,{code:1,msg: 'Error updating the test, there is no test data'});
 
 		}
 
 		if(req.body.test.id){
 			var idTest=req.body.test.id;
 		}else{
-			return res.json(400,{msg: 'Error updating the test, there is no test id'});
+			return res.json(400,{code:2,msg: 'Error updating the test, there is no test id'});
 		}
 
 		if(req.body.test.intents){
@@ -956,7 +984,7 @@ module.exports = {
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there is no title'});
+			return res.json(400,{code:3,msg: 'Error creating the test, there is no title'});
 		}
 		if(req.body.test.description){
 			var description=req.body.test.description;
@@ -966,7 +994,7 @@ module.exports = {
 		if(req.body.test.createdBy){
 			var createdBy=req.body.test.createdBy;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there is no owner'});
+			return res.json(400,{code:4,msg: 'Error creating the test, there is no owner'});
 		}
 		if(req.body.test.status){
 			var status=req.body.test.status;
@@ -976,17 +1004,22 @@ module.exports = {
 		if(req.body.test.startDateTime){
 			var startDateTime=req.body.test.startDateTime;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be an start date-time'});
+			return res.json(400,{code:5,msg: 'Error creating the test, there should be an start date-time'});
 		}
 		if(req.body.test.finishDateTime){
 			var finishDateTime=req.body.test.finishDateTime;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be an finish date-time'});
+			return res.json(400,{code:6,msg: 'Error creating the test, there should be an finish date-time'});
 		}
 		if(req.body.test.course){
 			var idCourse=req.body.test.course;
 		}else{
-			return res.json(400,{msg: 'Error creating the test, there should be a course'});
+			return res.json(400,{code:7,msg: 'Error creating the test, there should be a course'});
+		}
+
+		if(finishDateTime<=startDateTime){
+			return res.json(400,{code:8,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime'});
+
 		}
 		//return res.json(201,{msg: 'Test created'});
 		var errorCheckingTest=sails.controllers.test.checkTestData(req);
@@ -1200,23 +1233,23 @@ module.exports = {
 		if(req.body.test){
 			var test=req.body.test;
 			if(!test.id){
-				return res.json(400,{msg: 'Error registering the taken test data, there is no test id'});
+				return res.json(400,{code:2,msg: 'Error registering the taken test data, there is no test id'});
 			}
 		}else{
-			return res.json(400,{msg: 'Error registering the taken test data, there is no test data'});
+			return res.json(400,{code:1,msg: 'Error registering the taken test data, there is no test data'});
 		}
 
 		if(req.body.user){
 			var user=req.body.user;
 			if(!user.email){
-				return res.json(400,{msg: 'Error registering the taken test data, there is no user email'});
+				return res.json(400,{code:4,msg: 'Error registering the taken test data, there is no user email'});
 			}
 		}else{
-			return res.json(400,{msg: 'Error registering the taken test data, there is no user data'});
+			return res.json(400,{code:3,msg: 'Error registering the taken test data, there is no user data'});
 		}
 
 		if(!test.questions){
-			return res.json(400,{msg: 'Error registering the taken test data, there is no question data'});
+			return res.json(400,{code:5,msg: 'Error registering the taken test data, there is no question data'});
 		}else{
 			var allPromises=[];
 			console.log("linea 1097");
@@ -1241,7 +1274,7 @@ module.exports = {
 				console.log("linea 1112")
 				console.log(finded);
 				if(finded.intentLeft==0){
-					return res.json(400,{msg: 'Error registering the taken test data, you exceed the intents for the test'});
+					return res.json(400,{code:6,msg: 'Error registering the taken test data, you exceed the intents for the test'});
 				}
 				/*If the new score is higher than the older one or if this is the first try*/
 				if(finded.score==null || finded.score<score){
