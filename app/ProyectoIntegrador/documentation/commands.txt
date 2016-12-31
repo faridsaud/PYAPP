@@ -15,3 +15,6 @@ gcloud app deploy
 //Enviroment variables
 set NODE_ENV=production&&node app.js
 set NODE_ENV=development&&node app.js
+
+//Count code lines
+cloc "D:\Proyecto Integrador APP\PYAPP\app\ProyectoIntegrador" --exclude-dir=node_modules
