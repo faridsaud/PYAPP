@@ -182,17 +182,23 @@ module.exports = {
   },
 
   getStudentsByCourse: function (req, res) {
-    if(req.body.course.id){
-      var idCourse=req.body.course.id;
-    }else{
-      var idCourse=null;
-      return res.json(400,{msg:"There is not a course's id send"});
+    if(!req.body.user){
+      return res.json(400,{code:1,msg:"There is not a user's data send"});
     }
     if(req.body.user.email){
       var userEmail=req.body.user.email;
     }else{
       var idCourse=null;
-      return res.json(400,{msg:"There is not a user's email send"});
+      return res.json(400,{code:2,msg:"There is not a user's email send"});
+    }
+    if(!req.body.course){
+    return res.json(400,{code:3,msg:"There is not a course's data send"});
+    }
+    if(req.body.course.id){
+      var idCourse=req.body.course.id;
+    }else{
+      var idCourse=null;
+      return res.json(400,{code:4,msg:"There is not a course's id send"});
     }
 
     sails.models.usrcou.findOne({email:userEmail, status:'t', idCourse:idCourse}).exec(function(err, result){
@@ -207,12 +213,12 @@ module.exports = {
               console.log(err);
               return res.json(512,{msg:"Error"});
             }else{
-              return res.json(201,{msg:"OK", students:results});
+              return res.json(200,{msg:"OK", students:results});
             }
           });
 
         }else{
-          return res.json(400,{msg:"The user is not the owner of the course"});
+          return res.json(403,{msg:"The user is not the owner of the course"});
         }
       }
     });

@@ -184,6 +184,9 @@ module.exports = {
 									Promise.all(optionsPromises)
 									.then(function(){
 										console.log("Id test:"+newTest.id);
+										newTest.multipleChoiceQuestions=multipleChoiceQuestions;
+										newTest.trueFalseQuestions=trueFalseQuestions;
+										newTest.fillQuestions=fillQuestions;
 										return res.json(200,{test:newTest,msg: 'Test sucessfully created'});
 									})
 									.catch(function(error){
@@ -635,32 +638,32 @@ module.exports = {
 		});
 	},
 	getTestsCreatedByUser:function(req, res){
+		if(!req.body.user){
+			return res.json(400,{code:1,msg: 'Error getting the tests, no user data send'});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			var email=null;
+			return res.json(400,{code:2,msg: 'Error getting the tests, no user email send'});
 		}
 		sails.models.test.find({createdBy:email}).exec(function (error, records){
 			if(error){
-				return res.json(400,{
-					msg: 'Bad request'
-				});
+				return res.json(500,{msg: 'Error getting the tests'});
 			}else{
 				var tests=sails.controllers.test.checkStatus(records);
-				return res.json(200,{
-					msg: 'OK',
-					tests:tests
-				});
+				return res.json(200,{msg: 'OK',tests:tests});
 			}
 		})
 	},
 
 	getTestsByStudent:function(req, res){
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"Error getting the tests, there is not user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-
-			return res.json(400,{msg:"Error getting the tests, there is not an email send", tests:tests});
+			return res.json(400,{code:2,msg:"Error getting the tests, there is not user\'s email send"});
 		}
 		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status, UT.INTENTLEFT as intentsLeft, T.INTENTS as intents FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
 			if (err){
@@ -674,15 +677,21 @@ module.exports = {
 	},
 
 	deleteTest:function(req,res){
+		if(!req.body.user){
+			return res.json(400,{code:1,msg:"Error deleting the test. No user\'s data send"});
+		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{msg:"No email send"});
+				return res.json(400,{code:2,msg:"Error deleting the test. No user\'s email send"});
+		}
+		if(!req.body.test){
+				return res.json(400,{code:3,msg:"Error deleting the test. No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{msg:"No test send"});
+				return res.json(400,{code:4,msg:"Error deleting the test. No test\'s id send"});
 		}
 		sails.models.usrtes.findOne({idTest:testId ,email:email, status:'t'}).exec(function(error, finded){
 			if(error){
@@ -697,7 +706,7 @@ module.exports = {
 						}
 					})
 				}else{
-					return res.json(400,{msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(403,{msg:"The user is not the owner of the test or there is no test with that ids"});
 				}
 			}
 		});
@@ -1256,7 +1265,11 @@ module.exports = {
 			var totalWeighing=0;
 			var parcialScore=0;
 			for(var i=0;i<test.questions.length;i++){
-				var weighing=test.questions[i].weighing;
+				if(!test.questions[i].weighing){
+					var weighing=1;
+				}else{
+					var weighing=test.questions[i].weighing;
+				}
 				totalWeighing=weighing+totalWeighing;
 
 				for(var j=0;j<test.questions[i].options.length;j++){
@@ -1319,6 +1332,7 @@ module.exports = {
 						}
 					}
 					/*Update the student-test record*/
+					console.log("Score:"+score);
 					var updateTestPromise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{score:score,intentLeft:finded.intentLeft-1})
 					.then(function(){
 						console.log("linea 1120")
@@ -1397,83 +1411,6 @@ module.exports = {
 
 	},
 
-	cloneQuestion:function(req,res){
-		if(req.body.user){
-			var user=req.body.user;
-			if(!user.email){
-				return res.json(400,{msg: 'Error cloning the question, there is no user email send'});
-			}
-		}else{
-			return res.json(400,{msg: 'Error cloning the question, there is no user data send'});
-		}
-
-		if(req.body.test){
-			var test=req.body.test;
-			if(!test.id){
-				return res.json(400,{msg: 'Error cloning the question, there is no test id send'});
-			}
-		}else{
-			return res.json(400,{msg: 'Error cloning the question, there is no test data send'});
-		}
-
-		if(req.body.question){
-			var question=req.body.question;
-		}else{
-			return res.json(400,{msg: 'Error cloning the question, there is no question data send'});
-		}
-		/*Checking if the user is the owner of the test*/
-		sails.models.usrtes.findOne({email:user.email, idTest:test.id, status:'t'}).exec(function(error, finded){
-			if(error){
-				return res.json(500,{msg: 'Error cloning the question'});
-			}else{
-				if(finded){
-					if(question.type=="trueFalse"){
-						var trueFalseQuestions=[];
-						trueFalseQuestions.push(question);
-						sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
-						var questionPromise=sails.controllers.question.register(trueFalseQuestions[0],test)
-						var questions=trueFalseQuestions;
-					}
-					if(question.type=="fill"){
-						var fillQuestions=[];
-						fillQuestions.push(question);
-						sails.controllers.question.formatFillQuestionsAngularToServer(fillQuestions);
-						var questionPromise=sails.controllers.question.register(fillQuestions[0],test)
-						var questions=fillQuestions;
-					}
-					if(question.type=="multipleCh"){
-						var multipleChoiceQuestions=[];
-						multipleChoiceQuestions.push(question);
-						sails.controllers.question.formatMultipleChoiceQuestionsAngularToServer(multipleChoiceQuestions);
-						var questionPromise=sails.controllers.question.register(multipleChoiceQuestions[0],test);
-						var questions=multipleChoiceQuestions;
-					}
-					Promise.join(questionPromise, function(questionCreated){
-						var optionsPromises=[];
-						for(var j=0;j<questions[0].options.length;j++){
-							var optionPromise=sails.controllers.option.register(questions[0].options[j],questionCreated);
-							optionsPromises.push(optionPromise);
-						}
-						Promise.all(optionsPromises)
-						.then(function(){
-							return res.json(200,{msg: 'Question cloned successfully'});
-						})
-						.catch(function(error){
-							return res.json(500,{msg: 'Error cloning the question'});
-						})
-					})
-					.catch(function(error){
-						return res.json(500,{msg: 'Error cloning the question'});
-					})
-
-				}else{
-					return res.json(400,{msg: 'Error cloning the question, the user is not the owner of the test'});
-				}
-			}
-		});
-
-
-	},
 
 	createCloneTest:function(mappedTests, oldTest, courseId){
 		var createTestPromise=sails.models.test.create({idCourse:courseId, title:oldTest.title, description:oldTest.description, createdBy:oldTest.createdBy, status:oldTest.status, startDateTime:oldTest.startDateTime, finishDateTime:oldTest.finishDateTime, averageScore:0,intents:oldTest.intents})
