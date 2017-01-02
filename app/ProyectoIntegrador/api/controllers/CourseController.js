@@ -263,7 +263,7 @@ module.exports = {
             }
           });
         } else {
-          return res.json(400, {code:7,msg: "The user is not the owner of the course"});
+          return res.json(403, {msg: "The user is not the owner of the course"});
         }
       }
     });
@@ -312,7 +312,7 @@ module.exports = {
             }
           });
         } else {
-          return res.json(400, {code:5,msg: "The user is not the owner of the course"});
+          return res.json(403, {msg: "The user is not the owner of the course"});
         }
       }
     });
@@ -364,7 +364,7 @@ module.exports = {
             }
           });
         } else {
-          return res.json(400, {code:5,msg: "The user is not the owner of the course"});
+          return res.json(403, {msg: "The user is not the owner of the course"});
         }
       }
     });
@@ -428,7 +428,7 @@ module.exports = {
             }
           });
         } else {
-          return res.json(400, {code:6,msg: "The user is not the owner of the course"});
+          return res.json(403, {msg: "The user is not the owner of the course"});
         }
       }
     });
@@ -646,7 +646,7 @@ module.exports = {
       } else {
         if (responseSend == false) {
           responseSend = true;
-          return res.json(400, {code:5,msg: "Error cloning the course, the user is not the owner of the course"});
+          return res.json(403, {msg: "Error cloning the course, the user is not the owner of the course"});
         }
       }
     })

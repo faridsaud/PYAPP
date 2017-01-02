@@ -775,7 +775,7 @@ module.exports = {
 					//get questions
 
 				}else{
-					return res.json(400,{code:5,msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(403,{msg:"The user is not the owner of the test or there is no test with that ids"});
 				}
 			}
 		})
@@ -818,7 +818,7 @@ module.exports = {
 					test.finishDateTime=finded.finishDateTime;
 					return res.json(200,{test:test, msg:"OK"});
 				}else{
-					return res.json(400,{code:5,msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(403,{msg:"The user is not the owner of the test or there is no test with that ids"});
 				}
 			}
 		})

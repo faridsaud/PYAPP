@@ -268,7 +268,7 @@ describe('User controller services', function() {
       });
     });
     describe('Invalid credentials', function() {
-      it('respond with status 403', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/login')
         .send({
@@ -492,7 +492,7 @@ describe('Course controller services', function() {
     });
 
     describe('Student register course with valid data', function() {
-      it('respond with status 403 code:2', function(done) {
+      it('respond with status:403 code:2', function(done) {
         supertest(url)
         .post('/course/register')
         .send({
@@ -515,7 +515,7 @@ describe('Course controller services', function() {
     });
 
     describe('Teacher without role register course with valid data', function() {
-      it('respond with status 403 code:3', function(done) {
+      it('respond with status:403 code:3', function(done) {
         supertest(url)
         .post('/course/register')
         .send({
@@ -836,7 +836,7 @@ describe('Course controller services', function() {
     });
 
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 400 code:7', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/course/registerStudent')
         .send({
@@ -850,12 +850,7 @@ describe('Course controller services', function() {
             email:"test3@test.com"
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,7);
-          done();
-        });
+        .expect(403,done);
       });
     });
 
@@ -970,7 +965,7 @@ describe('Course controller services', function() {
     });
 
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 400 code:5', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/course/getById')
         .send({
@@ -981,12 +976,7 @@ describe('Course controller services', function() {
             id:idCourseCreated
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,5);
-          done();
-        });
+        .expect(403,done);
       });
     });
     describe('With valid data', function() {
@@ -995,13 +985,13 @@ describe('Course controller services', function() {
         .post('/course/getById')
         .send({
           user:{
-            email:"test2@test.com"
+            email:"test@test.com"
           },
           course:{
             id:idCourseCreated
           }
         })
-        .expect(400,done);
+        .expect(200,done);
       });
     });
   });
@@ -1099,7 +1089,7 @@ describe('Course controller services', function() {
     });
 
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 400 code:6', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/course/update')
         .send({
@@ -1112,12 +1102,7 @@ describe('Course controller services', function() {
             description:"New description"
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,6);
-          done();
-        });
+        .expect(403,done);
       });
     });
 
@@ -1212,7 +1197,7 @@ describe('Course controller services', function() {
       });
     });
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 400 code:5', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/course/clone')
         .send({
@@ -1223,12 +1208,7 @@ describe('Course controller services', function() {
             id:idCourseCreated
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,5);
-          done();
-        });
+        .expect(403,done);
       });
     });
     describe('With valid data', function() {
@@ -1505,7 +1485,7 @@ describe('Test controller services', function() {
       });
     });
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 403', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/test/byCourseByTeacher')
         .send({
@@ -1607,7 +1587,7 @@ describe('Test controller services', function() {
       });
     });
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 403', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/test/byCourseByStudent')
         .send({
@@ -1801,7 +1781,7 @@ describe('Test controller services', function() {
     });
 
     describe('Without the user being the owner of the test', function() {
-      it('respond with status:400 code:5', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/test/getTestById')
         .send({
@@ -1812,12 +1792,7 @@ describe('Test controller services', function() {
             id:idTestCreated
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,5);
-          done();
-        });
+        .expect(403,done);
       });
     });
 
@@ -1908,7 +1883,7 @@ describe('Test controller services', function() {
     });
 
     describe('Without the user being the owner of the test', function() {
-      it('respond with status:400 code:5', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/test/getTestByIdWOQuestions')
         .send({
@@ -1919,12 +1894,7 @@ describe('Test controller services', function() {
             id:idTestCreated
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,5);
-          done();
-        });
+        .expect(403,done);
       });
     });
 
@@ -2560,9 +2530,8 @@ describe('Question controller services', function() {
       });
     });
 
-
-    describe('Without question\'s data', function() {
-      it('respond with status:400 code:5', function(done) {
+    describe('With valid data', function() {
+      it('respond with status:200', function(done) {
         supertest(url)
         .post('/test/question/clone')
         .send({
@@ -2687,7 +2656,7 @@ describe('User controller services', function() {
     });
 
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 403', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/user/studentsByCourse')
         .send({
@@ -2789,7 +2758,7 @@ describe('Test controller services', function() {
       });
     });
     describe('Without the user being the owner of the test', function() {
-      it('respond with status 403', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/test/delete')
         .send({
@@ -2953,7 +2922,7 @@ describe("Course controller services", function() {
       });
     });
     describe('Without the user being the owner of the course', function() {
-      it('respond with status 400 code:5', function(done) {
+      it('respond with status:403', function(done) {
         supertest(url)
         .post('/course/delete')
         .send({
@@ -2964,12 +2933,7 @@ describe("Course controller services", function() {
             id:idCourseCreated
           }
         })
-        .expect(400)
-        .end(function(err, res) {
-          if (err) return done(err);
-          assert.equal(res.body.code,5);
-          done();
-        });
+        .expect(403,done);
       });
     });
     describe('With valid data', function() {
