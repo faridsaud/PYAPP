@@ -285,7 +285,7 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
         if(event.which==17){
           $rootScope.synth.cancel();
 
-          document.getElementById("p1").focus();
+          $document[0].getElementById("p1").focus();
           $scope.focusedElement="p1";
           $scope.lastQuestion="p1";
 
@@ -301,13 +301,13 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
           console.log("Match:");
           console.log(matchings);
           var number=Number(matchings[1])-1;
-          if(document.getElementById("r"+number)){
-            document.getElementById("r"+number).focus();
+          if($document[0].getElementById("r"+number)){
+            $document[0].getElementById("r"+number).focus();
           }
-          if(document.getElementById("p"+number)){
+          if($document[0].getElementById("p"+number)){
             number=$scope.findNextQuestion(number)-1;
-            if(document.getElementById("r"+number)){
-              document.getElementById("r"+number).focus();
+            if($document[0].getElementById("r"+number)){
+              $document[0].getElementById("r"+number).focus();
             }
           }
 
@@ -322,16 +322,16 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
           console.log(event);
           var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
           var number=Number(matchings[1])+1;
-          if(document.getElementById("r"+number)){
-            document.getElementById("r"+number).focus();
+          if($document[0].getElementById("r"+number)){
+            $document[0].getElementById("r"+number).focus();
           }
-          if(document.getElementById("p"+number)){
+          if($document[0].getElementById("p"+number)){
             matchings=$scope.lastQuestion.match(/p(\d*)/);
             console.log(matchings);
             number=Number(matchings[1])+1;
             console.log(number);
-            if(document.getElementById("r"+number)){
-              document.getElementById("r"+number).focus();
+            if($document[0].getElementById("r"+number)){
+              $document[0].getElementById("r"+number).focus();
             }
           }
           console.log($scope.test);
@@ -343,8 +343,8 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
           console.log(matchings);
           var number=$scope.findNextQuestion(Number(matchings[1]));
           console.log(number);
-          if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
+          if($document[0].getElementById("p"+number)){
+            $document[0].getElementById("p"+number).focus();
             $scope.lastQuestion="p"+number;
           }
 
@@ -356,8 +356,8 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
           console.log(matchings);
           var number=$scope.findPreviousQuestion(Number(matchings[1]));
           console.log(number);
-          if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
+          if($document[0].getElementById("p"+number)){
+            $document[0].getElementById("p"+number).focus();
             $scope.lastQuestion="p"+number;
           }
 
@@ -396,12 +396,12 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
         console.log("se hizo focus");
         console.log(event.target.id);
         $scope.focusedElement=event.target.id;
-        console.log(document.getElementById($scope.focusedElement));
+        console.log($document[0].getElementById($scope.focusedElement));
         speakP();
 
       });
       function speakP(){
-        var textoP=document.getElementById($scope.focusedElement).innerHTML;
+        var textoP=$document[0].getElementById($scope.focusedElement).innerHTML;
         $rootScope.msg.text=textoP;
         $rootScope.synth.speak($rootScope.msg);
         console.log($rootScope.synth);

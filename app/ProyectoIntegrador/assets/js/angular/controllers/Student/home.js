@@ -34,6 +34,7 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
         $scope.numberOfTestsInExecution=$scope.countTestInExecution($scope.tests);
         console.log($scope.numberOfTestsInExecution);
         console.log($scope.tests);
+        init();
       }, function error(response){
         console.log(response);
       })
@@ -63,7 +64,6 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
       }
 
       /*Text to voice*/
-      var instructionSpoken=false;
       if(!$rootScope.msg & !$rootScope.synth){
         $rootScope.msg = new SpeechSynthesisUtterance();
         $rootScope.synth = window.speechSynthesis;
@@ -75,73 +75,99 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
         console.log(voices);
         console.log("Entrando a hablar");
         $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
-        if(instructionSpoken==false){
-          $rootScope.synth.cancel();
-          $rootScope.msg.text="Bienvenido, presione control para escuchar las instrucciones";
-        }
         $rootScope.synth.speak($rootScope.msg);
-        instructionSpoken=true;
       }
+
+      var finishedSpeaking=false;
+      $rootScope.msg.onstart=function(event){
+        finishedSpeaking=false;
+        console.log("On start");
+      }
+      $rootScope.msg.onend=function(event){
+        finishedSpeaking=true;
+        console.log("On end");
+      }
+
 
       /*keypress events*/
       $document.unbind('keydown').bind("keydown",function(event){
         //  console.log(event);
         //CTRL
         if(event.which==17){
-          $rootScope.synth.cancel();
-          document.getElementById("p1").focus();
-          $scope.focusedNumber=0;
+          if(finishedSpeaking==false){
+            $rootScope.synth.cancel();
+          }else{
+            if(!$scope.focusedElement){
+              $scope.focusedNumber=0;
+              $document[0].getElementById("p1").focus();
+            }
+            speakP();
+          }
 
         }
 
         //numero es el valor del id
         //arriba
         if(event.which==38){
-          $rootScope.synth.cancel();
-          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
-          var number=Number(matchings[1]);
-          if(number<=2){
-            var newNumber=$scope.numberOfTestsInExecution+1;
-            console.log("id to be foscused "+"r"+newNumber);
 
-            $scope.focusedNumber=newNumber-1;
-            document.getElementById("r"+newNumber).focus();
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
           }else{
-            number=number-1;
-            if(document.getElementById("r"+number)){
-              console.log("id to be focused r"+number);
-              $scope.focusedNumber=number-1;
-              document.getElementById("r"+number).focus();
+
+            $rootScope.synth.cancel();
+            var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+            var number=Number(matchings[1]);
+            if(number<=2){
+              var newNumber=$scope.numberOfTestsInExecution+1;
+              console.log("id to be foscused "+"r"+newNumber);
+
+              $scope.focusedNumber=newNumber-1;
+              $document[0].getElementById("r"+newNumber).focus();
+            }else{
+              number=number-1;
+              if($document[0].getElementById("r"+number)){
+                console.log("id to be focused r"+number);
+                $scope.focusedNumber=number-1;
+                $document[0].getElementById("r"+number).focus();
+              }
             }
           }
-
         }
         //abajo
         if(event.which==40){
-          $rootScope.synth.cancel();
-          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
-          var number=Number(matchings[1]);
-          if(number==$scope.numberOfTestsInExecution+1){
-            console.log("id to be foscused r2");
-            $scope.focusedNumber=1;
-            document.getElementById("r2").focus();
+
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
           }else{
-            number=number+1;
-            if(document.getElementById("r"+number)){
-              console.log("id to be focused r"+number);
-              $scope.focusedNumber=number-1;
-              document.getElementById("r"+number).focus();
+
+            $rootScope.synth.cancel();
+            var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+            var number=Number(matchings[1]);
+            if(number==$scope.numberOfTestsInExecution+1){
+              console.log("id to be foscused r2");
+              $scope.focusedNumber=1;
+              $document[0].getElementById("r2").focus();
+            }else{
+              number=number+1;
+              if($document[0].getElementById("r"+number)){
+                console.log("id to be focused r"+number);
+                $scope.focusedNumber=number-1;
+                $document[0].getElementById("r"+number).focus();
+              }
             }
           }
         }
-
         //espacio
         if(event.which==32){
           $rootScope.synth.cancel();
           var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
           var number=Number(matchings[1]);
-          if(document.getElementById("r"+number)){
-            var idTest=document.getElementById("r"+number).getAttribute("data-idTest");
+          if($document[0].getElementById("r"+number)){
+            var idTest=$document[0].getElementById("r"+number).getAttribute("data-idTest");
             $scope.openTest(idTest);
           }
 
@@ -188,13 +214,19 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
 
         }else{
           console.log($scope.focusedNumber);
-          var textoP="Prueba "+$scope.focusedNumber+ ". "+document.getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent+". Intentos restantes "+document.getElementById($scope.focusedElement).getElementsByTagName( 'td' )[1].textContent;
+          var textoP="Prueba "+$scope.focusedNumber+ ". "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent+". Intentos restantes "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[1].textContent+". Nota actual sobre 10"+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[2].textContent;
         }
         $rootScope.msg.text=textoP;
         $rootScope.synth.speak($rootScope.msg);
         console.log($rootScope.synth);
       }
 
+      function init(){
+        if($rootScope.synth && $rootScope.msg){
+          $scope.focusedElement='p1';
+          speakP();
+        }
+      }
 
     }else{
       $location.path('/home');

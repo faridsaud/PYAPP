@@ -665,7 +665,7 @@ module.exports = {
 		}else{
 			return res.json(400,{code:2,msg:"Error getting the tests, there is not user\'s email send"});
 		}
-		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status, UT.INTENTLEFT as intentsLeft, T.INTENTS as intents FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
+		sails.models.test.query('SELECT T.TITLE AS title, T.STARTDATETIME AS startDateTime, T.FINISHDATETIME AS finishDateTime, T.IDTEST AS id, T.STATUS AS status, UT.INTENTLEFT as intentsLeft,UT.SCORE as score, T.INTENTS as intents FROM TEST T, USR_TES UT WHERE UT.EMAIL=? AND UT.IDTEST=T.IDTEST AND T.CREATEDBYTEST!=UT.EMAIL',[email], function(err, results) {
 			if (err){
 				console.log(err);
 				return res.json(512,{msg:"Error"});

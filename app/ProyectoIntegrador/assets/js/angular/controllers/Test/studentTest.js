@@ -7,8 +7,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       console.log("email and id");
 
 
-      /*Loading the test*/
-      var instructionSpoken=false;
+
       //Narrador
       if(!$rootScope.msg & !$rootScope.synth){
         $rootScope.msg = new SpeechSynthesisUtterance();
@@ -21,13 +20,8 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
         console.log(voices);
         console.log("Entrando a hablar");
         $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
-        if(instructionSpoken==false){
-          $rootScope.synth.cancel();
-          $rootScope.msg.text="Instrucciones: teclas arriba y abajo para moverse entre opciones y preguntas. Derecha e izquierda para moverse entre preguntas. Espacio para seleccionar la opción. Control para iniciar la prueba";
-
-        }
         $rootScope.synth.speak($rootScope.msg);
-        instructionSpoken=true;
+
       }
       var finishedSpeaking=false;
       $rootScope.msg.onstart=function(event){
@@ -177,7 +171,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             for(var j=0;j<$scope.test.questions[i].options.length;j++){
               $scope.test.questions[i].options[j].isSelected=false;
               //quitar estilo
-              document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.remove("selected");
+              $document[0].getElementById("r"+$scope.test.questions[i].options[j].index).classList.remove("selected");
             }
           }
         }
@@ -194,7 +188,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             for(var j=0;j<$scope.test.questions[i].options.length;j++){
               if($scope.test.questions[i].options[j].id==optionId){
                 $scope.test.questions[i].options[j].isSelected=true;
-                document.getElementById("r"+$scope.test.questions[i].options[j].index).classList.add("selected");
+                $document[0].getElementById("r"+$scope.test.questions[i].options[j].index).classList.add("selected");
               }
             }
           }
@@ -224,112 +218,129 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       //Valores de angular
       //Eventos de presionar
       $document.unbind('keydown').bind("keydown",function(event){
-        //  console.log(event);
         //CTRL
         if(event.which==17){
-          $rootScope.synth.cancel();
-
-          document.getElementById("p1").focus();
-          $scope.focusedElement="p1";
-          $scope.lastQuestion="p1";
-
+          if(finishedSpeaking==false){
+            $rootScope.synth.cancel();
+          }else{
+            if(!$scope.focusedElement){
+              $document[0].getElementById("p1").focus();
+              $scope.lastQuestion="p1";
+            }
+            speakP();
+          }
         }
 
-        //numero es el valor del id
         //arriba
         if(event.which==38){
-          $rootScope.synth.cancel();
-          console.log("Evento:");
-          console.log(event);
-          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
-          console.log("Match:");
-          console.log(matchings);
-          var number=Number(matchings[1])-1;
-          if(document.getElementById("r"+number)){
-            document.getElementById("r"+number).focus();
-          }
-          if(document.getElementById("p"+number)){
-            number=$scope.findNextQuestion(number)-1;
-            if(document.getElementById("r"+number)){
-              document.getElementById("r"+number).focus();
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
+          }else{
+            $rootScope.synth.cancel();
+            console.log("Evento:");
+            console.log(event);
+            var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+            console.log("Match:");
+            console.log(matchings);
+            var number=Number(matchings[1])-1;
+            if($document[0].getElementById("r"+number)){
+              $document[0].getElementById("r"+number).focus();
+            }
+            if($document[0].getElementById("p"+number)){
+              number=$scope.findNextQuestion(number)-1;
+              if($document[0].getElementById("r"+number)){
+                $document[0].getElementById("r"+number).focus();
+              }
             }
           }
-
-
-
         }
         //abajo
         if(event.which==40){
-          $rootScope.synth.cancel();
-          console.log("Evento:");
-          console.log(event);
-          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
-          var number=Number(matchings[1])+1;
-          if(document.getElementById("r"+number)){
-            document.getElementById("r"+number).focus();
-          }
-          if(document.getElementById("p"+number)){
-            matchings=$scope.lastQuestion.match(/p(\d*)/);
-            console.log(matchings);
-            number=Number(matchings[1])+1;
-            console.log(number);
-            if(document.getElementById("r"+number)){
-              document.getElementById("r"+number).focus();
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
+          }else{
+            $rootScope.synth.cancel();
+            console.log("Evento:");
+            console.log(event);
+            var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+            var number=Number(matchings[1])+1;
+            if($document[0].getElementById("r"+number)){
+              $document[0].getElementById("r"+number).focus();
             }
+            if($document[0].getElementById("p"+number)){
+
+              matchings=$scope.lastQuestion.match(/p(\d*)/);
+              console.log(matchings);
+              number=Number(matchings[1])+1;
+              console.log(number);
+              if($document[0].getElementById("r"+number)){
+                $document[0].getElementById("r"+number).focus();
+              }
+            }
+            console.log($scope.test);
           }
-          console.log($scope.test);
         }
         //derecha
         if(event.which==39){
-          $rootScope.synth.cancel();
-          var matchings=$scope.lastQuestion.match(/p(\d*)/);
-          console.log(matchings);
-          var number=$scope.findNextQuestion(Number(matchings[1]));
-          console.log(number);
-          if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
-            $scope.lastQuestion="p"+number;
-          }
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
+          }else{
 
+            $rootScope.synth.cancel();
+            var matchings=$scope.lastQuestion.match(/p(\d*)/);
+            console.log(matchings);
+            var number=$scope.findNextQuestion(Number(matchings[1]));
+            console.log(number);
+            if($document[0].getElementById("p"+number)){
+              $document[0].getElementById("p"+number).focus();
+              $scope.lastQuestion="p"+number;
+            }
+          }
         }
         //izquierda
         if(event.which==37){
-          $rootScope.synth.cancel();
-          var matchings=$scope.lastQuestion.match(/p(\d*)/);
-          console.log(matchings);
-          var number=$scope.findPreviousQuestion(Number(matchings[1]));
-          console.log(number);
-          console.log($scope.mapper);
-          if(document.getElementById("p"+number)){
-            document.getElementById("p"+number).focus();
-            $scope.lastQuestion="p"+number;
-          }
+          if(!$scope.focusedElement){
+            $rootScope.synth.cancel();
+            $document[0].getElementById("p1").focus();
+            $scope.lastQuestion="p1";
+          }else{
 
+            $rootScope.synth.cancel();
+            var matchings=$scope.lastQuestion.match(/p(\d*)/);
+            console.log(matchings);
+            var number=$scope.findPreviousQuestion(Number(matchings[1]));
+            console.log(number);
+            console.log($scope.mapper);
+            if($document[0].getElementById("p"+number)){
+              $document[0].getElementById("p"+number).focus();
+              $scope.lastQuestion="p"+number;
+            }
+
+          }
         }
 
         //espacio
         if(event.which==32){
           $rootScope.synth.cancel();
-          /*
-          console.log("Evento: Espacio");
-          console.log(event);
-          */
           var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
           var number=Number(matchings[1]);
           if(number==($scope.lastIndex+1)){
             $scope.saveData();
-            $rootScope.msg.text="Evaluación enviada con éxito";
+            $rootScope.msg.text="Evaluación enviada";
             $rootScope.synth.speak($rootScope.msg);
             $rootScope.testSend=$scope.test;
-            console.log($rootScope.testSend);
-            console.log("Vamos cambiarnos de vista");
             $state.go('studentReviewTest');
           }
-          if(document.getElementById("r"+number)){
+          if($document[0].getElementById("r"+number)){
             $scope.selectOption(number);
-            $rootScope.msg.text="Opción seleccionada con éxito";
+            $rootScope.msg.text="Opción seleccionada";
             $rootScope.synth.speak($rootScope.msg);
-            console.log($scope.test);
           }
 
         }
@@ -362,20 +373,41 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           }
         }
       });
+      $scope.selectOptionOnClick=function(htmlElementId){
+        console.log("evento on click");
+        console.log(htmlElementId);
+        var matchings=htmlElementId.match(/[p,r](\d*)/);
+        var number=Number(matchings[1]);
+        $scope.selectOption(number);
+      }
+      $scope.sentTestOnClick=function(){
+        $scope.saveData();
+        $rootScope.testSend=$scope.test;
+        $state.go('studentReviewTest');
+      }
       //al hacer focus
       $document.unbind('focusin').bind("focusin",function(event){
         console.log("se hizo focus");
         console.log(event.target.id);
         $scope.focusedElement=event.target.id;
-        console.log(document.getElementById($scope.focusedElement));
+        console.log($scope.focusedElement);
+        console.log($document[0].getElementById($scope.focusedElement));
         speakP();
 
       });
       function speakP(){
-        var textoP=document.getElementById($scope.focusedElement).innerHTML;
+        var textoP=$document[0].getElementById($scope.focusedElement).innerHTML;
         $rootScope.msg.text=textoP;
         $rootScope.synth.speak($rootScope.msg);
         console.log($rootScope.synth);
+      }
+
+      function init(){
+        if($rootScope.synth && $rootScope.msg){
+          $rootScope.synth.cancel();
+          $rootScope.msg.text="Instrucciones: Flecha derecha, siguiente pregunta. Flecha izquierda, pregunta anterior. Flecha abajo, siguiente opción. Flecha arriba, anterior opción. Espacio, seleccionar una opción. Control, cancelar o reanudar audio";
+          $rootScope.synth.speak($rootScope.msg);
+        }
       }
       $http({
         method:'POST',
@@ -390,19 +422,15 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
 
         }
       }).then(function success(response){
-        console.log(response);
         $scope.test=response.data.test;
-        $scope.test.id=$rootScope.activeTest.id
-        //$scope.formatTestToBeTaken($scope.test);
-
-
-        console.log($scope.test.questions);
+        $scope.test.id=$rootScope.activeTest.id;
         $scope.generateIndex();
-        console.log($scope.test.questions);
-        console.log($scope.test);
+        init();
       }, function error(response){
         console.log(response);
-      })
+      });
+
+
 
     }else{
       $location.path('/home');

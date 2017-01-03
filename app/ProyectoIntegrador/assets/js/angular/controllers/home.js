@@ -55,7 +55,6 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
     }
 
     /*Text to voice*/
-    var instructionSpoken=false;
     if(!$rootScope.msg & !$rootScope.synth){
       $rootScope.msg = new SpeechSynthesisUtterance();
       $rootScope.synth = window.speechSynthesis;
@@ -67,69 +66,19 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       console.log(voices);
       console.log("Entrando a hablar");
       $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
-      if(instructionSpoken==false){
-        $rootScope.synth.cancel();
-        $rootScope.msg.text="Ventana de login. Presione la tecla espacio para iniciar la captura de audio. Dicte su pin. Presione la tecla espacio nuevamente para terminar de capturar el audio. Y finalmente presione la tecla alt";
-      }
       $rootScope.synth.speak($rootScope.msg);
-      instructionSpoken=true;
     }
 
-
-    $document.unbind('keydown').bind("keydown",function(event){
-      //CTRL
-      if(event.which==17){
-        $rootScope.synth.cancel();
-        $rootScope.msg.text="Ventana de login. Presione la tecla espacio. Dicte su pin. Presione la tecla espacio nuevamente para terminar de capturar el audio. Y finalmente presione la tecla alt";
-        $rootScope.synth.speak($rootScope.msg);
-      }
-      //ALT
-      if(event.which==18){
-        var numbers=final_transcript.match(/(\d{1})/g);
-        if(numbers.length>1){
-          var pinText="";
-          var pinNumber="";
-          for(var i=0;i<numbers.length;i++){
-            var pinText=pinText+numbers[i].toString()+" ";
-            var pinNumber=pinNumber+numbers[i].toString();
-          }
-          console.log(pinText);
-          console.log(pinNumber);
-          $rootScope.synth.cancel();
-          $rootScope.msg.text="Pin a enviar: "+pinText;
-          $rootScope.synth.speak($rootScope.msg);
-          $scope.user.pin=pinNumber;
-          $scope.login();
-        }else{
-
-          $rootScope.synth.cancel();
-          $rootScope.msg.text="No dictó un pin correcto";
-          $rootScope.synth.speak($rootScope.msg);
-        }
-      }
-      //espacio
-      if(event.which==32){
-        $rootScope.synth.cancel();
-        console.log("here");
-        if (recognizing) {
-          recognition.stop();
-          return;
-        }
-        final_transcript = '';
-        recognition.lang = 'es-US';
-        recognition.start();
-        ignore_onend = false;
-
-      }
-    })
-
-
-    function speakP(){
-      var textoP=document.getElementById($scope.focusedElement).innerHTML;
-      $rootScope.msg.text=textoP;
-      $rootScope.synth.speak($rootScope.msg);
-      console.log($rootScope.synth);
+    var finishedSpeaking=false;
+    $rootScope.msg.onstart=function(event){
+      finishedSpeaking=false;
+      console.log("On start");
     }
+    $rootScope.msg.onend=function(event){
+      finishedSpeaking=true;
+      console.log("On end");
+    }
+
 
     /*voz a texto*/
 
@@ -153,6 +102,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       if (!final_transcript) {
         return;
       }
+      loginWithVoice();
     };
 
     recognition.onresult = function(event) {
@@ -172,8 +122,72 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       console.log(final_transcript);
     };
 
+    function loginWithVoice(){
+      console.log(final_transcript);
+      var numbers=final_transcript.match(/(\d{1})/g);
+      if(!numbers){
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="No dictó un pin correcto";
+        $rootScope.synth.speak($rootScope.msg);
+        return;
+      }
+      if(numbers.length>1){
+        var pinText="";
+        var pinNumber="";
+        for(var i=0;i<numbers.length;i++){
+          var pinText=pinText+numbers[i].toString()+" ";
+          var pinNumber=pinNumber+numbers[i].toString();
+        }
+        console.log(pinText);
+        console.log(pinNumber);
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="Pin a enviar: "+pinText;
+        $rootScope.synth.speak($rootScope.msg);
+        $scope.user.pin=pinNumber;
+        $scope.login();
+      }else{
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="No dictó un pin correcto";
+        $rootScope.synth.speak($rootScope.msg);
+      }
+    }
+
+    /*Keybinding*/
+    $document.unbind('keydown').bind("keydown",function(event){
+      //CTRL
+      if(event.which==17){
+        if(finishedSpeaking==false){
+          $rootScope.synth.cancel();
+        }else{
+          $rootScope.synth.speak($rootScope.msg);
+        }
+      }
+      //espacio
+      if(event.which==32){
+        $rootScope.synth.cancel();
+        if (recognizing) {
+          recognition.stop();
+          return;
+        }
+        final_transcript = '';
+        recognition.lang = 'es-US';
+        recognition.start();
+        ignore_onend = false;
+
+      }
+    })
 
 
+
+
+    function init(){
+      if($rootScope.synth && $rootScope.msg){
+        $rootScope.synth.cancel();
+        $rootScope.msg.text="Ventana de login. Presione la tecla espacio para iniciar la captura de audio. Dicte su pin. Presione la tecla espacio nuevamente para terminar de capturar el audio. Y finalmente presione la tecla alt";
+        $rootScope.synth.speak($rootScope.msg);
+      }
+    }
+    init();
 
   }
 

@@ -245,7 +245,7 @@ module.exports = {
                     });
                   } else {
                     /*Asignacion de las pruebas del curso al cual acaba de ser registrado el estudiante*/
-                    sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES,INTENTLEFT) SELECT ?, T.IDTEST, 's', T.INTENTS FROM TEST T WHERE T.IDCOURSE=? ", [studentEmail, idCourse], function(error, callback) {
+                    sails.models.usrtes.query("INSERT INTO USR_TES (EMAIL, IDTEST, STATUSUSRTES,INTENTLEFT,SCORE) SELECT ?, T.IDTEST, 's', T.INTENTS, 0.0 FROM TEST T WHERE T.IDCOURSE=? ", [studentEmail, idCourse], function(error, callback) {
                       if (error) {
                         console.log(error);
                         return res.json(512, {

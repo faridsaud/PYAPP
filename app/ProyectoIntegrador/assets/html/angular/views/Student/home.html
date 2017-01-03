@@ -34,6 +34,7 @@
                 <tr>
                   <th>Título</th>
                   <th>Intentos restantes</th>
+                  <th>Nota actual X/10</th>
                   <th title="La fecha y hora de finalización mostradas estan transformadas de la hora del servidor a la hora de su navegador (PC)">Fecha y hora de finalización </th>
                 </tr>
               </thead>
@@ -41,6 +42,7 @@
                 <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)" id="r{{$index+2}}" tabindex="{{$index+2}}" data-idTest='{{test.id}}'>
                   <td>{{test.title}}</td>
                   <td>{{test.intentsLeft}} de {{test.intents}}</td>
+                  <td>{{test.score}}</td>
                   <td>{{test.finishDateTime | date : 'yyyy-MM-dd HH:mm:ss'}}</td>
                 </tr>
               </tbody>

@@ -51,4 +51,6 @@ cambio a los tipos de dato date por string con longitud 24 para almacenar la fec
 *Enter para seleccionar
 *Espacio para hablar
 *Arriba y abajo no solo para opciones
-*Definir pruebas a los servicios
+*Definir pruebas a los servicios /hecho
+*Control para inciar o detener el audio/hecho
+*Funcion init con las instrucciones/hecho

@@ -10,14 +10,12 @@
         <div class="row">
           <div class="col-md-12">
             <ul class="list-group">
-              <li id="r{{option.index}}" ng-repeat="option in question.options" class="list-group-item" tabindex="{{option.index}}">Opcion {{$index+1}}: {{option.text}}</li>
+              <li id="r{{option.index}}" ng-repeat="option in question.options" class="list-group-item" tabindex="{{option.index}}" ng-click="selectOptionOnClick('r'+option.index)">Opcion {{$index+1}} de {{question.options.length}}: {{option.text}}</li>
             </ul>
           </div>
         </div>
       </div>
     </div>
-
-
   </div>
   <div class="section"  >
     <div class="container">
@@ -26,7 +24,6 @@
           <button type="button" class="btn btn-default" id="p{{lastIndex+1}}" tabindex="{{lastIndex+1}}">Enviar</button>
         </div>
       </div>
-
     </div>
   </div>
 </div>
