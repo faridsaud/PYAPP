@@ -683,15 +683,15 @@ module.exports = {
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-				return res.json(400,{code:2,msg:"Error deleting the test. No user\'s email send"});
+			return res.json(400,{code:2,msg:"Error deleting the test. No user\'s email send"});
 		}
 		if(!req.body.test){
-				return res.json(400,{code:3,msg:"Error deleting the test. No test\'s data send"});
+			return res.json(400,{code:3,msg:"Error deleting the test. No test\'s data send"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-				return res.json(400,{code:4,msg:"Error deleting the test. No test\'s id send"});
+			return res.json(400,{code:4,msg:"Error deleting the test. No test\'s id send"});
 		}
 		sails.models.usrtes.findOne({idTest:testId ,email:email, status:'t'}).exec(function(error, finded){
 			if(error){
@@ -1284,41 +1284,15 @@ module.exports = {
 			/*Find the student-test record*/
 			sails.models.usrtes.findOne({email:user.email, idTest:test.id, status:"s"})
 			.then(function(finded){
-				console.log("linea 1112")
-				console.log(finded);
 				if(finded.intentLeft==0){
 					return res.json(400,{code:6,msg: 'Error registering the taken test data, you exceed the intents for the test'});
 				}
 				/*If the new score is higher than the older one or if this is the first try*/
-				if(finded.score==null || finded.score<score){
-					console.log("Score of finded"+finded.score);
-					if(finded.score!=null){
-						var olderScore=finded.score;
-						console.log("Older score"+olderScore);
-					}
-					if(finded.score<score){
-						var queryPromise=Promise.promisify(sails.models.usropt.query);
-						var promise=queryPromise('DELETE FROM USR_OPT WHERE IDOPTION IN (SELECT IDOPTION FROM (SELECT UO.IDOPTION FROM USR_OPT UO, OPTIO O, QUESTION Q, TEST T WHERE UO.IDOPTION=O.IDOPTION AND O.IDQUESTION=Q.IDQUESTION AND Q.IDTEST=T.IDTEST AND T.IDTEST=? ) AS TEMPORALUSR_OPT) AND EMAIL=?', [test.id, user.email])
-						.then(function(){
-							for(var i=0;i<test.questions.length;i++){
-								for(var j=0;j<test.questions[i].options.length;j++){
-									if(test.questions[i].options[j].isSelected==true){
-										var insertPromise=sails.models.usropt.create({email:user.email, idOption:test.questions[i].options[j].id}).then(function(created){
-											console.log("Record created:");
-											console.log(created);
-										})
-										allPromises.push(insertPromise);
-									}
-								}
-							}
-						})
-						.catch(function(error){
-							console.log(error);
-						})
-						allPromises.push(promise);
-
-					}
-					if(finded.score==null){
+				if(finded.score<=score ){
+					var innerPromises=[];
+					var queryPromise=Promise.promisify(sails.models.usropt.query);
+					var promise=queryPromise('DELETE FROM USR_OPT WHERE IDOPTION IN (SELECT IDOPTION FROM (SELECT UO.IDOPTION FROM USR_OPT UO, OPTIO O, QUESTION Q, TEST T WHERE UO.IDOPTION=O.IDOPTION AND O.IDQUESTION=Q.IDQUESTION AND Q.IDTEST=T.IDTEST AND T.IDTEST=? ) AS TEMPORALUSR_OPT) AND EMAIL=?', [test.id, user.email])
+					.then(function(){
 						for(var i=0;i<test.questions.length;i++){
 							for(var j=0;j<test.questions[i].options.length;j++){
 								if(test.questions[i].options[j].isSelected==true){
@@ -1326,84 +1300,75 @@ module.exports = {
 										console.log("Record created:");
 										console.log(created);
 									})
-									allPromises.push(insertPromise);
+									.then(function(){
+										return "ok";
+									})
+									.catch(function(error){
+										return error;
+									})
+									innerPromises.push(insertPromise);
 								}
 							}
 						}
-					}
+						var innerPromise=Promise.all(innerPromises)
+						.then(function(){
+							return "ok";
+						})
+						.catch(function(error){
+							return error;
+						})
+						return innerPromise;
+					})
+					.catch(function(error){
+						return error;
+					})
+					allPromises.push(promise);
+
 					/*Update the student-test record*/
 					console.log("Score:"+score);
 					var updateTestPromise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{score:score,intentLeft:finded.intentLeft-1})
 					.then(function(){
-						console.log("linea 1120")
 						/*Find all the records of the students-test to calculate the new average score of the test*/
-						sails.models.usrtes.find({idTest:test.id, status:"s", score:{not:null}})
+						var innerPromise=sails.models.usrtes.find({idTest:test.id, status:"s", score:{not:null}})
 						.then(function(finded){
-							console.log("linea 1122");
-							/*Its already counting the new record added*/
-							var testTaken=finded.length;
-							/*Find the test*/
-							sails.models.test.findOne({id:test.id})
-							.then(function(finded){
-								console.log("linea 1124")
-								/*TODO if new test average+1 if not average-1+1*/
-								if(olderScore!=null){
-									var averageScore=((finded.averageScore*testTaken)+score-olderScore)/(testTaken);
-									sails.models.test.update({id:test.id},{averageScore:averageScore})
-									.then(function(updated){
-										console.log("Records updated"+updated[0]);
-									})
-									.catch(function(error){
-										console.log(error);
-										return res.json(500,{msg: 'Error registering the taken test data'});
-									})
-								}else{
-									/*The new record added shouldnt be counted*/
-									testTaken=testTaken-1;
-									var averageScore=((finded.averageScore*testTaken)+score)/(testTaken+1);
-									sails.models.test.update({id:test.id},{averageScore:averageScore})
-									.then(function(updated){
-										console.log("Records updated"+updated[0]);
-									})
-									.catch(function(error){
-										console.log(error);
-										return res.json(500,{msg: 'Error registering the taken test data'});
-									})
-								}
-							})
-							.catch(function(error){
-								console.log(error);
-								return res.json(500,{msg: 'Error registering the taken test data'});
-							})
+							var averageScore=0;
+							for(var i=0;i<finded.length;i++){
+								averageScore=averageScore+finded[i].score;
+							}
+							averageScore=averageScore/finded.length;
+							var innerPromise2=sails.models.test.update({id:test.id},{averageScore:averageScore});
+							return innerPromise2;
 						})
 						.catch(function(error){
 							console.log(error);
-							return res.json(500,{msg: 'Error registering the taken test data'});
+							return error;
 						})
+						return innerPromise;
 					})
 					.catch(function(error){
 						console.log(error);
-						return res.json(500,{msg: 'Error registering the taken test data'});
+						return error;
 					})
 					allPromises.push(updateTestPromise);
 				}else{
 					/*Score lower than before*/
 					console.log("nota inferior")
-					sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{intentLeft:finded.intentLeft-1})
-					.catch(function(error){
-						return res.json(500,{msg:'Error registering the taken test data'});
-					})
+					var promise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{intentLeft:finded.intentLeft-1});
+					allPromises.push(promise);
 				}
-			});
-			Promise.all(allPromises)
-			.then(function(){
-				return res.json(200,{msg: 'OK', score:score});
+				Promise.all(allPromises)
+				.then(function(){
+					return res.json(200,{msg: 'OK', score:score});
+				})
+				.catch(function(error){
+					console.log(error);
+					return res.json(500,{msg:'Error registering the taken test data'});
+				})
 			})
 			.catch(function(error){
 				console.log(error);
 				return res.json(500,{msg:'Error registering the taken test data'});
 			})
-
 
 		}
 

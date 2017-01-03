@@ -214,7 +214,7 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
 
         }else{
           console.log($scope.focusedNumber);
-          var textoP="Prueba "+$scope.focusedNumber+ ". "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent+". Intentos restantes "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[1].textContent+". Nota actual sobre 10"+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[2].textContent;
+          var textoP="Prueba "+$scope.focusedNumber+ ". "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[0].textContent+". Intentos restantes "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[1].textContent+". Nota actual "+$document[0].getElementById($scope.focusedElement).getElementsByTagName( 'td' )[2].textContent+" sobre 1";
         }
         $rootScope.msg.text=textoP;
         $rootScope.synth.speak($rootScope.msg);
