@@ -1,4 +1,5 @@
-<div class="navbar-inverse navbar-default navbar-static-top">
+
+<div ng-controller="menuController" class="navbar-inverse navbar-default navbar-static-top">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
@@ -17,7 +18,7 @@
         <li class="dropdown">
           <a  class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cuenta<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a ng-click="window.location.reload()">Cerrar Sesión</a></li>
+            <li><a ng-click="reload()">Cerrar Sesión</a></li>
           </ul>
         </li>
       </ul>
@@ -30,7 +31,6 @@
       <br>
       <br>
       <div  ui-view>
-
       </div>
     </div>
   </div>
