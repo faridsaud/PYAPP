@@ -31,7 +31,7 @@ module.exports = {
 				if(j==0){
 					questions[i].text=questions[i].statements[j].text;
 				}else{
-					questions[i].text=questions[i].text+". espacio en blanco."+questions[i].statements[j].text;
+					questions[i].text=questions[i].text+". espacio en blanco. "+questions[i].statements[j].text;
 				}
 			}
 			sails.controllers.option.formatFillOptionsAngularToServer(questions[i]);

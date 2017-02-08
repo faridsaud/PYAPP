@@ -64,7 +64,7 @@ module.exports.connections = {
     user: 'root',
     password: 'TUrion93!',
     database: 'proyectoIntegrador',
-    port: '/cloudsql/proyectointegrador-faridsaud:us-central1:bdd'
+    port: '/cloudsql/proyectointegrador-faridsaud:us-east1:final'
   },
 
   /*

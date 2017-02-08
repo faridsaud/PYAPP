@@ -1,5 +1,5 @@
 //Test excecution
-node node_modules/mocha/bin/mocha ./tests/restTest.js --timeout 15000
+node node_modules/mocha/bin/mocha ./tests/RestServices.js --timeout 15000
 //configurar sdk google
 gcloud init
 1

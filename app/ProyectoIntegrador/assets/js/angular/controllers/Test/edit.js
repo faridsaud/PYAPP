@@ -198,6 +198,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
         toastr.error("Error checking fillQuestions" + errorFillQuestion.msg);
         errorCheckingData=true;
       }
+      console.log($scope.test);
       return errorCheckingData;
     }
 
@@ -611,7 +612,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
 
     $scope.formatFillQuestionsServerToAngular=function(){
       for(var i=0; i<$scope.fillQuestions.length;i++){
-        var statements=$scope.fillQuestions[i].text.split(". espacio en blanco.");
+        var statements=$scope.fillQuestions[i].text.split(". espacio en blanco. ");
         $scope.fillQuestions[i].statements=[];
         for(var j=0;j<statements.length;j++ ){
           $scope.fillQuestions[i].statements.push({text:statements[j]});

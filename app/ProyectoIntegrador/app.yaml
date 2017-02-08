@@ -3,6 +3,6 @@ env: flex
 env_variables:
       NODE_ENV: development
 beta_settings:
-      cloud_sql_instances: "proyectointegrador-faridsaud:us-central1:bdd"
+      cloud_sql_instances: "proyectointegrador-faridsaud:us-east1:final"
 skip_files:
  - ^node_modules$
