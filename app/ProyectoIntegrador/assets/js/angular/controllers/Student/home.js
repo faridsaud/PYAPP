@@ -119,18 +119,25 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
             $rootScope.synth.cancel();
             var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
             var number=Number(matchings[1]);
-            if(number<=2){
-              var newNumber=$scope.numberOfTestsInExecution+1;
-              console.log("id to be foscused "+"r"+newNumber);
-
-              $scope.focusedNumber=newNumber-1;
-              $document[0].getElementById("r"+newNumber).focus();
+            if(number==1){
+              number=$scope.numberOfTestsInExecution+1;
+              console.log("id to be foscused "+"r"+number);
+              $scope.focusedNumber=number-1;
+              $document[0].getElementById("r"+number).focus();
             }else{
-              number=number-1;
-              if($document[0].getElementById("r"+number)){
-                console.log("id to be focused r"+number);
+              if(number==2){
+                number=$scope.numberOfTestsInExecution+1;
+                console.log("id to be foscused "+"r"+number);
                 $scope.focusedNumber=number-1;
                 $document[0].getElementById("r"+number).focus();
+              }else{
+                number=number-1;
+                if($document[0].getElementById("r"+number)){
+                  console.log("id to be focused r"+number);
+                  $scope.focusedNumber=number-1;
+                  $document[0].getElementById("r"+number).focus();
+                }
+
               }
             }
           }
