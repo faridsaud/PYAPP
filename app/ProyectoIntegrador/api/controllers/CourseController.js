@@ -23,18 +23,14 @@ module.exports = {
   * @memberof module:Course
   * @function register
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User registering the course
-  * @param  {string} req.user.email Email
-  * @param  {string} req.user.role Role
-  * @param  {JSON} req.course Course to be registered
-  * @param  {string} req.course.name Name
-  * @param  {string} req.course.description Description
+  * @param  {JSON} req.body.user User registering the course
+  * @param  {string} req.body.user.email Email
+  * @param  {string} req.body.user.role Role
+  * @param  {JSON} req.body.course Course to be registered
+  * @param  {string} req.body.course.name Name
+  * @param  {string} req.body.course.description Description
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param {JSON} res.data.course Course created
+  * @returns  {JSON} HTTP response object
   * @description Register a course
   */
   register: function(req, res) {
@@ -127,14 +123,10 @@ module.exports = {
   * @memberof module:Course
   * @function getCoursesCreatedByUser
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the courses
-  * @param  {string} req.user.email Email
+  * @param  {JSON} req.body.user User retrieving the courses
+  * @param  {string} req.body.user.email Email
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param {JSON[]} res.data.courses List of courses retrieved
+	* @returns  {JSON} HTTP response object
   * @description Retrieve the courses created by the user
   */
   getCoursesCreatedByUser: function(req, res) {
@@ -171,14 +163,10 @@ module.exports = {
   * @memberof module:Course
   * @function getCoursesByTeacher
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the courses
-  * @param  {string} req.user.email Email
+  * @param  {JSON} req.body.user User retrieving the courses
+  * @param  {string} req.body.user.email Email
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param {JSON[]} res.data.courses List of courses retrieved
+	* @returns  {JSON} HTTP response object
   * @description Retrieves the courses where the user is the teacher
   */
   getCoursesByTeacher: function(req, res) {
@@ -215,14 +203,10 @@ module.exports = {
   * @memberof module:Course
   * @function getCoursesByStudent
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the courses
-  * @param  {string} req.user.email Email
+  * @param  {JSON} req.body.user User retrieving the courses
+  * @param  {string} req.body.user.email Email
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param {JSON[]} res.data.courses List of courses retrieved
+	* @returns  {JSON} HTTP response object
   * @description Retrieves the courses where the user is the student
   */
   getCoursesByStudent: function(req, res) {
@@ -259,18 +243,14 @@ module.exports = {
   * @memberof module:Course
   * @function registerStudent
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User registering the student
-  * @param  {string} req.user.email Email
-  * @param  {JSON} req.student Student to be registered
-  * @param  {string} req.student.email Email
-  * @param  {JSON} req.course Course in which the student is going to be registered
-  * @param  {int} req.course.id Id
+  * @param  {JSON} req.body.user User registering the student
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.student Student to be registered
+  * @param  {string} req.body.student.email Email
+  * @param  {JSON} req.body.course Course in which the student is going to be registered
+  * @param  {int} req.body.course.id Id
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param {JSON[]} res.data.courses List of courses retrieved
+	* @returns  {JSON} HTTP response object
   * @description Register a student in the course
   */
   registerStudent: function(req, res) {
@@ -381,15 +361,12 @@ module.exports = {
   * @memberof module:Course
   * @function deleteCourse
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User deleting the course
-  * @param  {string} req.user.email Email
-  * @param  {JSON} req.course Course to be deleted
-  * @param  {int} req.course.id Id
+  * @param  {JSON} req.body.user User deleting the course
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.course Course to be deleted
+  * @param  {int} req.body.course.id Id
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
+	* @returns  {JSON} HTTP response object
   * @description Delete a course
   */
   deleteCourse: function(req, res) {
@@ -452,16 +429,12 @@ module.exports = {
   * @memberof module:Course
   * @function getCourseById
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the course
-  * @param  {string} req.user.email Email
-  * @param  {JSON} req.course Course to be retrieved
-  * @param  {int} req.course.id Id
+  * @param  {JSON} req.body.user User retrieving the course
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.course Course to be retrieved
+  * @param  {int} req.body.course.id Id
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param  {JSON} res.data.course Course retrieved
+	* @returns  {JSON} HTTP response object
   * @description Retrieve the information of the course
   */
   getCourseById: function(req, res) {
@@ -528,18 +501,14 @@ module.exports = {
   * @memberof module:Course
   * @function edit
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the course
-  * @param  {string} req.user.email Email
-  * @param  {JSON} req.course Course to be retrieved
-  * @param  {int} req.course.id Id
-  * @param  {string} req.course.name New name of the course
-  * @param  {string} req.course.description New description of the course
+  * @param  {JSON} req.body.user User retrieving the course
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.course Course to be retrieved
+  * @param  {int} req.body.course.id Id
+  * @param  {string} req.body.course.name New name of the course
+  * @param  {string} req.body.course.description New description of the course
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
-  * @param  {JSON} res.data.course Course retrieved
+	* @returns  {JSON} HTTP response object
   * @description Update the information of a course
   */
   edit: function(req, res) {
@@ -616,15 +585,12 @@ module.exports = {
   * @memberof module:Course
   * @function clone
   * @param  {JSON} req HTTP request object
-  * @param  {JSON} req.user User retrieving the course
-  * @param  {string} req.user.email Email
-  * @param  {JSON} req.course Course to be retrieved
-  * @param  {int} req.course.id Id
+  * @param  {JSON} req.body.user User retrieving the course
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.course Course to be retrieved
+  * @param  {int} req.body.course.id Id
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
+	* @returns  {JSON} HTTP response object
   * @description Clone the course information in a new one, including the tests
   */
   clone: function(req, res) {
@@ -852,14 +818,11 @@ module.exports = {
   * @memberof module:Course
   * @function deleteStudent
   * @param  {JSON} req HTTP request object
-  * @param  {string} req.teacherEmail Email of the teacher of the course
-  * @param  {string} req.studentEmail Email of a student of the course
-  * @param  {string} req.idCourse Id of the course
+  * @param  {string} req.body.teacherEmail Email of the teacher of the course
+  * @param  {string} req.body.studentEmail Email of a student of the course
+  * @param  {string} req.body.idCourse Id of the course
   * @param  {JSON} res HTTP response object
-  * @param  {int} res.status Standard HTTP status code
-  * @param  {int} res.data.code Custom HTTP status code
-  * @param  {string} res.data.msg English msg of the result
-  * @param  {string} res.data.msgES Spanish msg of the result
+	* @returns  {JSON} HTTP response object
   * @description Delete an student from a course
   */
   deleteStudent: function(req, res) {
