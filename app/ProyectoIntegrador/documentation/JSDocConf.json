@@ -1,0 +1,8 @@
+{
+
+  "source": {
+    "include": [ "D:/Proyecto Integrador APP/PYAPP/app/ProyectoIntegrador/api/controllers"],
+    "includePattern": ".+\\.js(doc)?$",
+    "excludePattern": "(^|\\/|\\\\)_"
+  }
+}

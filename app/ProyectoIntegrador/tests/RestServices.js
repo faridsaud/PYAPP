@@ -855,7 +855,7 @@ describe('Course controller services', function() {
     });
 
     describe('Without the student being a user with the student role', function() {
-      it('respond with status 204', function(done) {
+      it('respond with status 400 code:7', function(done) {
         supertest(url)
         .post('/course/registerStudent')
         .send({
@@ -869,7 +869,12 @@ describe('Course controller services', function() {
             email:"test@test.com"
           }
         })
-        .expect(204,done);
+        .expect(400)
+        .end(function(err, res) {
+          if (err) return done(err);
+          assert.equal(res.body.code,7);
+          done();
+        });
       });
     });
 

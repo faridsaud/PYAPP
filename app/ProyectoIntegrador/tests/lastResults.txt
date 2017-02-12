@@ -1,0 +1,377 @@
+
+
+  User controller services
+    Register user
+      Without user
+        √ respond with status 400 code:1 (541ms)
+      Without email
+        √ respond with status 400 code:2
+      Without password
+        √ respond with status 400 code:3
+      Without security question 1
+        √ respond with status 400 code:4
+      Without secuity question 1's question or answer
+        √ respond with status 400 code:5
+      Without secuity question 2
+        √ respond with status 400 code:6
+      Without secuity question 2
+        √ respond with status 400 code:7
+      With security question 1 equal security question 2
+        √ respond with status 400 code:8
+      User register course with valid data
+        √ respond with status 201 (383ms)
+    Login user
+      Without user
+        √ respond with status 400 code:1 (523ms)
+      Without email
+        √ respond with status 400 code:2
+      Without password
+        √ respond with status 400 code:3
+      Invalid credentials
+        √ respond with status 400 code:4 (185ms)
+      Invalid credentials
+        √ respond with status:403 (185ms)
+      Valid credentials
+        √ respond with status 200 (198ms)
+    Check user data for password and pin change
+      Without email
+        √ respond with status 400 code:1 (510ms)
+      Without security question 1
+        √ respond with status 400 code:2
+      Without security question 2
+        √ respond with status 400 code:3
+      Invalid data
+        √ respond with status 400 code:4
+      Valid data
+        √ respond with status 200
+    Change password and pin
+      Without email
+        √ respond with status 400 code:1 (526ms)
+      Without new password
+        √ respond with status 400 code:2
+      With the new securoty questions being the same
+        √ respond with status 400 code 3
+      With the new securoty questions being the same
+        √ respond with status 400 code 3 (251ms)
+
+  Course controller services
+    Course register
+      Teacher without email register course with valid data
+        √ respond with status 400 code:1
+      Student register course with valid data
+        √ respond with status:403 code:2
+      Teacher without role register course with valid data
+        √ respond with status:403 code:3
+      Teacher register course without name
+        √ respond with status 400 code:4
+      Teacher register course with valid data
+        √ respond with status 201 : Course created
+    Get courses created by user
+      Without user
+        √ respond with status 400 code:1 (531ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Valid data
+        √ respond with status 200
+    Get courses by teacher
+      Without user
+        √ respond with status 400 code:1 (550ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Valid data
+        √ respond with status 200
+    Get courses by student
+      Without user
+        √ respond with status 400 code:1 (530ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Valid data
+        √ respond with status 200
+    Register a student in a course
+      Without student's data
+        √ respond with status 400 code:1 (535ms)
+      Without student's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without user's data
+        √ respond with status 400 code:5
+      Without user's email
+        √ respond with status 400 code:6
+      Without the user being the owner of the course
+        √ respond with status:403
+      Without the student being a user with the student role
+        √ respond with status 204
+      With valid data
+        √ respond with status 200
+    Get course by id
+      Without user's data
+        √ respond with status 400 code:1 (531ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+    Edit course
+      Without user's data
+        √ respond with status 400 code:1 (517ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without course's name
+        √ respond with status 400 code:5
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+    Clone course
+      Without user's data
+        √ respond with status 400 code:1 (524ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+
+  SecutiryQuestions controller services
+    Get all
+      Valid data
+        √ respond with status 200
+
+  Test controller services
+    Register test
+      Without a title
+        √ respond with status:400 code:1
+      Without an owner
+        √ respond with status:400 code:2
+      Without a start date time
+        √ respond with status:400 code:3
+      Without a finish date time
+        √ respond with status:400 code:4
+      Without a course
+        √ respond with status:400 code:5
+      With the startDateTime being greater than the finishDateTime
+        √ respond with status:400 code:6
+      Without test
+        √ respond with status:400 code:7 (539ms)
+      Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question
+        √ respond with status:200 (100ms)
+    Get tests by course and teacher
+      Without user's data
+        √ respond with status 400 code:1 (515ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+    Get tests by course and student
+      Without user's data
+        √ respond with status 400 code:1 (520ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+    Get tests by student
+      Without user's data
+        √ respond with status 400 code:1 (538ms)
+      Without user's email
+        √ respond with status 400 code:2
+      With valid data
+        √ respond with status 200
+    Get tests created by user
+      Without user's data
+        √ respond with status 400 code:1 (508ms)
+      Without user's email
+        √ respond with status 400 code:2
+      With valid data
+        √ respond with status 200
+    Get test by id
+      Without user's data
+        √ respond with status:400 code:1 (543ms)
+      Without user's email
+        √ respond with status:400 code:2
+      Without test's data
+        √ respond with status:400 code:3
+      Without test's id
+        √ respond with status:400 code:4
+      Without the user being the owner of the test
+        √ respond with status:403
+      With valid data
+        √ respond with status:200
+    Get test without questions by id
+      Without user's data
+        √ respond with status:400 code:1 (529ms)
+      Without user's email
+        √ respond with status:400 code:2
+      Without test's data
+        √ respond with status:400 code:3
+      Without test's id
+        √ respond with status:400 code:4
+      Without the user being the owner of the test
+        √ respond with status:403
+      With valid data
+        √ respond with status:200
+    Get students by test id
+      Without user's data
+        √ respond with status:400 code:1 (520ms)
+      Without user's email
+        √ respond with status:400 code:2
+      Without test's data
+        √ respond with status:400 code:3
+      Without test's id
+        √ respond with status:400 code:4
+      Without the user being the owner of the test
+        √ respond with status:403
+      With valid data
+        √ respond with status:200
+    Get test by id for student
+      Without user's data
+        √ respond with status:400 code:1 (531ms)
+      Without user's email
+        √ respond with status:400 code:2
+      Without test's data
+        √ respond with status:400 code:3
+      Without test's id
+        √ respond with status:400 code:4
+      Without the user being a student of the test
+        √ respond with status:403
+      With valid data
+        √ respond with status:200
+    Update test
+      Without a test
+        √ respond with status:400 code:1 (524ms)
+      Without id
+        √ respond with status:400 code:2
+      Without title
+        √ respond with status:400 code:3
+      Without an owner
+        √ respond with status:400 code:4
+      Without a start date time
+        √ respond with status:400 code:5
+      Without a finish date time
+        √ respond with status:400 code:6
+      Without a course
+        √ respond with status:400 code:7
+      With the startDateTime being greater than the finishDateTime
+        √ respond with status:400 code:8
+      Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question
+        √ respond with status:200 (111ms)
+    Register test taken
+      Without a test
+        √ respond with status:400 code:1 (522ms)
+      Without a test's id
+        √ respond with status:400 code:2
+      Without user
+        √ respond with status:400 code:3
+      Without user's email
+        √ respond with status:400 code:4
+      Without test's questions
+        √ respond with status:400 code:5
+      With valid data
+        √ respond with status:200 (54ms)
+
+  Question controller services
+    Clone question
+      Without user's data
+        √ respond with status:400 code:1 (518ms)
+      Without user's email
+        √ respond with status:400 code:2
+      Without test's data
+        √ respond with status:400 code:3
+      Without test's id
+        √ respond with status:400 code:4
+      Without question's data
+        √ respond with status:400 code:5
+      Without the user being the owner of the owner of the question
+        √ respond with status:403
+      With valid data
+        √ respond with status:200 (52ms)
+    Delete question
+      Without question's id
+        √ respond with status:400 (534ms)
+      With valid data
+        √ respond with status:200
+
+  User controller services
+    Get students by course
+      Without user's data
+        √ respond with status 400 code:1 (516ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+
+  Test controller services
+    Delete test
+      Without user's data
+        √ respond with status 400 code:1 (522ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without test's data
+        √ respond with status 400 code:3
+      Without test's id
+        √ respond with status 400 code:4
+      Without the user being the owner of the test
+        √ respond with status:403
+      With valid data
+        √ respond with status 200
+
+  Course controller services
+    Delete student from course
+      Without student's email
+        √ respond with status 400 code:1 (516ms)
+      Without teacher's email
+        √ respond with status 400 code:2
+      Without course's id
+        √ respond with status 400 code:3
+      With valid data
+        √ respond with status 200
+    Delete course
+      Without user's data
+        √ respond with status 400 code:1 (510ms)
+      Without user's email
+        √ respond with status 400 code:2
+      Without course's data
+        √ respond with status 400 code:3
+      Without course's email
+        √ respond with status 400 code:4
+      Without the user being the owner of the course
+        √ respond with status:403
+      With valid data
+        √ respond with status 200  (53ms)
+
+
+  163 passing (17s)
+

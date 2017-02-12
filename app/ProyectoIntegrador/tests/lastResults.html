@@ -1,0 +1,3307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.2/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <style>
+  dt {
+    background-color: #5cb85c
+  }
+  dt.error{
+    background-color: #d9534f
+  }
+  </style>
+  <body>
+    <section class="suite">
+      <h1>User controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Register user</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without password</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without security question 1</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without secuity question 1's question or answer</h1>
+              <dl>
+                <dt>respond with status 400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    securityQuestion1:{
+    }
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without secuity question 2</h1>
+              <dl>
+                <dt>respond with status 400 code:6</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    securityQuestion1:{
+      question:1,
+      answer:&quot;text&quot;
+    }
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,6);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without secuity question 2</h1>
+              <dl>
+                <dt>respond with status 400 code:7</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    securityQuestion1:{
+      question:1,
+      answer:&quot;text&quot;
+    },
+    securityQuestion2:{
+    }
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,7);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With security question 1 equal security question 2</h1>
+              <dl>
+                <dt>respond with status 400 code:8</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    securityQuestion1:{
+      question:1,
+      answer:&quot;1&quot;
+    },
+    securityQuestion2:{
+      question:1,
+      answer:&quot;2&quot;
+    }
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,8);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>User register course with valid data</h1>
+              <dl>
+                <dt>respond with status 201</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/register')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    roles:[&quot;student&quot;, &quot;teacher&quot;],
+    securityQuestion1:{
+      question:1,
+      answer:&quot;1&quot;
+    },
+    securityQuestion2:{
+      question:2,
+      answer:&quot;2&quot;
+    }
+  }
+})
+.expect(201,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Login user</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without password</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Invalid credentials</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;invalid&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Invalid credentials</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    role:&quot;invalid&quot;
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid credentials</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/login')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;,
+    password:&quot;test&quot;,
+    role:&quot;teacher&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Check user data for password and pin change</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without email</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/checkUser')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without security question 1</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/checkUser')
+.send({
+  email:&quot;test@test.com&quot;
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without security question 2</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/checkUser')
+.send({
+  email:&quot;test@test.com&quot;,
+  securityQuestion1:{
+    question:1,
+    answer:&quot;1&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Invalid data</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/checkUser')
+.send({
+  email:&quot;test@test.com&quot;,
+  securityQuestion1:{
+    question:1,
+    answer:&quot;2&quot;
+  },
+  securityQuestion2:{
+    question:2,
+    answer:&quot;1&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/checkUser')
+.send({
+  email:&quot;test@test.com&quot;,
+  securityQuestion1:{
+    question:1,
+    answer:&quot;1&quot;
+  },
+  securityQuestion2:{
+    question:2,
+    answer:&quot;2&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Change password and pin</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without email</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/updateSecurityInfo')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without new password</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/updateSecurityInfo')
+.send({
+  email:&quot;test@test.com&quot;
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With the new securoty questions being the same</h1>
+              <dl>
+                <dt>respond with status 400 code 3</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/updateSecurityInfo')
+.send({
+  email:&quot;test@test.com&quot;,
+  password:&quot;test&quot;,
+  securityQuestion1:{
+    question:1,
+    answer:&quot;1&quot;
+  },
+  securityQuestion2:{
+    question:1,
+    answer:&quot;2&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With the new securoty questions being the same</h1>
+              <dl>
+                <dt>respond with status 400 code 3</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/updateSecurityInfo')
+.send({
+  email:&quot;test@test.com&quot;,
+  password:&quot;newTest&quot;,
+  securityQuestion1:{
+    question:1,
+    answer:&quot;1&quot;
+  },
+  securityQuestion2:{
+    question:2,
+    answer:&quot;2&quot;
+  }
+})
+.expect(200,done)</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Course controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Course register</h1>
+          <dl>
+            <section class="suite">
+              <h1>Teacher without email register course with valid data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/register')
+.send({
+  course:{
+    name:&quot;Arquitectura Computadores&quot;,
+    description:&quot;Curso 2016-B&quot;
+  },
+  user:{
+    role:&quot;teacher&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Student register course with valid data</h1>
+              <dl>
+                <dt>respond with status:403 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/register')
+.send({
+  course:{
+    name:&quot;Arquitectura Computadores&quot;,
+    description:&quot;Curso 2016-B&quot;
+  },
+  user:{
+    email:&quot;test@test.com&quot;,
+    role:&quot;student&quot;
+  }
+})
+.expect(403)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Teacher without role register course with valid data</h1>
+              <dl>
+                <dt>respond with status:403 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/register')
+.send({
+  course:{
+    name:&quot;Arquitectura Computadores&quot;,
+    description:&quot;Curso 2016-B&quot;
+  },
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(403)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Teacher register course without name</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/register')
+.send({
+  course:{
+    description:&quot;Curso 2016-B&quot;
+  },
+  user:{
+    email:&quot;test@test.com&quot;,
+    role:&quot;teacher&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Teacher register course with valid data</h1>
+              <dl>
+                <dt>respond with status 201 : Course created</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/register')
+.send({
+  course:{
+    name:&quot;Test Course&quot;,
+    description:&quot;Description test course&quot;
+  },
+  user:{
+    email:&quot;test@test.com&quot;,
+    role:&quot;teacher&quot;
+  }
+})
+.expect(201)
+.end(function(err, res) {
+  if (err) return done(err);
+  var newContent=contents.replace(/idCourse=\d{1,}/, &quot;idCourse=&quot;+res.body.course.id);
+  fs.writeFileSync(&quot;./tests/config.txt&quot;,newContent);
+  idCourseCreated=res.body.course.id;
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get courses created by user</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/createdByUser')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/createdByUser')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/createdByUser')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get courses by teacher</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byTeacher')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byTeacher')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byTeacher')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get courses by student</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byStudent')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/byStudent')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Register a student in a course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without student's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without student's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:6</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  },
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,6);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  },
+  user:{
+    email:&quot;test3@test.com&quot;
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the student being a user with the student role</h1>
+              <dl>
+                <dt>respond with status 204</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test3@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  },
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(204,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/registerStudent')
+.send({
+  student:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  },
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get course by id</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+  user:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/getById')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Edit course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's name</h1>
+              <dl>
+                <dt>respond with status 400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated,
+    name:&quot;New name&quot;,
+    description:&quot;New description&quot;
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/update')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated,
+    name:&quot;New name&quot;,
+    description:&quot;New description&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Clone course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+  user:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/clone')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>SecutiryQuestions controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Get all</h1>
+          <dl>
+            <section class="suite">
+              <h1>Valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.get('/securityQuestion/getAll')
+.send({
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Test controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Register test</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without a title</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/register')
+.send({
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without an owner</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a start date time</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a finish date time</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a course</h1>
+              <dl>
+                <dt>respond with status:400 code:5</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+var finishDateTime= new Date();
+finishDateTime=finishDateTime.toISOString();
+supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:finishDateTime
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With the startDateTime being greater than the finishDateTime</h1>
+              <dl>
+                <dt>respond with status:400 code:6</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:startDateTime,
+    course:idCourseCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,6);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test</h1>
+              <dl>
+                <dt>respond with status:400 code:7</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+supertest(url)
+.post('/test/register')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,7);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+var finishDateTime= new Date();
+finishDateTime.setFullYear(finishDateTime.getFullYear()+1);
+finishDateTime=finishDateTime.toISOString();
+supertest(url)
+.post('/test/register')
+.send({
+  test:{
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:finishDateTime,
+    course:idCourseCreated
+  },
+  multipleChoiceQuestions:[{text:&quot;test&quot;,weighing:1,options:[{isCorrect:true,justification:&quot;test&quot;,text:&quot;test&quot;}]}],
+  fillQuestions:[{weighing:1,statements:[{text:'test'}], options:[{isCorrect:true,justification:'test',text:'test'}]}],
+  trueFalseQuestions:[{justification:'test',option:'true',text:'test',weighing:1}]
+})
+.expect(200)
+.end(function(err, res) {
+  if (err) return done(err);
+  idTestCreated=res.body.test.id;
+  idQuestionCreated=res.body.test.multipleChoiceQuestions[0].id;
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get tests by course and teacher</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByTeacher')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get tests by course and student</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+  user:{
+    email:'test2@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byCourseByStudent')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get tests by student</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byStudent')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/byStudent')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get tests created by user</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/createdByUser')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/createdByUser')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/createdByUser')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get test by id</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the test</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestById')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get test without questions by id</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the test</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdWOQuestions')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get students by test id</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the test</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getStudentsByTestId')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Get test by id for student</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being a student of the test</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/getTestByIdForStudent')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Update test</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without a test</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/update')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without id</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/update')
+.send({
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without title</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without an owner</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a start date time</h1>
+              <dl>
+                <dt>respond with status:400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a finish date time</h1>
+              <dl>
+                <dt>respond with status:400 code:6</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,6);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a course</h1>
+              <dl>
+                <dt>respond with status:400 code:7</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+var finishDateTime= new Date();
+finishDateTime=finishDateTime.toISOString();
+supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:finishDateTime
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,7);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With the startDateTime being greater than the finishDateTime</h1>
+              <dl>
+                <dt>respond with status:400 code:8</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:startDateTime,
+    course:idCourseCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,8);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Valid data: 1 Multiple choice question, 1 Fill question and 1 True or False question</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>var startDateTime= new Date();
+startDateTime=startDateTime.toISOString();
+var finishDateTime= new Date();
+finishDateTime.setFullYear(finishDateTime.getFullYear()+1);
+finishDateTime=finishDateTime.toISOString();
+supertest(url)
+.post('/test/update')
+.send({
+  test:{
+    id:idTestCreated,
+    title:&quot;test&quot;,
+    createdBy:&quot;test@test.com&quot;,
+    startDateTime:startDateTime,
+    finishDateTime:finishDateTime,
+    course:idCourseCreated
+  },
+  multipleChoiceQuestions:[{text:&quot;test&quot;,weighing:1,options:[{isCorrect:true,justification:&quot;test&quot;,text:&quot;test&quot;}]}],
+  fillQuestions:[{weighing:1,statements:[{text:'test'}], options:[{isCorrect:true,justification:'test',text:'test'}]}],
+  trueFalseQuestions:[{justification:'test',option:'true',text:'test',weighing:1}]
+})
+.expect(200)
+.end(function(err, res) {
+  if (err) return done(err);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Register test taken</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without a test</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without a test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+  test:{
+    id:idTestCreated
+  },
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's questions</h1>
+              <dl>
+                <dt>respond with status:400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+  test:{
+    id:idTestCreated
+  },
+  user:{
+    email:&quot;test2@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/registerTakenTest')
+.send({
+  test:{
+    id:idTestCreated,
+    questions:[{options:[{isCorrect:true, isSelected:false}]}]
+  },
+  user:{
+    email:&quot;test2@test.com&quot;
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Question controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Clone question</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status:400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status:400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status:400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status:400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without question's data</h1>
+              <dl>
+                <dt>respond with status:400 code:5</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,5);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the owner of the question</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  },
+  question:{
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/question/clone')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  },
+  question:{
+    type:&quot;multipleCh&quot;,
+    text:&quot;test&quot;,
+    weighing:1,
+    options:[
+      {isCorrect:true,
+        justification:&quot;test&quot;,
+        text:&quot;test&quot;
+      }
+    ]
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Delete question</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without question's id</h1>
+              <dl>
+                <dt>respond with status:400</dt>
+                <dd><pre><code>supertest(url)
+.post('/question/delete')
+.send({
+})
+.expect(400,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status:200</dt>
+                <dd><pre><code>supertest(url)
+.post('/question/delete')
+.send({
+  id:idQuestionCreated
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>User controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Get students by course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/user/studentsByCourse')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Test controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Delete test</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+  user:{
+    email:'test@test.com'
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without test's id</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the test</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+  user:{
+    email:'test2@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/test/delete')
+.send({
+  user:{
+    email:'test@test.com'
+  },
+  test:{
+    id:idTestCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+    <section class="suite">
+      <h1>Course controller services</h1>
+      <dl>
+        <section class="suite">
+          <h1>Delete student from course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without student's email</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/deleteStudent')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without teacher's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/deleteStudent')
+.send({
+  studentEmail:&quot;test2@test.com&quot;
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's id</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/deleteStudent')
+.send({
+  studentEmail:&quot;test2@test.com&quot;,
+  teacherEmail:&quot;test@test.com&quot;
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/deleteStudent')
+.send({
+  studentEmail:&quot;test2@test.com&quot;,
+  teacherEmail:&quot;test@test.com&quot;,
+  idCourse:idCourseCreated
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+        <section class="suite">
+          <h1>Delete course</h1>
+          <dl>
+            <section class="suite">
+              <h1>Without user's data</h1>
+              <dl>
+                <dt>respond with status 400 code:1</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,1);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without user's email</h1>
+              <dl>
+                <dt>respond with status 400 code:2</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+  user:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,2);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's data</h1>
+              <dl>
+                <dt>respond with status 400 code:3</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,3);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without course's email</h1>
+              <dl>
+                <dt>respond with status 400 code:4</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+  }
+})
+.expect(400)
+.end(function(err, res) {
+  if (err) return done(err);
+  assert.equal(res.body.code,4);
+  done();
+});</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>Without the user being the owner of the course</h1>
+              <dl>
+                <dt>respond with status:403</dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+  user:{
+    email:&quot;test2@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(403,done);</code></pre></dd>
+              </dl>
+            </section>
+            <section class="suite">
+              <h1>With valid data</h1>
+              <dl>
+                <dt>respond with status 200 </dt>
+                <dd><pre><code>supertest(url)
+.post('/course/delete')
+.send({
+  user:{
+    email:&quot;test@test.com&quot;
+  },
+  course:{
+    id:idCourseCreated
+  }
+})
+.expect(200,done);</code></pre></dd>
+              </dl>
+            </section>
+          </dl>
+        </section>
+      </dl>
+    </section>
+
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  </body>
+</html>

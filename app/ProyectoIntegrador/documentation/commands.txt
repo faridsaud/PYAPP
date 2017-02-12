@@ -1,13 +1,14 @@
 //Test excecution
-node node_modules/mocha/bin/mocha ./tests/RestServices.js --timeout 15000
-//configurar sdk google
+node node_modules/mocha/bin/mocha ./tests/RestServices.js --timeout 15000 --reporter doc > resultados.html
+node node_modules/mocha/bin/mocha ./tests/RestServices.js --timeout 15000 > resultados.txt
+
+//configure sdk google
 gcloud init
-1
-1
 
 //deploy app google cloud
 gcloud app deploy
 
+//Important: Do not forget to enable 
 //Al momento de crear la instancia de la bdd cloud sql no olvidar Enable the Cloud SQL Administration API. info:https://cloud.google.com/sql/docs/app-engine-connect App Engine flexible environment to Second Generation
 
 
