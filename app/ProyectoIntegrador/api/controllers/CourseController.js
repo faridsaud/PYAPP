@@ -112,6 +112,7 @@ module.exports = {
             return res.json(201, {
               code: 1,
               msg: "Course created",
+              msgES:"Curso creado",
               course: newRecord
             });
           }
