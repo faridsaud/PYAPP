@@ -2,7 +2,7 @@
 * QuestionController
 * @module {Controller} Question
 * @author Farid Saud Rolleri
-* @description :: Server-side logic for managing options
+* @description :: Server-side logic for managing questions
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 

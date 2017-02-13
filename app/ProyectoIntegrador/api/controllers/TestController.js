@@ -1,17 +1,34 @@
 /**
 * TestController
-*
+* @module {Controller} Test
+* @author Farid Saud Rolleri
 * @description :: Server-side logic for managing tests
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
-
 var Promise = require("bluebird");
 module.exports = {
 
 
 
 	/**
-	* `TestController.insertar()`
+	* @memberof module:Test
+	* @function register
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.test Test to be registered
+	* @param  {string} req.body.test.title Title
+	* @param  {string} req.body.test.description Description
+	* @param  {int} req.body.test.intents Intents
+	* @param  {string} req.body.test.createdBy Email of the teacher creating the test
+	* @param  {string} req.body.test.status Status
+	* @param  {datetime} req.body.test.startDateTime Starting date-time
+	* @param  {datetime} req.body.test.finishDateTime Starting date-time
+	* @param  {int} req.body.test.course Course in which the test will be created
+	* @param  {JSON[]} req.body.multipleChoiceQuestions Multiple choice questions of the test
+	* @param  {JSON[]} req.body.fillQuestions Fill questions of the test
+	* @param  {JSON[]} req.body.trueFalseQuestions True false questions of the tests
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Register the test
 	*/
 	register: function (req, res) {
 		if(!req.body.test){
@@ -206,6 +223,18 @@ module.exports = {
 		})
 	},
 
+
+	/**
+	* @memberof module:Test
+	* @function checkTestData
+	* @param  {JSON} req HTTP request objec
+	* @param  {JSON[]} req.body.multipleChoiceQuestions Multiple choice questions of the test
+	* @param  {JSON[]} req.body.fillQuestions Fill questions of the test
+	* @param  {JSON[]} req.body.trueFalseQuestions True false questions of the tests
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Checks the format of all the questions of the test
+	*/
 	checkTestData:function(req){
 		/*Check True False questions*/
 		if(!req.body.trueFalseQuestions){
@@ -509,6 +538,13 @@ module.exports = {
 
 	},
 
+	/**
+	* @memberof module:Test
+	* @function checkStatus
+	* @param  {JSON[]} tests List of all the test
+	* @returns  {JSON[]} List of all the test with their status updated
+	* @description Update the status of the tests
+	*/
 	checkStatus:function(tests){
 		var actualDate = new Date();
 		tests=sails.controllers.test.parseISOtoDateformat(tests);
@@ -533,6 +569,13 @@ module.exports = {
 		return tests;
 	},
 
+	/**
+	* @memberof module:Test
+	* @function parseISOtoDateformat
+	* @param  {JSON[]} tests List of all the tests
+	* @returns  {JSON} HTTP response object
+	* @description Parse the format of the dates of the tests from ISO to javascript Date
+	*/
 	parseISOtoDateformat:function(tests){
 		for(var i=0;i<tests.length;i++){
 			console.log(tests[i].startDateTime);
@@ -543,6 +586,18 @@ module.exports = {
 		return tests;
 	},
 
+	/**
+	* @memberof module:Test
+	* @function getTestsByCourseByTeacher
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his tests
+	* @param  {string} req.body.user.email Email of the user
+	* @param  {JSON} req.body.course Course of which the tests will be retrieved
+	* @param  {int} req.body.course.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the tests of the course of the teacher
+	*/
 	getTestsByCourseByTeacher:function(req, res){
 		if(!req.body.user){
 			return res.json(400,{code:1,msg: 'Error getting the tests, there is not user\'s data'});
@@ -591,6 +646,18 @@ module.exports = {
 		});
 	},
 
+	/**
+	* @memberof module:Test
+	* @function getTestsByCourseByStudent
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his tests
+	* @param  {string} req.body.user.email Email of the user
+	* @param  {JSON} req.body.course Course of which the tests will be retrieved
+	* @param  {int} req.body.course.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the tests of the course of the student
+	*/
 	getTestsByCourseByStudent:function(req, res){
 		if(!req.body.user){
 			return res.json(400,{code:1,msg: 'Error getting the tests, there is not user\'s data'});
@@ -637,6 +704,17 @@ module.exports = {
 			}
 		});
 	},
+
+	/**
+	* @memberof module:Test
+	* @function getTestsCreatedByUser
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his tests
+	* @param  {string} req.body.user.email Email of the user
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the tests that the user have created
+	*/
 	getTestsCreatedByUser:function(req, res){
 		if(!req.body.user){
 			return res.json(400,{code:1,msg: 'Error getting the tests, no user data send'});
@@ -656,6 +734,17 @@ module.exports = {
 		})
 	},
 
+
+	/**
+	* @memberof module:Test
+	* @function getTestsByStudent
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his tests
+	* @param  {string} req.body.user.email Email of the user
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the tests of which the student has access to
+	*/
 	getTestsByStudent:function(req, res){
 		if(!req.body.user){
 			return res.json(400,{code:1,msg:"Error getting the tests, there is not user\'s data send"});
@@ -676,6 +765,19 @@ module.exports = {
 		});
 	},
 
+
+	/**
+	* @memberof module:Test
+	* @function deleteTest
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User deleting the test
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} req.body.test Test that will be deleted
+	* @param  {int} req.body.test.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Delete the test
+	*/
 	deleteTest:function(req,res){
 		if(!req.body.user){
 			return res.json(400,{code:1,msg:"Error deleting the test. No user\'s data send"});
@@ -712,6 +814,19 @@ module.exports = {
 		});
 	},
 
+	/**
+	* @memberof module:Test
+	* @function getTestById
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his test
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} req.body.test Test that will be retrieved
+	* @param  {int} req.body.test.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the information of the test
+	*/
+
 	getTestById:function(req,res){
 
 		if(!req.body.user){
@@ -730,8 +845,6 @@ module.exports = {
 		}else{
 			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
-		console.log(email);
-		console.log(testId);
 		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
 			if(error){
 				return res.json(500,{msg:"Error"});
@@ -782,7 +895,20 @@ module.exports = {
 
 	},
 
-	/*Without Questions*/
+
+	/**
+	* @memberof module:Test
+	* @function getTestWOQuestionsById
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving his test
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} req.body.test Test that will be retrieved
+	* @param  {int} req.body.test.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all the information of the test except it questions
+	*/
+
 	getTestWOQuestionsById:function(req,res){
 
 		if(!req.body.user){
@@ -802,8 +928,6 @@ module.exports = {
 			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
 
-		console.log(email);
-		console.log(testId);
 		sails.models.test.findOne({id:testId, createdBy:email}).exec(function(error, finded){
 			if(error){
 				return res.json(500,{msg:"Error"});
@@ -825,10 +949,20 @@ module.exports = {
 
 	},
 
+
+	/**
+	* @memberof module:Test
+	* @function getStudentsByTest
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving the students
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} req.body.test Test on which the students are registered
+	* @param  {int} req.body.test.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get all students that are registered in the test
+	*/
 	getStudentsByTest:function(req,res){
-
-
-
 		if(!req.body.user){
 			return res.json(400,{code:1,msg:"No user\'s data send"});
 		}
@@ -845,9 +979,6 @@ module.exports = {
 		}else{
 			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
-
-		console.log(email);
-		console.log(testId);
 		sails.models.usrtes.find({email:email, idTest:testId, status:'t'})
 		.then(function(recordsFinded){
 			if(recordsFinded.length==0){
@@ -889,7 +1020,18 @@ module.exports = {
 		})
 	},
 
-
+	/**
+	* @memberof module:Test
+	* @function getTestByIdForStudent
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.user User retrieving the test
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} req.body.test Test that will be retrieved
+	* @param  {int} req.body.test.id Id
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Get the information of the test that the student has access to
+	*/
 	getTestByIdForStudent:function(req,res){
 
 		if(!req.body.user){
@@ -908,9 +1050,6 @@ module.exports = {
 		}else{
 			return res.json(400,{code:4,msg:"No test\'s id send"});
 		}
-
-		console.log(email);
-		console.log(testId);
 		sails.models.usrtes.findOne({email:email, status:'s', idTest:testId}).exec(function(error, recordFinded){
 			if(error){
 				return res.json(500,{msg:"Error retrieving the test"});
@@ -939,9 +1078,7 @@ module.exports = {
 									for(var i=0;i<test.questions.length;i++){
 										optionsPromises.push(sails.controllers.option.getOptionsByQuestion(test.questions[i]));
 									}
-									console.log("Esperando los datos")
 									Promise.all(optionsPromises).then(function(){
-										console.log("se obtuvieron los datos completos");
 										//console.log(test.questions);
 										//eliminar linea de abajo);
 										return res.json(200,{test:test, msg:"OK"});
@@ -971,6 +1108,28 @@ module.exports = {
 		})
 
 	},
+
+	/**
+	* @memberof module:Test
+	* @function edit
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.test Test to be updated
+	* @param  {string} req.body.test.id Id
+	* @param  {string} req.body.test.title Title
+	* @param  {string} req.body.test.description Description
+	* @param  {int} req.body.test.intents Intents
+	* @param  {string} req.body.test.createdBy Email of the teacher updating the test
+	* @param  {string} req.body.test.status Status
+	* @param  {datetime} req.body.test.startDateTime Starting date-time
+	* @param  {datetime} req.body.test.finishDateTime Starting date-time
+	* @param  {int} req.body.test.course Course in which the test will be updated
+	* @param  {JSON[]} req.body.multipleChoiceQuestions Multiple choice questions of the test
+	* @param  {JSON[]} req.body.fillQuestions Fill questions of the test
+	* @param  {JSON[]} req.body.trueFalseQuestions True false questions of the tests
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Edit the test
+	*/
 	edit: function (req, res) {
 		if(req.body.test){
 			var newTest=req.body.test;
@@ -1081,18 +1240,7 @@ module.exports = {
 		sails.controllers.question.separateQuestionByAction(multipleChoiceQuestions,multipleChoiceQuestionsToBeCreated,multipleChoiceQuestionsToBeUpdated);
 		sails.controllers.question.separateQuestionByAction(fillQuestions,fillQuestionsToBeCreated,fillQuestionsToBeUpdated);
 		sails.controllers.question.separateQuestionByAction(trueFalseQuestions,trueFalseQuestionsToBeCreated,trueFalseQuestionsToBeUpdated);
-		console.log("Multiple choice questions to be created")
-		console.log(multipleChoiceQuestionsToBeCreated);
-		console.log("Multiple choice questions to be updated")
-		console.log(multipleChoiceQuestionsToBeUpdated);
-		console.log("TF questions to be created")
-		console.log(trueFalseQuestionsToBeCreated);
-		console.log("TF questions to be updated")
-		console.log(trueFalseQuestionsToBeUpdated);
-		console.log("fill questions to be created")
-		console.log(fillQuestionsToBeCreated);
-		console.log("fill questions to be updated")
-		console.log(fillQuestionsToBeUpdated);
+
 
 		/*Register mc questions*/
 		for (var i=0;i<multipleChoiceQuestionsToBeCreated.length;i++){
@@ -1237,6 +1385,19 @@ module.exports = {
 
 	},
 
+	/**
+	* @memberof module:Test
+	* @function registerTakenTest
+	* @param  {JSON} req HTTP request object
+	* @param  {JSON} req.body.test Taken test to be register
+	* @param  {string} req.body.test.id Id
+	* @param  {JSON[]} req.body.test.questions Question with the options selected
+	* @param  {JSON} req.body.user User taking the test
+	* @param  {string} req.body.user.email Email
+	* @param  {JSON} res HTTP response object
+	* @returns  {JSON} HTTP response object
+	* @description Register the taken test by the student
+	*/
 	registerTakenTest:function(req,res){
 
 		if(req.body.test){
@@ -1376,7 +1537,15 @@ module.exports = {
 
 	},
 
-
+	/**
+	* @memberof module:Test
+	* @function createCloneTest
+	* @param  {JSON[]} mappedTests List of the tests mapped (oldTest, newTest)
+	* @param  {JSON} oldTest Test that will be used to create the new one
+	* @param  {int} courseId Id of the course
+	* @returns  {promise} promise of the create action
+	* @description Created a test with the information of an old one
+	*/
 	createCloneTest:function(mappedTests, oldTest, courseId){
 		var createTestPromise=sails.models.test.create({idCourse:courseId, title:oldTest.title, description:oldTest.description, createdBy:oldTest.createdBy, status:oldTest.status, startDateTime:oldTest.startDateTime, finishDateTime:oldTest.finishDateTime, averageScore:0,intents:oldTest.intents})
 		.then(function(testCreated){
