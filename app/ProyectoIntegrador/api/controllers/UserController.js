@@ -1,13 +1,32 @@
 /**
-* UsuarioController
-*
-* @description :: Server-side logic for managing usuarios
+* UserController
+* @module {Controller} User
+* @author Farid Saud Rolleri
+* @description :: Server-side logic for managing users
 * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
 */
 var bcrypt=require('bcrypt-nodejs');
 var Promise = require("bluebird");
 module.exports = {
 
+  /**
+  * @memberof module:User
+  * @function register
+  * @param  {JSON} req HTTP request object
+  * @param  {JSON} req.body.user User to be registered
+  * @param  {string} req.body.user.email Email
+  * @param  {string} req.body.user.password Password
+  * @param  {JSON} req.body.user.securityQuestion1 Security question 1
+  * @param  {JSON} req.body.user.securityQuestion2 Security question 2
+  * @param  {string} req.body.user.passport Passport id
+  * @param  {string} req.body.user.name Name
+  * @param  {string} req.body.user.lastName Last Name
+  * @param  {string} req.body.user.country Country
+  * @param  {string[]} req.body.user.roles List of roles
+  * @param  {JSON} res HTTP response object
+  * @returns  {JSON} HTTP response object
+  * @description Register a user
+  */
   register: function (req, res) {
     var error=false;
     if(!req.body.user){
@@ -115,7 +134,18 @@ module.exports = {
 
   },
 
-
+  /**
+  * @memberof module:User
+  * @function login
+  * @param  {JSON} req HTTP request object
+  * @param  {JSON} req.body.user User loggin in
+  * @param  {string} req.body.user.email Email
+  * @param  {string} req.body.user.password Password
+  * @param  {string} req.body.user.pin Password
+  * @param  {JSON} res HTTP response object
+  * @returns  {JSON} HTTP response object
+  * @description Login
+  */
   login:function(req,res){
     if(!req.body.user){
       return res.json(400,{code:1,msg: 'Error login in the user, no user send'});
@@ -181,6 +211,18 @@ module.exports = {
 
   },
 
+  /**
+  * @memberof module:User
+  * @function getStudentsByCourse
+  * @param  {JSON} req HTTP request object
+  * @param  {JSON} req.body.user User retrieving the students
+  * @param  {string} req.body.user.email Email
+  * @param  {JSON} req.body.course Course of the students
+  * @param  {int} req.body.course.id Id
+  * @param  {JSON} res HTTP response object
+  * @returns  {JSON} HTTP response object
+  * @description Get all the students that are registered in the course
+  */
   getStudentsByCourse: function (req, res) {
     if(!req.body.user){
       return res.json(400,{code:1,msg:"There is not a user's data send"});
@@ -192,7 +234,7 @@ module.exports = {
       return res.json(400,{code:2,msg:"There is not a user's email send"});
     }
     if(!req.body.course){
-    return res.json(400,{code:3,msg:"There is not a course's data send"});
+      return res.json(400,{code:3,msg:"There is not a course's data send"});
     }
     if(req.body.course.id){
       var idCourse=req.body.course.id;
@@ -224,6 +266,15 @@ module.exports = {
     });
 
   },
+
+  /**
+  * @memberof module:User
+  * @function getStudentDataWithScore
+  * @param  {string} email Email of the user
+  * @param  {float} score Score of the student
+  * @returns  {promise} Promise of the select action
+  * @description Get student with score
+  */
   getStudentDataWithScore:function(email, score){
     var promise=sails.models.user.findOne({email:email}).
     then(function(userFinded){
@@ -232,14 +283,18 @@ module.exports = {
       delete userFinded.firstName;
       delete userFinded.lastNames;
       userFinded.score=score;
-      console.log("Usuario en promesa");
-      console.log(userFinded);
       return userFinded;
     })
     return promise;
 
   },
 
+  /**
+  * @memberof module:User
+  * @function generatePin
+  * @returns  {int} PIN generated
+  * @description Generates a ramdom PIN
+  */
   generatePin:function(){
     var initialNumber="";
     for(var i=0;i<2;i++){
@@ -251,20 +306,19 @@ module.exports = {
     var pin=initialNumber+middleNumber+finalNumber;
     return pin;
   },
-
+  /**
+  * @memberof module:User
+  * @function findUserByPin
+  * @param {int} pin Pin
+  * @returns  {promise} Promise of the select action
+  * @description Find a user by PIN
+  */
   findUserByPin:function(pin){
     var promise=sails.models.user.find()
     .then(function(users){
       var finded=false;
-
-      console.log("Se encontro todos los usuarios");
-      console.log(users);
       for(var i=0;i<users.length;i++){
-        console.log("pin enviado"+pin);
-        console.log("pin del usuario"+users[i].pin);
         if(bcrypt.compareSync(pin, users[i].pin)==true){
-          console.log("usuario encontrado");
-          console.log(users[i]);
           finded=true;
           return users[i];
         }
@@ -276,6 +330,17 @@ module.exports = {
     return promise;
   },
 
+  /**
+  * @memberof module:User
+  * @function check
+  * @param  {JSON} req HTTP request object
+  * @param  {string} req.body.email Email
+  * @param  {JSON} req.body.securityQuestion1 Security question 1
+  * @param  {JSON} req.body.securityQuestion2 Security question 2
+  * @param  {JSON} res HTTP response object
+  * @returns  {JSON} HTTP response object
+  * @description Check if the security questions and answers given by the user match with the ones in the database
+  */
   check:function(req,res){
     if(req.body.email){
       var email=req.body.email;
@@ -319,6 +384,19 @@ module.exports = {
 
   },
 
+
+  /**
+  * @memberof module:User
+  * @function updateSecurityInfo
+  * @param  {JSON} req HTTP request object
+  * @param  {string} req.body.email Email of the user
+  * @param  {string} req.body.password New password
+  * @param  {JSON} req.body.securityQuestion1 New Security question 1
+  * @param  {JSON} req.body.securityQuestion2 New Security question 2
+  * @param  {JSON} res HTTP response object
+  * @returns  {JSON} HTTP response object
+  * @description Updates the security information of the user
+  */
   updateSecurityInfo:function(req, res){
     if(req.body.email){
       var email=req.body.email;
