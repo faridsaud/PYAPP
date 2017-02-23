@@ -11,15 +11,15 @@
           </div>
           <div class="form-group">
             <label for="pwd">Título:</label>
-            <input type="text" class="form-control" id="pwd" ng-model="test.title" ng-required="true">
+            <input type="text" class="form-control" id="pwd" ng-model="test.title" ng-required="true" maxlength="100">
           </div>
           <div class="form-group">
             <label for="name">Descripción:</label>
-            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ng-required="true" ></textarea>
+            <textarea type="text" class="form-control" id="description" rows="5" ng-model="test.description" ng-required="true" maxlength="300"></textarea>
           </div>
           <div class="form-group">
             <label for="name">Número de intentos:</label>
-            <input type="number" class="form-control"  ng-model="test.intents" ng-required="true">
+            <input type="number" class="form-control"  ng-model="test.intents" ng-required="true" maxlength="2">
           </div>
           <div class="row">
             <div class="col-md-6">
@@ -62,13 +62,13 @@
         <div class="col-md-10">
           <div class="form-group">
             <label for="comment">Enunciado:</label>
-            <textarea class="form-control" rows="3" id="comment" ng-model="multipleChoiceQuestion.text"></textarea>
+            <textarea class="form-control" rows="3" id="comment" ng-model="multipleChoiceQuestion.text" maxlength="800"></textarea>
           </div>
         </div>
         <div class="col-md-2">
           <div class="form-group">
             <label for="usr" title="">Ponderación: X:1</label>
-            <input type="text" class="form-control" ng-model="multipleChoiceQuestion.weighing">
+            <input type="text" class="form-control" ng-model="multipleChoiceQuestion.weighing" maxlength="2">
           </div>
         </div>
       </div>
@@ -77,7 +77,7 @@
           <div class="col-md-10">
             <div class="form-group">
               <label for="comment">Opcion {{$index+1}}:</label>
-              <textarea class="form-control" rows="2" id="comment" ng-model="option.text"></textarea>
+              <textarea class="form-control" rows="2" id="comment" ng-model="option.text" maxlength="800"></textarea>
             </div>
           </div>
           <div class="col-md-2">
@@ -93,7 +93,7 @@
             <div class="col-md-12 ">
               <div class="form-group">
                 <label for="comment">Justificación opción {{$index+1}}:</label>
-                <textarea class="form-control" rows="3" id="comment" ng-model="option.justification"></textarea>
+                <textarea class="form-control" rows="3" id="comment" ng-model="option.justification" maxlength="800"></textarea>
               </div>
             </div>
           </div>
@@ -137,7 +137,7 @@
           <div class="col-md-12">
             <div class="form-group">
               <label for="comment">Enunciado:</label>
-              <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.text"></textarea>
+              <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.text" maxlength="800"></textarea>
             </div>
           </div>
         </div>
@@ -160,13 +160,13 @@
           <div class="col-md-2">
             <div class="form-group">
               <label for="usr" title="">Ponderación: X:1</label>
-              <input type="text" class="form-control" id="usr" ng-model="trueFalseQuestion.weighing">
+              <input type="text" class="form-control" id="usr" ng-model="trueFalseQuestion.weighing" maxlength="2">
             </div>
           </div>
           <div class="col-md-8">
             <div class="form-group">
               <label for="comment">Justificación:</label>
-              <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.justification"></textarea>
+              <textarea class="form-control" rows="3" id="comment" ng-model="trueFalseQuestion.justification" maxlength="800"></textarea>
             </div>
           </div>
         </div>
@@ -204,7 +204,7 @@
             <div class="form-group">
               <label for="comment">Enunciados:</label>
               <div ng-repeat="statement in fillQuestion.statements track by $index" >
-                <textarea class="form-control" rows="2"  ng-model="statement.text"></textarea>
+                <textarea class="form-control" rows="2"  ng-model="statement.text" maxlength="200"></textarea>
               </div>
             </div>
           </div>
@@ -212,7 +212,7 @@
           <div class="col-md-2">
             <div class="form-group">
               <label for="usr" title="">Ponderación: X:1</label>
-              <input type="text" class="form-control" id="usr" ng-model="fillQuestion.weighing">
+              <input type="text" class="form-control" id="usr" ng-model="fillQuestion.weighing" maxlength="2">
             </div>
           </div>
         </div>
@@ -227,7 +227,7 @@
             <div class="col-md-10">
               <div class="form-group">
                 <label for="comment">Opción {{$index+1}}:</label>
-                <textarea class="form-control" rows="2" id="comment" ng-model="option.text"></textarea>
+                <textarea class="form-control" rows="2" id="comment" ng-model="option.text" maxlength="800"></textarea>
               </div>
             </div>
             <div class="col-md-2">
@@ -244,7 +244,7 @@
             <div class="col-md-12">
               <div class="form-group">
                 <label for="comment">Justificación {{$index+1}}:</label>
-                <textarea class="form-control" rows="2"  ng-model="option.justification"></textarea>
+                <textarea class="form-control" rows="2"  ng-model="option.justification" maxlength="800"></textarea>
               </div>
             </div>
           </div>

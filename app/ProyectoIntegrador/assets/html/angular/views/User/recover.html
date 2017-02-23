@@ -4,21 +4,21 @@
     <form ng-submit="check()">
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" class="form-control" id="email" ng-model="email" required >
+        <input type="email" class="form-control" id="email" ng-model="email" maxlength="254" required >
       </div>
       <div class="form-group">
         <label for="">Pregunta de seguridad 1:</label>
         <select class="form-control" ng-model="securityQuestion1.question" required>
           <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
         </select>
-        <input type="text" class="form-control" ng-model="securityQuestion1.answer" required >
+        <input type="text" class="form-control" ng-model="securityQuestion1.answer" maxlength="300" required >
       </div>
       <div class="form-group">
         <label for="">Pregunta de seguridad 2:</label>
         <select class="form-control" ng-model="securityQuestion2.question" required>
           <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
         </select>
-        <input type="text" class="form-control" ng-model="securityQuestion2.answer" required >
+        <input type="text" class="form-control" ng-model="securityQuestion2.answer" maxlength="300" required >
       </div>
       <button type="submit" class="btn btn-primary pull-right">Siguiente</button>
     </form>

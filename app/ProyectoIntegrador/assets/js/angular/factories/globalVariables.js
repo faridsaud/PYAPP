@@ -1,5 +1,6 @@
 app.factory('globalVariables', function() {
   return {
-      url : 'http://localhost:1337'
+      //url : 'https://proyectointegrador-faridsaud.appspot-preview.com/'
+      url:"http://localhost:1337"
   };
 });

@@ -3,16 +3,16 @@
     <form ng-submit="register()">
       <div class="form-group">
         <label for="name">Nombre</label>
-        <input type="text" class="form-control" id="name" ng-model="course.name" required >
+        <input type="text" class="form-control" id="name" ng-model="course.name" maxlength="40" required >
       </div>
       <div class="form-group">
         <label for="name">Descripción</label>
-        <textarea type="text" class="form-control" id="description" rows="5" ng-model="course.description" ></textarea>
+        <textarea type="text" class="form-control" id="description" rows="5" ng-model="course.description" maxlength="300" ></textarea>
       </div>
       <br>
       <div class="btn-group pull-right">
-        <button type="button" class="btn btn-info" ng-click="cloneCourse()"  title="Crear un curso a partir de la informacion de otro curso, se clonaran todas las pruebas de este">Clonar</button>        
-        <button type="submit" class="btn btn-primary ">Registrar</button>
+        <button type="button" class="btn btn-info" ng-click="cloneCourse()"  title="Crear un curso a partir de la informacion de otro curso, se clonaran todas las pruebas de este">Clonar</button>
+        <button type="submit" class="btn btn-primary ">Guardar</button>
       </div>
     </form>
   </div>

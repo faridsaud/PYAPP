@@ -3,11 +3,11 @@
     <form ng-submit="check()">
       <div class="form-group">
         <label for="password">Nueva contraseña:</label>
-        <input type="password" class="form-control" id="password" ng-model="password" required >
+        <input type="password" class="form-control" id="password" ng-model="password" maxlength="60" required >
       </div>
       <div class="form-group">
         <label for="password2">Repetir nueva contraseña:</label>
-        <input type="password" class="form-control" id="password2" ng-model="passwordRepeated" required >
+        <input type="password" class="form-control" id="password2" ng-model="passwordRepeated" maxlength="60" required >
       </div>
       <div class="checkbox" >
         <label><input type="checkbox" ng-true-value="true" ng-model="generatePin">Generar nuevo pin</label>
@@ -21,17 +21,17 @@
           <select class="form-control" ng-model="securityQuestion1.question" ng-required="changeSecurityQuestions">
             <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
           </select>
-          <input type="text" class="form-control" ng-model="securityQuestion1.answer" ng-required="changeSecurityQuestions" >
+          <input type="text" class="form-control" ng-model="securityQuestion1.answer" ng-required="changeSecurityQuestions" maxlength="300">
         </div>
         <div class="form-group">
           <label for="">Pregunta de seguridad 2:</label>
           <select class="form-control" ng-model="securityQuestion2.question" ng-required="changeSecurityQuestions">
             <option ng-repeat="securityQuestion in securityQuestions" ng-value="securityQuestion.id">{{securityQuestion.text}}</option>
           </select>
-          <input type="text" class="form-control" ng-model="securityQuestion2.answer" ng-required="changeSecurityQuestions" >
+          <input type="text" class="form-control" ng-model="securityQuestion2.answer" ng-required="changeSecurityQuestions" maxlength="300">
         </div>
       </div>
-      <button type="submit" class="btn btn-primary pull-right">Siguiente</button>
+      <button type="submit" class="btn btn-primary pull-right">Guardar</button>
     </form>
   </div>
 </div>
