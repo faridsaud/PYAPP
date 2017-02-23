@@ -205,13 +205,14 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             user:$rootScope.loggedUser
           }
         }).then(function successCallback(response) {
-          // this callback will be called asynchronously
-          // when the response is available
           console.log(response);
+          $scope.test.score=response.data.score.toFixed(2);
+          $rootScope.msg.text="Evaluación enviada. Usted obtuvo un puntaje de "+$scope.test.score+" sobre 1.";
+          $rootScope.synth.speak($rootScope.msg);
+          $rootScope.testSend=$scope.test;
+          $state.go('studentReviewTest');
         }, function errorCallback(response) {
           console.log(response);
-          // called asynchronously if an error occurs
-          // or server returns response with an error status.
         });
       }
       //Valores de angular
@@ -331,10 +332,7 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           var number=Number(matchings[1]);
           if(number==($scope.lastIndex+1)){
             $scope.saveData();
-            $rootScope.msg.text="Evaluación enviada";
-            $rootScope.synth.speak($rootScope.msg);
-            $rootScope.testSend=$scope.test;
-            $state.go('studentReviewTest');
+
           }
           if($document[0].getElementById("r"+number)){
             $scope.selectOption(number);
@@ -381,8 +379,6 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       }
       $scope.sentTestOnClick=function(){
         $scope.saveData();
-        $rootScope.testSend=$scope.test;
-        $state.go('studentReviewTest');
       }
       //al hacer focus
       $document.unbind('focusin').bind("focusin",function(event){

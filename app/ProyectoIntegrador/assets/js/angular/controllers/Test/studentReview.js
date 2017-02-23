@@ -1,7 +1,9 @@
 app.controller("studentTestReviewController",["$scope","$document","$http","$location","$rootScope",'globalVariables','$state',function($scope,$document,$http,$location,$rootScope, globalVariables,$state){
-  console.log("Entramos a review");
+  if(!$rootScope.loggedUser){
+    $state.go("home");
+  }
   if(!$rootScope.loggedUser.email ||!$rootScope.activeTest.id){
-    $location.path('/home');
+    $state.go("home");
   }else{
     /*Loading the test*/
     var instructionSpoken=false;
@@ -179,7 +181,9 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
       //funcion buscar siguiente pregunta
       $scope.findNextQuestion=function(questionIndex){
         /*Button send*/
-
+        if(questionIndex==($scope.lastIndex+1)){
+          return 1;
+        }
         var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
         if(originalId){
           for(var i=0;i<$scope.questions.length;i++){
@@ -189,7 +193,7 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
                 return indexNextQuestion;
               }else{
-                return 1;
+                return $scope.lastIndex+1;
                 /*
                 var nextQuestionId=$scope.test.questions[0].id;
                 var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
@@ -203,6 +207,12 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
       //funcion buscar anterior pregunta
       $scope.findPreviousQuestion=function(questionIndex){
         /*button index*/
+        if(questionIndex==1){
+          return $scope.lastIndex+1;
+        }
+        if(questionIndex==$scope.lastIndex+1){
+          return $scope.questions[$scope.questions.length-1].index;
+        }
         var originalId=$scope.findQuestionOriginalIdByIndex(questionIndex);
         if(originalId){
           for(var i=0;i<$scope.questions.length;i++){
@@ -215,11 +225,6 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
                 console.log($scope.lastIndex);
                 var lastQuestionIndex=$scope.questions[$scope.questions.length-1].index;
                 return lastQuestionIndex;
-                /*
-                var nextQuestionId=$scope.test.questions[$scope.test.questions.length-1].id;
-                var indexNextQuestion=$scope.findQuestionIndexByOriginalId(nextQuestionId);
-                return indexNextQuestion;
-                */
               }
             }
           }
@@ -261,23 +266,6 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
 
 
 
-      //peticion http con los datos
-      $scope.saveData=function(){
-        var datosEnviar=JSON.parse(JSON.stringify($scope.test.questions));
-        $http({
-          method: 'POST',
-          url: 'http://186.4.134.233:1337/testData',
-          data:datosEnviar
-        }).then(function successCallback(response) {
-          // this callback will be called asynchronously
-          // when the response is available
-          console.log(response);
-        }, function errorCallback(response) {
-          console.log(response);
-          // called asynchronously if an error occurs
-          // or server returns response with an error status.
-        });
-      }
       //Valores de angular
       //Eventos de presionar
       $document.unbind('keydown').bind("keydown",function(event){
@@ -364,6 +352,17 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
 
         }
 
+        //espacio
+        if(event.which==32){
+          $rootScope.synth.cancel();
+          var matchings=$scope.focusedElement.match(/[p,r](\d*)/);
+          var number=Number(matchings[1]);
+          if(number==($scope.lastIndex+1)){
+            $scope.back();
+          }
+
+
+        }
         //+
         if(event.which==107){
           if($rootScope.msg){
@@ -394,13 +393,15 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
       });
       //al hacer focus
       $document.unbind('focusin').bind("focusin",function(event){
-        console.log("se hizo focus");
         console.log(event.target.id);
         $scope.focusedElement=event.target.id;
         console.log($document[0].getElementById($scope.focusedElement));
         speakP();
 
       });
+      $scope.back=function(){
+        $state.go('home');
+      }
       function speakP(){
         var textoP=$document[0].getElementById($scope.focusedElement).innerHTML;
         $rootScope.msg.text=textoP;

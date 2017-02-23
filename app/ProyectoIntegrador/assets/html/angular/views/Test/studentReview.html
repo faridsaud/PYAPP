@@ -1,4 +1,7 @@
 <div class="section">
+  <h3>Puntaje obtenido {{testSend.score}} sobre 1</h3>
+</div>
+<div class="section">
   <div ng-repeat="question in questions track by $index" >
     <div class="section"  >
       <div class="container">
@@ -29,7 +32,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-12">
-        <button type="button" class="btn btn-default" id="p{{finishReviewIndex}}" tabindex="{{finishReviewIndex}}">Regresar</button>
+        <button type="button" class="btn btn-default" id="p{{finishReviewIndex}}" tabindex="{{finishReviewIndex}}" ng-click="back()">Regresar</button>
       </div>
     </div>
   </div>
