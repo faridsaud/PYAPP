@@ -140,6 +140,7 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
             }
           }
         }
+        $scope.finishReviewIndex=counter+1;
       }
 
 

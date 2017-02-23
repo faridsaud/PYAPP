@@ -39,7 +39,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="test in tests track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)" id="r{{$index+2}}" tabindex="{{$index+2}}" data-idTest='{{test.id}}'>
+                <tr ng-repeat="test in testsInExecution track by $index" ng-if="test.status=='e'" ng-click="openTest(test.id)" id="r{{$index+2}}" tabindex="{{$index+2}}" data-idTest='{{test.id}}'>
                   <td>{{test.title}}</td>
                   <td>{{test.intentsLeft}} de {{test.intents}}</td>
                   <td>{{test.score}}</td>

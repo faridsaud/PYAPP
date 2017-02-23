@@ -18,7 +18,6 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
       $rootScope.synth.onvoiceschanged = function() {
         voices = $rootScope.synth.getVoices();
         console.log(voices);
-        console.log("Entrando a hablar");
         $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
         $rootScope.synth.speak($rootScope.msg);
 
@@ -409,6 +408,8 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
           $rootScope.synth.speak($rootScope.msg);
         }
       }
+
+
       $http({
         method:'POST',
         url:globalVariables.url+'/test/getTestByIdForStudent',

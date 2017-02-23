@@ -96,11 +96,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
     controller: 'cloneCourseController'
   })
 
-  .state('prueba', {
-    url: '/prueba',
-    templateUrl: 'html/angular/views/Test/prueba.html',
-    controller: 'pruebaController'
-  })
+
   .state('recoverPassword', {
     url: '/recover',
     templateUrl: 'html/angular/views/User/recover.html',

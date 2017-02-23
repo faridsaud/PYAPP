@@ -31,6 +31,12 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
       }).then(function success(response){
         console.log(response);
         $scope.tests=response.data.tests;
+        $scope.testsInExecution=[];
+        for(var j=0;j<$scope.tests.length;j++){
+          if($scope.tests[j].status=="e"){
+            $scope.testsInExecution.push($scope.tests[j]);
+          }
+        }
         $scope.numberOfTestsInExecution=$scope.countTestInExecution($scope.tests);
         console.log($scope.numberOfTestsInExecution);
         console.log($scope.tests);
