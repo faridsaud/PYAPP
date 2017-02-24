@@ -148,7 +148,6 @@ module.exports = {
     /*Find user by pin*/
     if(req.body.user.pin && !req.body.user.password){
       var pin=req.body.user.pin.toString();
-      console.log(pin);
       var findPromise=sails.controllers.user.findUserByPin(pin);
 
     }else{
@@ -459,7 +458,6 @@ module.exports = {
 
     Promise.all(promises)
     .then(function(results){
-      console.log(results);
       Promise.all(results[results.length-1])
       .then(function(){
         return res.json(200,{msg: 'Security info updated successfully',pinGenerated:pin, msgES:"Información de seguridad actualizada"});

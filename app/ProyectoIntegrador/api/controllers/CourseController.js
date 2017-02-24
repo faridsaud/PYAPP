@@ -224,7 +224,6 @@ module.exports = {
             msgES:"Error obteniendo los cursos"
           });
         } else {
-          console.log("Estamos en 201");
           return res.json(200, {
             msg: "OK",
             msgES:"OK",
@@ -314,7 +313,6 @@ module.exports = {
               });
             } else {
               if (results[0]) {
-                console.log(results[0]);
                 /*Registro al estudiante en el curso*/
                 sails.models.usrcou.create({
                   email: studentEmail,
@@ -780,7 +778,6 @@ module.exports = {
                 return res.json(500, {code:8,msg: "Error cloning the course", msgES:"Error clonando el curso"});
               }
             })
-            console.log("Push the promesa select test");
           })
           .catch(function(error) {
             console.log(error);

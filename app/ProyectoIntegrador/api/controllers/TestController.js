@@ -107,7 +107,6 @@ module.exports = {
 								//return res.json(201,{msg: 'Test created'});
 								var errorCheckingTest=sails.controllers.test.checkTestData(req);
 								if(errorCheckingTest.error==true){
-									console.log(errorCheckingTest.msg);
 									return res.json(400, {msg:"Error creating the test, wrong test format send"});
 								}
 								/*Get questions*/
@@ -121,7 +120,6 @@ module.exports = {
 								sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
 								var questionsPromises=[];
 								var optionsPromises=[];
-								console.log(multipleChoiceQuestions[0]);
 
 								/*register multiple choice questions and options*/
 								for (var i=0;i<multipleChoiceQuestions.length;i++){
@@ -129,7 +127,6 @@ module.exports = {
 									.then(function(questionCreated){
 										for(var k=0;k<multipleChoiceQuestions.length;k++){
 											if(multipleChoiceQuestions[k].text==questionCreated.text){
-												console.log("Se hizo match");
 												multipleChoiceQuestions[k].id=questionCreated.id;
 											}
 										}
@@ -181,8 +178,7 @@ module.exports = {
 									for(var i=0;i<multipleChoiceQuestions.length;i++){
 										for(var j=0;j<multipleChoiceQuestions[i].options.length;j++){
 											var optionPromise=sails.controllers.option.register(multipleChoiceQuestions[i].options[j],multipleChoiceQuestions[i]);
-											//console.log("imprimiendo");
-											//console.log(multipleChoiceQuestions[i]);
+
 											optionsPromises.push(optionPromise);
 										}
 									}
@@ -200,7 +196,6 @@ module.exports = {
 									}
 									Promise.all(optionsPromises)
 									.then(function(){
-										console.log("Id test:"+newTest.id);
 										newTest.multipleChoiceQuestions=multipleChoiceQuestions;
 										newTest.trueFalseQuestions=trueFalseQuestions;
 										newTest.fillQuestions=fillQuestions;
@@ -289,10 +284,8 @@ module.exports = {
 			}
 			if(req.body.trueFalseQuestions[i].justification){
 				if(req.body.trueFalseQuestions[i].justification.length>=1){
-					console.log(req.body.trueFalseQuestions[i].justification);
 					var patt = /^\w{1,}.{0,}$/;
 					var res = patt.test(req.body.trueFalseQuestions[i].justification);
-					console.log(res);
 					if(res==false){
 						req.body.trueFalseQuestions[i].justification="";
 					}
@@ -319,10 +312,8 @@ module.exports = {
 			/*Check statement*/
 			if(req.body.multipleChoiceQuestions[i].text){
 				if(req.body.multipleChoiceQuestions[i].text.length>=1){
-					console.log(req.body.multipleChoiceQuestions[i].text);
 					var patt = /^\w{1,}.{0,}$/;
 					var res = patt.test(req.body.multipleChoiceQuestions[i].text);
-					console.log(res);
 					if(res==false){
 						return {
 							error:true,
@@ -429,12 +420,10 @@ module.exports = {
 				req.body.fillQuestions[i].weighing=1;
 			}
 			for(var j=0;j<req.body.fillQuestions[i].statements.length;j++){
-				console.log(req.body.fillQuestions[i].statements[j].text);
 				if(req.body.fillQuestions[i].statements[j].text){
 					if(req.body.fillQuestions[i].statements[j].text.length>=1){
 						var patt = /^\w{1,}.{0,}$/;
 						var res = patt.test(req.body.fillQuestions[i].statements[j].text);
-						console.log(req.body.fillQuestions[i].statements[j].text);
 						if(res==false){
 							return {
 								error:true,
@@ -465,7 +454,6 @@ module.exports = {
 			var correctAnswers=0;
 			for(var j=0;j<req.body.fillQuestions[i].options.length;j++){
 				/*check Options*/
-				console.log("chequeando opciones");
 				if(req.body.fillQuestions[i].options[j].text){
 					if(req.body.fillQuestions[i].options[j].text.length>=1){
 						var patt = /^\w{1,}.{0,}$/;
@@ -510,9 +498,7 @@ module.exports = {
 
 				}
 				/*check correctAnswers*/
-				console.log(req.body.fillQuestions[i].options[j].isCorrect);
 				if(req.body.fillQuestions[i].options[j].isCorrect){
-					console.log("tratando");
 					correctAnswers++;
 				}else{
 					req.body.fillQuestions[i].options[j].isCorrect=false;
@@ -576,9 +562,7 @@ module.exports = {
 	*/
 	parseISOtoDateformat:function(tests){
 		for(var i=0;i<tests.length;i++){
-			console.log(tests[i].startDateTime);
 			tests[i].startDateTime=new Date(Date.parse(tests[i].startDateTime));
-			console.log(tests[i].startDateTime);
 			tests[i].finishDateTime=new Date(Date.parse(tests[i].finishDateTime));
 		}
 		return tests;
@@ -862,14 +846,11 @@ module.exports = {
 					var optionsPromises=[];
 					var questionsPromise=sails.controllers.question.getQuestionsByTest(testId)
 					.then(function(questions){
-						console.log("Se obtuvieron las preguntas");
 						test.questions=questions;
 						for(var i=0;i<test.questions.length;i++){
 							optionsPromises.push(sails.controllers.option.getOptionsByQuestion(test.questions[i]));
 						}
-						console.log("Esperando los datos")
 						Promise.all(optionsPromises).then(function(){
-							console.log("se obtuvieron los datos completos");
 							//console.log(test.questions);
 							sails.controllers.question.separateQuestionsByType(test);
 							return res.json(200,{test:test, msg:"OK"});
@@ -989,13 +970,11 @@ module.exports = {
 				for(var i=0;i<recordsFinded.length;i++){
 					var promise=sails.controllers.user.getStudentDataWithScore(recordsFinded[i].email, recordsFinded[i].score, students)
 					.then(function(student){
-						console.log("Usuario luego de la promesa");
-						console.log(student);
+
 						students.push(student);
 					})
 					allPromises.push(promise);
 				}
-				console.log(students);
 				Promise.all(allPromises)
 				.then(function(){
 					return res.json(200,{msg:"List of user get successfully", students:students});
@@ -1071,7 +1050,6 @@ module.exports = {
 								var optionsPromises=[];
 								var questionsPromise=sails.controllers.question.getQuestionsByTest(testId)
 								.then(function(questions){
-									console.log("Se obtuvieron las preguntas");
 									test.questions=questions;
 									for(var i=0;i<test.questions.length;i++){
 										optionsPromises.push(sails.controllers.option.getOptionsByQuestion(test.questions[i]));
@@ -1222,7 +1200,6 @@ module.exports = {
 		sails.controllers.question.formatTrueFalseQuestionsAngularToServer(trueFalseQuestions);
 		var questionsPromises=[];
 		var optionsPromises=[];
-		console.log(multipleChoiceQuestions[0]);
 		/*Separte questions in questions to be created and questions to be updated*/
 		var multipleChoiceQuestionsToBeCreated=[];
 		var multipleChoiceQuestionsToBeUpdated=[];
@@ -1241,7 +1218,6 @@ module.exports = {
 			.then(function(questionCreated){
 				for(var k=0;k<multipleChoiceQuestionsToBeCreated.length;k++){
 					if(multipleChoiceQuestionsToBeCreated[k].text==questionCreated.text){
-						console.log("Se hizo match");
 						multipleChoiceQuestionsToBeCreated[k].id=questionCreated.id;
 					}
 				}
@@ -1356,8 +1332,6 @@ module.exports = {
 			/*Update trueFalse options*/
 			for(var i=0;i<trueFalseQuestionsToBeUpdated.length;i++){
 				for(var j=0;j<trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated.length;j++){
-					console.log("Linea 933");
-					console.log(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated);
 					var optionPromise=sails.controllers.option.update(trueFalseQuestionsToBeUpdated[i].optionsToBeUpdated[j],trueFalseQuestionsToBeUpdated[i]);
 					optionsPromises.push(optionPromise);
 				}
@@ -1415,7 +1389,6 @@ module.exports = {
 			return res.json(400,{code:5,msg: 'Error registering the taken test data, there is no question data'});
 		}else{
 			var allPromises=[];
-			console.log("linea 1097");
 			var totalWeighing=0;
 			var parcialScore=0;
 			for(var i=0;i<test.questions.length;i++){
@@ -1429,12 +1402,10 @@ module.exports = {
 				for(var j=0;j<test.questions[i].options.length;j++){
 					if((test.questions[i].options[j].isCorrect==true)&&(test.questions[i].options[j].isSelected==true)){
 						parcialScore=parcialScore+weighing;
-						console.log("parcial score:"+parcialScore);
 					}
 				}
 			}
 			var score=parcialScore/totalWeighing;
-			console.log("score:"+score)
 			/*Find the student-test record*/
 			sails.models.usrtes.findOne({email:user.email, idTest:test.id, status:"s"})
 			.then(function(finded){
@@ -1451,8 +1422,6 @@ module.exports = {
 							for(var j=0;j<test.questions[i].options.length;j++){
 								if(test.questions[i].options[j].isSelected==true){
 									var insertPromise=sails.models.usropt.create({email:user.email, idOption:test.questions[i].options[j].id}).then(function(created){
-										console.log("Record created:");
-										console.log(created);
 									})
 									.then(function(){
 										return "ok";
@@ -1479,7 +1448,6 @@ module.exports = {
 					allPromises.push(promise);
 
 					/*Update the student-test record*/
-					console.log("Score:"+score);
 					var updateTestPromise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{score:score,intentLeft:finded.intentLeft-1})
 					.then(function(){
 						/*Find all the records of the students-test to calculate the new average score of the test*/
@@ -1506,7 +1474,6 @@ module.exports = {
 					allPromises.push(updateTestPromise);
 				}else{
 					/*Score lower than before*/
-					console.log("nota inferior")
 					var promise=sails.models.usrtes.update({email:user.email, idTest:test.id, status:"s"},{intentLeft:finded.intentLeft-1});
 					allPromises.push(promise);
 				}
