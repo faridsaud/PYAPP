@@ -786,7 +786,7 @@ module.exports = {
 						if(error){
 							return res.json(500,{msg:"Error deleting the test"});
 						}else{
-							return res.json(200,{msg:"Test deleted", msgES:"Prueba borrada"});
+							return res.json(200,{msg:"Test deleted", msgES:"Prueba eliminada"});
 						}
 					})
 				}else{

@@ -411,7 +411,7 @@ module.exports = {
               return res.json(200, {
                 code:1,
                 msg: "Course deleted",
-                msgES:"Curso borrado"
+                msgES:"Curso eliminado"
               });
             }
           });
