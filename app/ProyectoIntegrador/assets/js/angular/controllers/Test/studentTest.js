@@ -1,4 +1,4 @@
-app.controller("studentTestTakenController",["$scope","$document","$http","$location","$rootScope",'globalVariables',"$state",function($scope,$document,$http,$location,$rootScope, globalVariables,$state){
+app.controller("studentTestTakenController",["$scope","$document","$http","$location","$rootScope",'globalVariables',"$state","toastr",function($scope,$document,$http,$location,$rootScope, globalVariables,$state,toastr){
 
   console.log("TEst controller")
   if($rootScope.loggedUser&&$rootScope.activeTest){
@@ -205,14 +205,24 @@ app.controller("studentTestTakenController",["$scope","$document","$http","$loca
             user:$rootScope.loggedUser
           }
         }).then(function successCallback(response) {
-          console.log(response);
           $scope.test.score=response.data.score.toFixed(2);
           $rootScope.msg.text="Evaluación enviada. Usted obtuvo un puntaje de "+$scope.test.score+" sobre 1.";
           $rootScope.synth.speak($rootScope.msg);
           $rootScope.testSend=$scope.test;
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba registrada";
+          }
+          toastr.success(msgES,"Éxito");
           $state.go('studentReviewTest');
         }, function errorCallback(response) {
-          console.log(response);
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba no registrada";
+          }
+          toastr.error(msgES,"Error");
         });
       }
       //Valores de angular

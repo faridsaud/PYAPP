@@ -2,7 +2,6 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role=="teacher"){
       /*In case there was a test to be cloned, undefine it*/
-      console.log("home teacher controller");
       $http({
         method:'POST',
         url:globalVariables.url+'/course/byTeacher',
@@ -12,11 +11,8 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
           }
         }
       }).then(function success(response){
-        console.log(response);
         $scope.courses=response.data.courses;
-        console.log($scope.courses);
       }, function error(response){
-        console.log(response);
       })
 
 
@@ -29,11 +25,8 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
           }
         }
       }).then(function success(response){
-        console.log(response);
         $scope.tests=response.data.tests;
-        console.log($scope.tests);
       }, function error(response){
-        console.log(response);
       })
 
 
@@ -96,12 +89,20 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
               }
             }
           }).then(function success(response){
-            console.log(response);
-            toastr.success("Curso eliminado con éxito","Success");
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Curso eliminado";
+            }
+            toastr.success(msgES,"Success");
             $location.path('/home');
           }, function error(response){
-            toastr.error("Error al eliminar el curso","Error");
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Curso no eliminado";
+            }
+            toastr.error(msgES,"Error");
           })
         }, function(reject) {
         });
@@ -157,12 +158,20 @@ app.controller('homeTeacherController',['$scope','$http','$location','toastr','g
               }
             }
           }).then(function success(response){
-            console.log(response);
-            toastr.success("Prueba eliminada con éxito","Success");
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Prueba eliminada";
+            }
+            toastr.success(msgES,"Success");
             $location.path('/home');
           }, function error(response){
-            toastr.error("Error al eliminar la prueba","Error");
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Prueba no eliminada";
+            }
+            toastr.error(msgES,"Error");
           })
         }, function(reject) {
         });

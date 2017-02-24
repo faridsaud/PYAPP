@@ -5,7 +5,6 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
   }else{
     $scope.test={};
     $scope.imprimir=function(){
-      console.log($scope.test);
       if($scope.test.startDateTime<$scope.test.finishDateTime){
         console.log("fecha inicial menor que fecha final")
       }
@@ -23,7 +22,6 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       fillQuestion.options.push({isCorrect:true});
       fillQuestion.weighing=1;
       $scope.fillQuestions.push(fillQuestion);
-      console.log($scope.fillQuestions);
     }
 
     $scope.addOptionFillQuestion=function(index){
@@ -65,9 +63,19 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
               id:$scope.fillQuestions[index].id
             }
           }).then(function success(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta eliminada";
+            }
+            toastr.success(msgES,"Éxito");
           }, function error(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta no eliminada";
+            }
+            toastr.error(msgES,"Error");
           })
         }
         if (index > -1) {
@@ -85,11 +93,9 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       multipleChoiceQuestion.options.push({isCorrect:true});
       multipleChoiceQuestion.weighing=1;
       $scope.multipleChoiceQuestions.push(multipleChoiceQuestion);
-      console.log($scope.multipleChoiceQuestions);
     }
     $scope.addOptionMultipleChoiceQuestion=function(index){
       $scope.multipleChoiceQuestions[index].options.push({});
-      console.log($scope.multipleChoiceQuestions[index].options);
     }
     $scope.removeMultipleChoiceQuestion=function(index){
       ngDialog.openConfirm({
@@ -118,9 +124,19 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
               id:$scope.multipleChoiceQuestions[index].id
             }
           }).then(function success(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta eliminada";
+            }
+            toastr.success(msgES,"Éxito");
           }, function error(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta eliminada";
+            }
+            toastr.error(msgES,"Error");
           })
         }
         if (index > -1) {
@@ -168,9 +184,19 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
               id:$scope.trueFalseQuestions[index].id
             }
           }).then(function success(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta eliminada";
+            }
+            toastr.success(msgES,"Éxito");
           }, function error(response){
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Pregunta eliminada";
+            }
+            toastr.error(msgES,"Error");
           })
         }
         if (index > -1) {
@@ -535,12 +561,20 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
 
           }
         }).then(function success(response){
-          console.log(response);
-          toastr.success("Prueba registrada con éxito","Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba actualizada";
+          }
+          toastr.success(msgES,"Éxito");
           $location.path('/home');
         }, function error(response){
-          console.log(response);
-          toastr.error("Error al registrar la prueba","Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba actualizada";
+          }
+          toastr.error(msgES,"Success");
         })
       }
     }
@@ -577,7 +611,6 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
 
       }
     }).then(function success(response){
-      console.log(response);
       $scope.test=response.data.test;
       $scope.test.course=$scope.test.course.toString();
       $scope.multipleChoiceQuestions=$scope.test.multipleChoiceQuestions;
@@ -587,10 +620,7 @@ app.controller('editTestController',['$scope','$http','toastr','$location','glob
       $scope.test.finishDateTime=new Date($scope.test.finishDateTime);;
       $scope.formatTrueFalseQuestionsServerToAngular();
       $scope.formatFillQuestionsServerToAngular();
-      console.log($scope.test);
-      console.log($scope.courses);
     }, function error(response){
-      console.log(response);
     })
 
 

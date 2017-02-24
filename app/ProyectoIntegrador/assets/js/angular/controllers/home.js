@@ -1,7 +1,6 @@
 app.controller('homeController',['$scope','$http','$location','toastr','globalVariables','$rootScope','$document','$state',function($scope,$http,$location,toastr,globalVariables,$rootScope,$document,$state){
   if($rootScope.loggedUser){
     if($rootScope.loggedUser.role){
-      console.log("estamos aqui");
       $location.path('/'+$rootScope.loggedUser.role+'/home');
     }
   }else{
@@ -16,7 +15,6 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
       $state.go('recoverPassword');
     }
     $scope.user={};
-    console.log("home controller");
     $scope.login=function(){
       $http({
         method:'POST',
@@ -30,7 +28,12 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
           }
         }
       }).then(function success(response){
-        toastr.success("Login con éxito","Success");
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Sesión iniciada";
+        }
+        toastr.success(msgES,"Success");
         console.log(response);
         $rootScope.loggedUser={};
         $rootScope.loggedUser.email=response.data.email;
@@ -46,7 +49,12 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
           $state.go('homeTeacher');
         }
       }, function error(response){
-        toastr.error(response.data.msg,"Error");
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Sesión no iniciada";
+        }
+        toastr.error(msgES,"Error");
         $rootScope.synth.cancel();
         $rootScope.msg.text="Error al iniciar sesión";
         $rootScope.synth.speak($rootScope.msg);
@@ -64,7 +72,6 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
     $rootScope.synth.onvoiceschanged = function() {
       voices = $rootScope.synth.getVoices();
       console.log(voices);
-      console.log("Entrando a hablar");
       $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
       $rootScope.synth.speak($rootScope.msg);
     }

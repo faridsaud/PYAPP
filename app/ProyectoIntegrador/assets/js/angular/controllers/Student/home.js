@@ -12,11 +12,8 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
           }
         }
       }).then(function success(response){
-        console.log(response);
         $scope.courses=response.data.courses;
-        console.log($scope.courses);
       }, function error(response){
-        console.log(response);
       })
 
 
@@ -29,7 +26,6 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
           }
         }
       }).then(function success(response){
-        console.log(response);
         $scope.tests=response.data.tests;
         $scope.testsInExecution=[];
         for(var j=0;j<$scope.tests.length;j++){
@@ -38,11 +34,8 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
           }
         }
         $scope.numberOfTestsInExecution=$scope.countTestInExecution($scope.tests);
-        console.log($scope.numberOfTestsInExecution);
-        console.log($scope.tests);
         init();
       }, function error(response){
-        console.log(response);
       })
       $scope.countTestInExecution=function(tests){
         var counter=0;

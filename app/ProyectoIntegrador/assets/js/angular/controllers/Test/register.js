@@ -476,10 +476,6 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         if(error==true){
           return;
         }
-        console.log(Date.parse($scope.test.startDateTime));
-        console.log($scope.multipleChoiceQuestions);
-        console.log($scope.fillQuestions);
-        console.log($scope.trueFalseQuestions);
         $http({
           method:'POST',
           url:globalVariables.url+'/test/register',
@@ -499,13 +495,21 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
           }
         }).then(function success(response){
-          console.log(response);
-          toastr.success("Prueba registrada con éxito","Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba creada";
+          }
+          toastr.success(msgES,"Success");
           $rootScope.testToBeCloned=undefined;
           $location.path('/home');
         }, function error(response){
-          console.log(response);
-          toastr.error("Error al registrar la prueba","Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Prueba no registrada";
+          }
+          toastr.error(msgES,"Success");
         })
       }
     }
@@ -525,15 +529,11 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
       }
     }).then(function success(response){
-      console.log(response);
       $scope.courses=response.data.courses;
-      console.log($scope.courses);
     }, function error(response){
-      console.log(response);
     })
     /*If there is a test to be cloned, load it*/
     if($stateParams.testToBeCloned){
-      console.log($stateParams.testToBeCloned);
       /*Load test*/
       $http({
         method:'POST',
@@ -548,7 +548,6 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
         }
       }).then(function success(response){
-        console.log(response);
         $scope.test=response.data.test;
         $scope.test.course=$scope.test.course.toString();
         $scope.multipleChoiceQuestions=$scope.test.multipleChoiceQuestions;
@@ -558,10 +557,8 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         $scope.test.finishDateTime=new Date($scope.test.finishDateTime);;
         $scope.formatTrueFalseQuestionsServerToAngular();
         $scope.formatFillQuestionsServerToAngular();
-        console.log($scope.test);
-        console.log($scope.courses);
+
       }, function error(response){
-        console.log(response);
       })
     }
 
