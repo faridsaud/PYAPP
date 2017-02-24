@@ -44,12 +44,20 @@ app.controller('editCourseController',['$scope','$http','toastr','$location','gl
               }
             }
           }).then(function success(response){
-            toastr.success("Curso actualizado con exito","Success");
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Curso actualizado";
+            }
+            toastr.success(msgES,"Success");
             $location.path('/home');
           }, function error(response){
-            toastr.error("Error al actualizar el curso","Error");
-            console.log(response);
+            if(response.data.msgES){
+              var msgES=response.data.msgES;
+            }else{
+              var msgES="Curso no actualizado";
+            }
+            toastr.error(msgES,"Error");
           })
         }
       }

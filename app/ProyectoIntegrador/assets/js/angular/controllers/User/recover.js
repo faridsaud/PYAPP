@@ -6,10 +6,8 @@ app.controller('recoverPasswordController',['$scope','$http','toastr','$location
     method:'GET',
     url:globalVariables.url+'/securityQuestion/getAll',
   }).then(function success(response){
-    console.log(response);
     $scope.securityQuestions=response.data.securityQuestions;
   },function error(response){
-    console.log(response);
   })
   $scope.check=function(){
     if($scope.securityQuestion1 && $scope.securityQuestion2){
@@ -35,10 +33,14 @@ app.controller('recoverPasswordController',['$scope','$http','toastr','$location
           securityQuestion2:$scope.securityQuestion2
         }
       }).then(function success(response){
-        console.log("coincidio");
         $state.go('recoverPassword2',{emailVerified:$scope.email});
       },function error(response){
-        toastr.error("No hay usuario con ese email","Error");
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Datos de seguridad incorrectos";
+        }
+        toastr.error(msgES,"Error");
         $state.go("home");
       })
     }

@@ -43,7 +43,12 @@ app.controller('recoverPassword2Controller',['$scope','$http','toastr','$locatio
           password:$scope.password
         }
       }).then(function success(response){
-        toastr.success("Información de seguridad actualizada con éxito","Success");
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Información de seguridad actualizada";
+        }
+        toastr.success(msgES,"Success");
         $scope.pinGenerated=response.data.pinGenerated;
         if($scope.generatePin==true){
           ngDialog.openConfirm({
@@ -68,8 +73,12 @@ app.controller('recoverPassword2Controller',['$scope','$http','toastr','$locatio
 
         }
       },function error(response){
-        toastr.error("Error al actualizar la información de seguridad","Error")
-        console.log(response);
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Información de seguridad no actualizada";
+        }
+        toastr.error(msgES,"Error")
       })
     }
 

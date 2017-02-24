@@ -2,10 +2,8 @@ app.controller('cloneCourseController',['$scope','$http','$location','toastr','g
 
   if($rootScope.loggedUser ){
     if($rootScope.loggedUser.role=="teacher"){
-      console.log("clone course home");
 
       $scope.loadCourses=function(){
-        console.log("Loading courses");
         $http({
           method:'POST',
           url:globalVariables.url+'/course/byTeacher',
@@ -37,11 +35,20 @@ app.controller('cloneCourseController',['$scope','$http','$location','toastr','g
             }
           }
         }).then(function success(response){
-          toastr.success("Curso clonado con éxito", "Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Curso clonado";
+          }
+          toastr.success(msgES, "Success");
           $state.go("home")
         }, function error(response){
-          toastr.error("Error al clonar el curso", "Error");
-          console.log(response);
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Curso no clonado";
+          }
+          toastr.error(msgES, "Error");
         })
       }
 

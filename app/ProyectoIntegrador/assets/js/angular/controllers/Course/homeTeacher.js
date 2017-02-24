@@ -78,12 +78,20 @@ app.controller('courseHomeTeacherController',['$scope','$http','toastr','$locati
                 idCourse:$scope.course.id
               }
             }).then(function success(response){
-              console.log(response);
-              toastr.success("Estudiante eliminado con éxito","Success");
+              if(response.data.msgES){
+                var msgES=response.data.msgES;
+              }else{
+                var msgES="Estudiante eliminado";
+              }
+              toastr.success(msgES,"Success");
               $state.reload();
             }, function error(response){
-              toastr.error("Error al eliminar el estudiante","Error");
-              console.log(response);
+              if(response.data.msgES){
+                var msgES=response.data.msgES;
+              }else{
+                var msgES="Estudiante no eliminado";
+              }
+              toastr.error(msgES,"Error");
             })
           }, function(reject) {
           });
@@ -130,12 +138,20 @@ app.controller('courseHomeTeacherController',['$scope','$http','toastr','$locati
                 }
               }
             }).then(function success(response){
-              console.log(response);
-              toastr.success("Prueba eliminada con éxito","Success");
+              if(response.data.msgES){
+                var msgES=response.data.msgES;
+              }else{
+                var msgES="Prueba eliminada";
+              }
+              toastr.success(msgES,"Success");
               $location.path('/home');
             }, function error(response){
-              toastr.error("Error al eliminar la prueba","Error");
-              console.log(response);
+              if(response.data.msgES){
+                var msgES=response.data.msgES;
+              }else{
+                var msgES="Prueba no eliminada";
+              }
+              toastr.error(msgES,"Error");
             })
           }, function(reject) {
           });

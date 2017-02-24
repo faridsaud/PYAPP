@@ -21,12 +21,20 @@ app.controller('registerCourseController',['$scope','$http','toastr','$location'
           }
         }
       }).then(function success(response){
-        toastr.success("Curso registrado con éxito","Success");
-        console.log(response);
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Curso registrado";
+        }
+        toastr.success(msgES,"Success");
         $location.path('/home');
       }, function error(response){
-        toastr.error("Error al crear el curso","Error");
-        console.log(response);
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Curso no registrado";
+        }
+        toastr.error(msgES,"Error");
       })
     }
   }

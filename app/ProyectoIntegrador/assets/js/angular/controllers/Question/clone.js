@@ -57,12 +57,20 @@ app.controller('cloneQuestionController',['$scope','$http','$location','toastr',
             question:questionToBeCloned
           }
         }).then(function success(response){
-          console.log(response);
-          toastr.success("Pregunta clonada con éxito","Success");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Pregunta clonada";
+          }
+          toastr.success(msgES,"Success");
           $state.go("editTest");
         }, function error(response){
-          console.log(response);
-          toastr.error("Error al clonar la pregunta","Error");
+          if(response.data.msgES){
+            var msgES=response.data.msgES;
+          }else{
+            var msgES="Pregunta no clonada";
+          }
+          toastr.error(msgES,"Error");
           $state.go("editTest");
         })
       }

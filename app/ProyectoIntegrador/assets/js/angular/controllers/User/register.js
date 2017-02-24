@@ -60,7 +60,12 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
           }
         }
       }).then(function success(response){
-        toastr.success("Usuario registrado con éxito","Success");
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Usuario registrado";
+        }
+        toastr.success(msgES,"Success");
         console.log(response);
         $scope.pinGenerated=response.data.user.pin;
         ngDialog.openConfirm({
@@ -85,8 +90,12 @@ app.controller('registerUserController',['$scope','$http','toastr','$location','
         })
 
       }, function error(response){
-        toastr.error("Error al crear el usuario" + response.data.msg,"Error");
-        console.log(response);
+        if(response.data.msgES){
+          var msgES=response.data.msgES;
+        }else{
+          var msgES="Prueba registrada";
+        }
+        toastr.error(msgES,"Error");
       })
     }
   };
