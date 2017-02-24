@@ -32,12 +32,12 @@ module.exports = {
 	*/
 	register: function (req, res) {
 		if(!req.body.test){
-			return res.json(400,{code:7,msg: 'Error creating the test, there is no title'});
+			return res.json(400,{code:7,msg: 'Error creating the test, there is no title', msgES:"No existe titulo"});
 		}
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
-			return res.json(400,{code:1,msg: 'Error creating the test, there is no title'});
+			return res.json(400,{code:1,msg: 'Error creating the test, there is no title', msgES:"No existe titulo"});
 		}
 		if(req.body.test.description){
 			var description=req.body.test.description;
@@ -52,7 +52,7 @@ module.exports = {
 		if(req.body.test.createdBy){
 			var createdBy=req.body.test.createdBy;
 		}else{
-			return res.json(400,{code:2,msg: 'Error creating the test, there is no owner'});
+			return res.json(400,{code:2,msg: 'Error creating the test, there is no owner', msgES:"No existe propietario"});
 		}
 		if(req.body.test.status){
 			var status=req.body.test.status;
@@ -62,20 +62,20 @@ module.exports = {
 		if(req.body.test.startDateTime){
 			var startDateTime=req.body.test.startDateTime;
 		}else{
-			return res.json(400,{code:3,msg: 'Error creating the test, there should be an start date-time'});
+			return res.json(400,{code:3,msg: 'Error creating the test, there should be an start date-time', msgES:"No exise fecha y hora de inicio"});
 		}
 		if(req.body.test.finishDateTime){
 			var finishDateTime=req.body.test.finishDateTime;
 		}else{
-			return res.json(400,{code:4, msg: 'Error creating the test, there should be an finish date-time'});
+			return res.json(400,{code:4, msg: 'Error creating the test, there should be an finish date-time', msgES:"No existe fecha y hora de finalización"});
 		}
 		if(req.body.test.course){
 			var idCourse=req.body.test.course;
 		}else{
-			return res.json(400,{code:5,msg: 'Error creating the test, there should be a course'});
+			return res.json(400,{code:5,msg: 'Error creating the test, there should be a course', msgES:"No existe curso al cual pertenece la prueba"});
 		}
 		if(finishDateTime<=startDateTime){
-			return res.json(400,{code:6,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime'});
+			return res.json(400,{code:6,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime', msgES:"La fecha y hora de finalización no puede ser antes que la fecha y hora de inicio"});
 
 		}
 		sails.models.test.create({
@@ -204,7 +204,7 @@ module.exports = {
 										newTest.multipleChoiceQuestions=multipleChoiceQuestions;
 										newTest.trueFalseQuestions=trueFalseQuestions;
 										newTest.fillQuestions=fillQuestions;
-										return res.json(200,{test:newTest,msg: 'Test sucessfully created'});
+										return res.json(200,{test:newTest,msg: 'Test sucessfully created', msgES:"Prueba creada"});
 									})
 									.catch(function(error){
 										console.log(error);
@@ -247,19 +247,15 @@ module.exports = {
 			req.body.fillQuestions=[];
 		}
 		for(var i=0;i<req.body.trueFalseQuestions.length;i++){
-			console.log("imprimiendo preguntas trufalse")
-			console.log(req.body.trueFalseQuestions);
-			console.log(req.body.trueFalseQuestions[i]);
 			if(req.body.trueFalseQuestions[i].text){
 				if(req.body.trueFalseQuestions[i].text.length>=1){
-					console.log(req.body.trueFalseQuestions[i].text);
 					var patt = /^\w{1,}.{0,}$/;
 					var res = patt.test(req.body.trueFalseQuestions[i].text);
-					console.log(res);
 					if(res==false){
 						return {
 							error:true,
 							msg:"Wrong statement in question "+i+", cannot be empty",
+							msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 							question:i,
 							type:"trueFalseQuestions"
 						}
@@ -268,6 +264,7 @@ module.exports = {
 					return {
 						error:true,
 						msg:"Wrong statement in question "+i+", cannot be empty",
+						msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 						question:i,
 						type:"trueFalseQuestions"
 					}
@@ -276,6 +273,7 @@ module.exports = {
 				return {
 					error:true,
 					msg:"Wrong statement in question "+i+", cannot be empty",
+					msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 					question:i,
 					type:"trueFalseQuestions"
 				}
@@ -329,6 +327,7 @@ module.exports = {
 						return {
 							error:true,
 							msg:"Wrong statement in question "+i+", cannot be empty",
+							msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 							question:i,
 							type:"multipleChoiceQuestions"
 						}
@@ -337,6 +336,7 @@ module.exports = {
 					return {
 						error:true,
 						msg:"Wrong statement in question "+i+", cannot be empty",
+						msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 						question:i,
 						type:"multipleChoiceQuestions"
 					}
@@ -345,17 +345,15 @@ module.exports = {
 				return {
 					error:true,
 					msg:"Wrong statement in question "+i+", cannot be empty",
+					msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 					question:i,
 					type:"multipleChoiceQuestions"
 				}
 			}
-			console.log("antes de correctAnswers");
 			var correctAnswers=0;
-			console.log(req.body.multipleChoiceQuestions[i].options);
 			/*check Options*/
 			for(var j=0;j<req.body.multipleChoiceQuestions[i].options.length;j++){
 				/*check Options*/
-				console.log("chequeando opciones");
 				if(req.body.multipleChoiceQuestions[i].options[j].text){
 					if(req.body.multipleChoiceQuestions[i].options[j].text.length>=1){
 						var patt = /^\w{1,}.{0,}$/;
@@ -364,6 +362,7 @@ module.exports = {
 							return {
 								error:true,
 								msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+								msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 								question:i,
 								type:"multipleChoiceQuestions"
 							}
@@ -372,6 +371,7 @@ module.exports = {
 						return {
 							error:true,
 							msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+							msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 							question:i,
 							type:"multipleChoiceQuestions"
 						}
@@ -380,6 +380,7 @@ module.exports = {
 					return {
 						error:true,
 						msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+						msgES:"Enunciado incorrecto en la pregunta "+i+", no puede estar vacío",
 						question:i,
 						type:"multipleChoiceQuestions"
 					}
@@ -400,20 +401,17 @@ module.exports = {
 
 				}
 				/*check correctAnswers*/
-				console.log(req.body.multipleChoiceQuestions[i].options[j].isCorrect);
 				if(req.body.multipleChoiceQuestions[i].options[j].isCorrect){
-					console.log("tratando");
 					correctAnswers++;
 				}else{
 					req.body.multipleChoiceQuestions[i].options[j].isCorrect=false;
 				}
 			}
-			console.log("estamos aqui");
-			console.log(correctAnswers);
 			if(correctAnswers==0){
 				return {
 					error:true,
 					msg:"There should be at least 1 correct answer in question "+i,
+					msgES:"Debe haber al menos una respuesta correcta en la pregunta "+i,
 					question:i,
 					type:"multipleChoiceQuestions"
 				}
@@ -780,35 +778,35 @@ module.exports = {
 	*/
 	deleteTest:function(req,res){
 		if(!req.body.user){
-			return res.json(400,{code:1,msg:"Error deleting the test. No user\'s data send"});
+			return res.json(400,{code:1,msg:"Error deleting the test. No user\'s data send", msgES:"Datos del usuario no envíados"});
 		}
 		if(req.body.user.email){
 			var email=req.body.user.email;
 		}else{
-			return res.json(400,{code:2,msg:"Error deleting the test. No user\'s email send"});
+			return res.json(400,{code:2,msg:"Error deleting the test. No user\'s email send", msgES:"Email del usuario no envíado"});
 		}
 		if(!req.body.test){
-			return res.json(400,{code:3,msg:"Error deleting the test. No test\'s data send"});
+			return res.json(400,{code:3,msg:"Error deleting the test. No test\'s data send", msgES:"Datos de la prueba no envíados"});
 		}
 		if(req.body.test.id){
 			var testId=req.body.test.id;
 		}else{
-			return res.json(400,{code:4,msg:"Error deleting the test. No test\'s id send"});
+			return res.json(400,{code:4,msg:"Error deleting the test. No test\'s id send", msgES:"Id de la prueba no envíado"});
 		}
 		sails.models.usrtes.findOne({idTest:testId ,email:email, status:'t'}).exec(function(error, finded){
 			if(error){
-				return res.json(500,{msg:"Error deleting the test"});
+				return res.json(500,{msg:"Error deleting the test", msgES:"Error borrando la prueba"});
 			}else{
 				if(finded){
 					sails.models.test.destroy({id:testId}).exec(function(error){
 						if(error){
 							return res.json(500,{msg:"Error deleting the test"});
 						}else{
-							return res.json(200,{msg:"Test deleted"});
+							return res.json(200,{msg:"Test deleted", msgES:"Prueba borrada"});
 						}
 					})
 				}else{
-					return res.json(403,{msg:"The user is not the owner of the test or there is no test with that ids"});
+					return res.json(403,{msg:"The user is not the owner of the test or there is no test with that ids", msgES:"El usuario no es el propietario de la prueba o no existen pruebas con ese Id"});
 				}
 			}
 		});
@@ -1134,14 +1132,14 @@ module.exports = {
 		if(req.body.test){
 			var newTest=req.body.test;
 		}else{
-			return res.json(400,{code:1,msg: 'Error updating the test, there is no test data'});
+			return res.json(400,{code:1,msg: 'Error updating the test, there is no test data', msgES:"Datos de la prueba no envíados"});
 
 		}
 
 		if(req.body.test.id){
 			var idTest=req.body.test.id;
 		}else{
-			return res.json(400,{code:2,msg: 'Error updating the test, there is no test id'});
+			return res.json(400,{code:2,msg: 'Error updating the test, there is no test id', msgES:"Id de la prueba no envíado"});
 		}
 
 		if(req.body.test.intents){
@@ -1152,7 +1150,7 @@ module.exports = {
 		if(req.body.test.title){
 			var title=req.body.test.title;
 		}else{
-			return res.json(400,{code:3,msg: 'Error creating the test, there is no title'});
+			return res.json(400,{code:3,msg: 'Error creating the test, there is no title', msgES:"Título de la prueba no envíado"});
 		}
 		if(req.body.test.description){
 			var description=req.body.test.description;
@@ -1162,7 +1160,7 @@ module.exports = {
 		if(req.body.test.createdBy){
 			var createdBy=req.body.test.createdBy;
 		}else{
-			return res.json(400,{code:4,msg: 'Error creating the test, there is no owner'});
+			return res.json(400,{code:4,msg: 'Error creating the test, there is no owner', msgES:"Propietario de la prueba no existe"});
 		}
 		if(req.body.test.status){
 			var status=req.body.test.status;
@@ -1172,28 +1170,27 @@ module.exports = {
 		if(req.body.test.startDateTime){
 			var startDateTime=req.body.test.startDateTime;
 		}else{
-			return res.json(400,{code:5,msg: 'Error creating the test, there should be an start date-time'});
+			return res.json(400,{code:5,msg: 'Error creating the test, there should be an start date-time', msgES:"Fecha y hora de inicio no envíados"});
 		}
 		if(req.body.test.finishDateTime){
 			var finishDateTime=req.body.test.finishDateTime;
 		}else{
-			return res.json(400,{code:6,msg: 'Error creating the test, there should be an finish date-time'});
+			return res.json(400,{code:6,msg: 'Error creating the test, there should be an finish date-time', msgES:"Fecha y hora de finalización no envíados"});
 		}
 		if(req.body.test.course){
 			var idCourse=req.body.test.course;
 		}else{
-			return res.json(400,{code:7,msg: 'Error creating the test, there should be a course'});
+			return res.json(400,{code:7,msg: 'Error creating the test, there should be a course', msgES:"Curso de la prueba no envíado"});
 		}
 
 		if(finishDateTime<=startDateTime){
-			return res.json(400,{code:8,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime'});
+			return res.json(400,{code:8,msg: 'Error creating the test, the finishDateTime cannot be earlier than the startDateTime', msgES:"La fecha y hora de finalización no puede ser antes de la fecha y hora de inicio"});
 
 		}
 		//return res.json(201,{msg: 'Test created'});
 		var errorCheckingTest=sails.controllers.test.checkTestData(req);
 		if(errorCheckingTest.error==true){
-			console.log(errorCheckingTest.msg);
-			return res.json(400, {msg:"Error creating the test, wrong test format send"});
+			return res.json(400, {msg:"Error creating the test, wrong test format send", msgES:"Formato de la prueba incorrecto"});
 		}
 		/*Update test data*/
 		sails.models.test.update({id:idTest},{
@@ -1207,16 +1204,12 @@ module.exports = {
 			/*Update intents left of all students*/
 			sails.models.usrtes.query('UPDATE USR_TES SET INTENTLEFT=? WHERE STATUSUSRTES="s" AND IDTEST=? ', [intents, idTest], function(error, results){
 				if(error){
-					console.log("error aqui lol");
-					console.log(error);
 					return res.json(500, {msg:"Error updating the test"});
 				}
 			})
 		})
 		.catch(function(error){
-			console.log("Error aca");
-			console.log(error);
-			return res.json(500, {msg:"Error updating the test, wrong test format send"});
+			return res.json(500, {msg:"Error updating the test, wrong test format send", msgES:"Formato de la prueba incorrecto"});
 		})
 
 		/*Get questions*/
@@ -1371,7 +1364,7 @@ module.exports = {
 			}
 			Promise.all(optionsPromises)
 			.then(function(){
-				return res.json(200, {msg:"Test successfully updated"});
+				return res.json(200, {msg:"Test successfully updated", msgES:"Prueba actualizada"});
 			})
 			.catch(function(error){
 				console.log(error);

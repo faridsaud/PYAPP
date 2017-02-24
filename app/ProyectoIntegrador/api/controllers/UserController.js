@@ -30,38 +30,38 @@ module.exports = {
   register: function (req, res) {
     var error=false;
     if(!req.body.user){
-      return res.json(400,{code:1, msg: 'Error creating the user, no user send'});
+      return res.json(400,{code:1, msg: 'Error creating the user, no user send', msgES:"Datos del usuario no envíado"});
     }
     if(req.body.user.email){
       var email=req.body.user.email;
     }else{
-      return res.json(400,{code:2, msg: 'Error creating the user, no email send'});
+      return res.json(400,{code:2, msg: 'Error creating the user, no email send', msgES:"Email del usuario no envíado"});
     }
     if(req.body.user.password){
       var password=req.body.user.password;
     }else{
-      return res.json(400,{code:3,msg: 'Error creating the user, no password send'});
+      return res.json(400,{code:3,msg: 'Error creating the user, no password send', msgES:"Clave del usuario no envíada"});
     }
 
     if(req.body.user.securityQuestion1){
       var securityQuestion1=req.body.user.securityQuestion1;
       if(!securityQuestion1.question || !securityQuestion1.answer){
-        return res.json(400,{code:5,msg: 'Error creating the user, no security question 1 send'});
+        return res.json(400,{code:5,msg: 'Error creating the user, no security question 1 send', msgES:"Pregunta de seguridad y respuesta 1 del usuario no envíados"});
       }
     }else{
-      return res.json(400,{code:4,msg: 'Error creating the user, no security question 1 send'});
+      return res.json(400,{code:4,msg: 'Error creating the user, no security question 1 send', msgES:"Pregunta de seguridad y respuesta 1 del usuario no envíados"});
     }
 
     if(req.body.user.securityQuestion2){
       var securityQuestion2=req.body.user.securityQuestion2;
       if(!securityQuestion2.question || !securityQuestion2.answer){
-        return res.json(400,{code:7,msg: 'Error creating the user, no security question 2 send'});
+        return res.json(400,{code:7,msg: 'Error creating the user, no security question 2 send', msgES:"Pregunta de seguridad y respuesta 2 del usuario no envíados"});
       }
     }else{
-      return res.json(400,{code:6,msg: 'Error creating the user, no security question 2 send'});
+      return res.json(400,{code:6,msg: 'Error creating the user, no security question 2 send', msgES:"Pregunta de seguridad y respuesta 2 del usuario no envíados"});
     }
     if(securityQuestion1.question==securityQuestion2.question){
-      return res.json(400,{code:8,msg: 'Error creating the user, the security questions can not be the same'});
+      return res.json(400,{code:8,msg: 'Error creating the user, the security questions can not be the same', msgES:"Las preguntas de seguridad 1 y 2 no pueden ser las mismas"});
     }
     if(req.body.user.passport){
       var passport=req.body.user.passport;
@@ -89,8 +89,6 @@ module.exports = {
       var roles=["student"];
     }
     var pin=sails.controllers.user.generatePin();
-    console.log("a"+pin+"a");
-    console.log("estamos aqui");
     var passwordEncrypted = bcrypt.hashSync(password, bcrypt.genSaltSync());
     var pinEncrypted = bcrypt.hashSync(pin, bcrypt.genSaltSync());
 
@@ -105,14 +103,11 @@ module.exports = {
     }).exec(function (error, newRecord){
       if(error){
         console.log(error);
-        return res.json(512, {msg:"Error creating the user, maybe the user email is already in use"})
+        return res.json(512, {msg:"Error creating the user, maybe the user email is already in use", msgES:"Posiblemente el email ya ha sido utilizado"})
       }else{
         var queryPromisified=Promise.promisify(sails.models.usrrol.query);
         var promises=[];
-        console.log("roles");
-        console.log(roles);
         for(var i=0;i<roles.length;i++){
-          console.log(roles[i]);
           var promise=queryPromisified('INSERT INTO USR_ROL (NAME, EMAIL) VALUES (?,?)',[roles[i],email ]);
           promises.push(promise);
         }
@@ -123,7 +118,7 @@ module.exports = {
         Promise.all(promises)
         .then(function(){
           newRecord.pin=pin;
-          return res.json(201,{msg: 'User created',user:newRecord});
+          return res.json(201,{msg: 'User created',user:newRecord, msgES:"Prueba creada"});
         })
         .catch(function(error){
           console.log(error);
@@ -148,7 +143,7 @@ module.exports = {
   */
   login:function(req,res){
     if(!req.body.user){
-      return res.json(400,{code:1,msg: 'Error login in the user, no user send'});
+      return res.json(400,{code:1,msg: 'Error login in the user, no user send', msgES:"Datos del usuario no envíados"});
     }
     /*Find user by pin*/
     if(req.body.user.pin && !req.body.user.password){
@@ -161,12 +156,12 @@ module.exports = {
       if(req.body.user.email){
         var email=req.body.user.email;
       }else{
-        return res.json(400,{code:2,msg: 'Error login in the user, no email send'});
+        return res.json(400,{code:2,msg: 'Error login in the user, no email send', msgES:"Email del usuario no envíado"});
       }
       if(req.body.user.password){
         var password=req.body.user.password;
       }else{
-        return res.json(400,{code:3,msg: 'Error login in the user, no password send'});
+        return res.json(400,{code:3,msg: 'Error login in the user, no password send', msgES:"Clave del usuario no envíada"});
       }
       /*Find user by email and password*/
       var findPromise=sails.models.user.findOne({email:email})
@@ -184,7 +179,7 @@ module.exports = {
     }
     Promise.join(findPromise, function(userFinded){
       if(!userFinded){
-        return res.json(400,{code:4,msg: 'Error login in the user, no user with those credentials'});
+        return res.json(400,{code:4,msg: 'Error login in the user, no user with those credentials', msgES:"No existe usuario con esas credenciales"});
       }else{
         if(req.body.user.role){
           var role=req.body.user.role;
@@ -196,9 +191,9 @@ module.exports = {
           else{
             if(results[0]){
               req.session.userLogged=results[0].EMAIL;
-              return res.json(200,{msg: 'Login successfull',role:role,email:results[0].EMAIL});
+              return res.json(200,{msg: 'Login successfull',role:role,email:results[0].EMAIL, msgES:"Sesión iniciada"});
             }else{
-              return res.json(403,{msg: 'The role is not associated with the user'});
+              return res.json(403,{msg: 'The role is not associated with the user', msgES:"El rol no esta asociado al usuario"});
             }
           }
         });
@@ -345,17 +340,17 @@ module.exports = {
     if(req.body.email){
       var email=req.body.email;
     }else{
-      return res.json(400,{code:1,msg:"Error checking the user, no email send"});
+      return res.json(400,{code:1,msg:"Error checking the user, no email send", msgES:"Email del usuario no envíado"});
     }
     if(req.body.securityQuestion1){
       var securityQuestion1=req.body.securityQuestion1;
     }else{
-      return res.json(400,{code:2,msg:"Error checking the user, no security question send"});
+      return res.json(400,{code:2,msg:"Error checking the user, no security question send", msgES:"Pregunta de seguridad 1 no envíada"});
     }
     if(req.body.securityQuestion2){
       var securityQuestion2=req.body.securityQuestion2;
     }else{
-      return res.json(400,{code:3,msg:"Error checking the user, no security question send"});
+      return res.json(400,{code:3,msg:"Error checking the user, no security question send", msgES:"Pregunta de seguridad 2 no envíada"});
     }
     var correctChoices=true;
     var promise1=sails.models.usrsqu.findOne({email:email,idSecurityQuestion:securityQuestion1.question,answerText:securityQuestion1.answer})
@@ -401,12 +396,12 @@ module.exports = {
     if(req.body.email){
       var email=req.body.email;
     }else{
-      return res.json(400,{code:1,msg:"Error updating security info, no email send"});
+      return res.json(400,{code:1,msg:"Error updating security info, no email send", msgES:"Email del usuario no envíado"});
     }
     if(req.body.password){
       var password=req.body.password;
     }else{
-      return res.json(400,{code:2,msg:"Error updating security info, no password send"});
+      return res.json(400,{code:2,msg:"Error updating security info, no password send", msgES:"Clave del usuario no envíado"});
     }
     var securityQuetionsSend=true;
     if(req.body.securityQuestion1){
@@ -428,7 +423,7 @@ module.exports = {
     }
     if(securityQuetionsSend==true){
       if(securityQuestion1.question==securityQuestion2.question){
-        return res.json(400,{code:3,msg: 'Error creating the user, the security questions can not be the same'});
+        return res.json(400,{code:3,msg: 'Error creating the user, the security questions can not be the same', msgES:"Las preguntas de seguridad 1 y 2 no pueden ser las mismas"});
       }
     }
     if(req.body.generatePin){
@@ -467,7 +462,7 @@ module.exports = {
       console.log(results);
       Promise.all(results[results.length-1])
       .then(function(){
-        return res.json(200,{msg: 'Security info updated successfully',pinGenerated:pin});
+        return res.json(200,{msg: 'Security info updated successfully',pinGenerated:pin, msgES:"Información de seguridad actualizada"});
       })
 
       .catch(function(error){
