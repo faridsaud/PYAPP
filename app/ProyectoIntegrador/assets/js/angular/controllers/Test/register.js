@@ -147,17 +147,17 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
       var errorCheckingData=false;
       var errorMultipleChoice=$scope.checkMultipleChoiceQuestions();
       if(errorMultipleChoice.error==true){
-        toastr.error("Error checking multipleChoiceQuestions" + errorMultipleChoice.msg);
+        toastr.error("Error preguntas de opción mútliple" + errorMultipleChoice.msg);
         errorCheckingData=true;
       }
       var errorTrueFalse=$scope.checkTrueFalseQuestions();
       if(errorTrueFalse.error==true){
-        toastr.error("Error checking trueFalseQuestions" + errorTrueFalse.msg);
+        toastr.error("Error preguntas de verdadero o falso" + errorTrueFalse.msg);
         errorCheckingData=true;
       }
       var errorFillQuestion=$scope.checkFillQuestions();
       if(errorFillQuestion.error==true){
-        toastr.error("Error checking fillQuestions" + errorFillQuestion.msg);
+        toastr.error("Error preguntas de completar" + errorFillQuestion.msg);
         errorCheckingData=true;
       }
       return errorCheckingData;
@@ -166,7 +166,6 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
     $scope.checkTrueFalseQuestions=function(){
       for(var i=0;i<$scope.trueFalseQuestions.length;i++){
-        console.log("imprimiendo preguntas trufalse")
         console.log($scope.trueFalseQuestions);
         console.log($scope.trueFalseQuestions[i]);
         if($scope.trueFalseQuestions[i].text){
@@ -178,7 +177,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             if(res==false){
               return {
                 error:true,
-                msg:"Wrong statement in question "+i+", cannot be empty",
+                msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
                 question:i,
                 type:"trueFalseQuestions"
               }
@@ -186,7 +185,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           }else{
             return {
               error:true,
-              msg:"Wrong statement in question "+i+", cannot be empty",
+              msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
               question:i,
               type:"trueFalseQuestions"
             }
@@ -194,7 +193,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         }else{
           return {
             error:true,
-            msg:"Wrong statement in question "+i+", cannot be empty",
+            msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
             question:i,
             type:"trueFalseQuestions"
           }
@@ -252,7 +251,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             if(res==false){
               return {
                 error:true,
-                msg:"Wrong statement in question "+i+", cannot be empty",
+                msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
                 question:i,
                 type:"multipleChoiceQuestions"
               }
@@ -260,7 +259,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           }else{
             return {
               error:true,
-              msg:"Wrong statement in question "+i+", cannot be empty",
+              msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
               question:i,
               type:"multipleChoiceQuestions"
             }
@@ -268,18 +267,15 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         }else{
           return {
             error:true,
-            msg:"Wrong statement in question "+i+", cannot be empty",
+            msg:"Enunciado incorrecto en la pregunta "+(i+1)+", no puede ser vacío",
             question:i,
             type:"multipleChoiceQuestions"
           }
         }
-        console.log("antes de correctAnswers");
         var correctAnswers=0;
-        console.log($scope.multipleChoiceQuestions[i].options);
         /*check Options*/
         for(var j=0;j<$scope.multipleChoiceQuestions[i].options.length;j++){
           /*check Options*/
-          console.log("chequeando opciones");
           if($scope.multipleChoiceQuestions[i].options[j].text){
             if($scope.multipleChoiceQuestions[i].options[j].text.length>=1){
               var patt = /^\w{1,}.{0,}$/;
@@ -287,7 +283,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
               if(res==false){
                 return {
                   error:true,
-                  msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                  msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
                   question:i,
                   type:"multipleChoiceQuestions"
                 }
@@ -295,7 +291,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             }else{
               return {
                 error:true,
-                msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
                 question:i,
                 type:"multipleChoiceQuestions"
               }
@@ -303,7 +299,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           }else{
             return {
               error:true,
-              msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+              msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
               question:i,
               type:"multipleChoiceQuestions"
             }
@@ -324,27 +320,21 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
           }
           /*check correctAnswers*/
-          console.log($scope.multipleChoiceQuestions[i].options[j].isCorrect);
           if($scope.multipleChoiceQuestions[i].options[j].isCorrect){
-            console.log("tratando");
             correctAnswers++;
           }else{
             $scope.multipleChoiceQuestions[i].options[j].isCorrect=false;
           }
         }
-        console.log("estamos aqui");
-        console.log(correctAnswers);
         if(correctAnswers==0){
           return {
             error:true,
-            msg:"There should be at least 1 correct answer in question "+i,
+            msg:"Debe haber al menos una opción correcta en la pregunta "+(i+1),
             question:i,
             type:"multipleChoiceQuestions"
           }
         }
       }
-      console.log("Multiple choice questions after verification");
-      console.log($scope.multipleChoiceQuestions);
       return {
         error:false,
         msg:"not error found"
@@ -372,7 +362,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
               if(res==false){
                 return {
                   error:true,
-                  msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+                  msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- enunciado "+(j+1)+", no puede ser vacío",
                   question:i,
                   type:"fillQuestions"
                 }
@@ -380,7 +370,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             }else{
               return {
                 error:true,
-                msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+                msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- enunciado "+(j+1)+", no puede ser vacío",
                 question:i,
                 type:"fillQuestions"
               }
@@ -390,7 +380,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
             return {
               error:true,
-              msg:"Wrong statement in question "+i+" statement "+j+", cannot be empty",
+              msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- enunciado "+(j+1)+", no puede ser vacío",
               question:i,
               type:"fillQuestions"
             }
@@ -399,7 +389,6 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
         var correctAnswers=0;
         for(var j=0;j<$scope.fillQuestions[i].options.length;j++){
           /*check Options*/
-          console.log("chequeando opciones");
           if($scope.fillQuestions[i].options[j].text){
             if($scope.fillQuestions[i].options[j].text.length>=1){
               var patt = /^\w{1,}.{0,}$/;
@@ -407,7 +396,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
               if(res==false){
                 return {
                   error:true,
-                  msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                  msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
                   question:i,
                   type:"fillQuestions"
                 }
@@ -415,7 +404,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
             }else{
               return {
                 error:true,
-                msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+                msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
                 question:i,
                 type:"fillQuestions"
               }
@@ -423,7 +412,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           }else{
             return {
               error:true,
-              msg:"Wrong statement in question "+i+" option "+j+", cannot be empty",
+              msg:"Enunciado incorrecto en la pregunta "+(i+1)+"- opción "+(j+1)+", no puede ser vacío",
               question:i,
               type:"fillQuestions"
             }
@@ -444,9 +433,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
 
           }
           /*check correctAnswers*/
-          console.log($scope.fillQuestions[i].options[j].isCorrect);
           if($scope.fillQuestions[i].options[j].isCorrect){
-            console.log("tratando");
             correctAnswers++;
           }else{
             $scope.fillQuestions[i].options[j].isCorrect=false;
@@ -456,7 +443,7 @@ app.controller('registerTestController',['$scope','$http','toastr','$location','
           if(correctAnswers==0){
             return {
               error:true,
-              msg:"There should be at least 1 correct answer in question "+i,
+              msg:"Debe existir al menos 1 respuesta corrrecta en la pregunta "+(i+1),
               question:i,
               type:"fillQuestions"
             }
