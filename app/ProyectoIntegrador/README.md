@@ -1,3 +1,3 @@
-# ProyectoIntegrador
+# ProyectoIntegrador - Thesis 
 
-a [Sails](http://sailsjs.org) application
+Web app that allows people with visual impairment to take quizzes
