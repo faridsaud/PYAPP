@@ -17,7 +17,7 @@ app.controller("studentTestReviewController",["$scope","$document","$http","$loc
       $rootScope.synth.onvoiceschanged = function() {
         voices = $rootScope.synth.getVoices();
         console.log(voices);
-        $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
+        //$rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
 
         if(instructionSpoken==false){
           $rootScope.synth.cancel();

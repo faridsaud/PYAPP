@@ -58,7 +58,7 @@ app.controller('courseHomeStudentController',['$scope','$http','$location','toas
         voices = $rootScope.synth.getVoices();
         console.log(voices);
         console.log("Entrando a hablar");
-        $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
+        //$rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
         if(instructionSpoken==false){
           $rootScope.synth.cancel();
           $rootScope.msg.text="Bienvenido, presione control para escuchar las instrucciones";

@@ -73,7 +73,7 @@ app.controller('homeStudentController',['$scope','$http','$location','toastr','g
         voices = $rootScope.synth.getVoices();
         console.log(voices);
         console.log("Entrando a hablar");
-        $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
+        //$rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
         $rootScope.synth.speak($rootScope.msg);
       }
 

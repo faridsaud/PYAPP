@@ -64,7 +64,7 @@ module.exports.connections = {
     user: 'root',
     password: 'TUrion93!',
     database: 'proyectoIntegrador',
-    port: '/cloudsql/proyectointegrador-faridsaud:us-east1:final'
+    port: '/cloudsql/pyiapp-186714:us-east1:pyapp-db'
   },
 
   /*

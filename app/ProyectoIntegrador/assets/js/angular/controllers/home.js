@@ -72,7 +72,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
     $rootScope.synth.onvoiceschanged = function() {
       voices = $rootScope.synth.getVoices();
       console.log(voices);
-      $rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
+      //$rootScope.msg.voice = voices[6]; // Note: some voices don't support altering params
       $rootScope.synth.speak($rootScope.msg);
     }
 
@@ -96,7 +96,7 @@ app.controller('homeController',['$scope','$http','$location','toastr','globalVa
     var recognition = new webkitSpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
-
+    recognition.lang = 'es-US';
     recognition.onstart = function() {
       recognizing = true;
     };

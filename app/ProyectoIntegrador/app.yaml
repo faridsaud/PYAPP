@@ -3,6 +3,6 @@ env: flex
 env_variables:
       NODE_ENV: development
 beta_settings:
-      cloud_sql_instances: "proyectointegrador-faridsaud:us-east1:final"
+      cloud_sql_instances: "pyiapp-186714:us-east1:pyapp-db"
 skip_files:
  - ^node_modules$
